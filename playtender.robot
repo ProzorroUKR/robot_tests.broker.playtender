@@ -1236,7 +1236,7 @@ Save Tender
 
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
-  Wait Until Page Contains  Основна інформація  10
+  Wait Until Page Contains Element  id=tender-form  10
   Click Element  xpath=//h4[contains(@class, 'panel-title')]//*[contains(@href, '#collapseFeatures')]
   Sleep  1
   Add Feature  ${feature}  0  ${procurementMethodType}  div[@id='collapseFeatures']  tenderer
