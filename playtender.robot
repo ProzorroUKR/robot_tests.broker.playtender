@@ -939,14 +939,18 @@ Load Sign
   Sleep  5
 
 Load Sign Data
-  Wait Until Page Contains Element   id=CAsServersSelect   60
-  Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
-  Wait Until Page Contains Element  id=PKeyFileInput  10
-  Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
-  Wait Until Page Contains Element  id=PKeyPassword  10
-  Input Text    id=PKeyPassword     12345677
-  Wait Until Page Contains Element  id=PKeyReadButton  10
-  Click Element   id=PKeyReadButton
+  Sleep  60
+  ${sugn_type_status}=  Run Keyword And Return Status  Element Should Be Visible  id=CAsServersSelect
+  Run Keyword If  ${sugn_type_status}  Run Keywords
+  ...  Wait Until Page Contains Element   id=CAsServersSelect   60
+  ...  AND  Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
+  ...  AND  Wait Until Page Contains Element  id=PKeyFileInput  10
+  ...  AND  Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
+  ...  AND  Wait Until Page Contains Element  id=PKeyPassword  10
+  ...  AND  Input Text    id=PKeyPassword     12345677
+  ...  AND  Wait Until Page Contains Element  id=PKeyReadButton  10
+  ...  AND  Click Element   id=PKeyReadButton
+  ...  ELSE  Load Sign Data
 
 Wait user action
   [Arguments]  @{ARGUMENTS}
@@ -3271,10 +3275,14 @@ UserChangeOrgnizationInfo
   Input text  id=profileform-organization_name  ${data.name}
   Input text  id=profileform-organization_edrpou  ${data.identifier.id}
   JsSetScrollToElementBySelector  \#profileform-organization_region_id
-  Select From List By Label  jquery=#profileform-organization_region_id  ${data.address.region}
-  Input Text  jquery=#profileform-organization_postal_code  ${data.address.postalCode}
-  Input Text  jquery=#profileform-organization_locality  ${data.address.locality}
-  Input Text  jquery=#profileform-organization_street_address  ${data.address.streetAddress}
+  ${is_address.region}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.region
+  Run Keyword If  ${is_address.region}  Select From List By Label  jquery=#profileform-organization_region_id  ${data.address.region}
+  ${is_address.postalCode}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.postalCode
+  Run Keyword If  ${is_address.postalCode}  Input Text  jquery=#profileform-organization_postal_code  ${data.address.postalCode}
+  ${is_address.locality}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.locality
+  Run Keyword If  ${is_address.locality}    Input Text  jquery=#profileform-organization_locality  ${data.address.locality}
+  ${is_address.streetAddress}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.streetAddress
+  Run Keyword If  ${is_address.streetAddress}    Input Text  jquery=#profileform-organization_street_address  ${data.address.streetAddress}
 
   JsSetScrollToElementBySelector  \#user-profile-form .js-submit-btn
   Click Element   jquery=\#user-profile-form .js-submit-btn
