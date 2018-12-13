@@ -90,13 +90,13 @@ Login
   Run Keyword If  '${procurementMethodType}' == 'negotiation'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1080
 
   Selenium2Library.Switch Browser    ${user}
-  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'funders' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
-  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'funders' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
+  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
+  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
   Wait Until Page Contains          Створення закупівлі  10
 
   ### BOF - Reporting ###
   Run Keyword And Return If  '${procurementMethodType}' == 'reporting'  Створити тендер без лотів  ${user}  ${tender_data}
-  Run Keyword And Return If  '${procurementMethodType}' == 'belowThreshold' and 'funders' not in ${tender_data_keys}  Створити тендер без лотів  ${user}  ${tender_data}
+  Run Keyword And Return If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Створити тендер без лотів  ${user}  ${tender_data}
   ### EOF - Reporting ###
 
   ${title}=         Get From Dictionary   ${tender_data.data}               title
@@ -384,8 +384,8 @@ Login
   Run Keyword If  'deliveryDate' in ${item_keys}  Input DateTime XPath  div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//div[contains(@class, 'form-group field-item${playtender_proc_type}form')]//input[contains(@id, '-delivery_start_date')]  ${ARGUMENTS[0].deliveryDate.startDate}
   Run Keyword If  'deliveryDate' in ${item_keys}  Input DateTime XPath  div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//div[contains(@class, 'form-group field-item${playtender_proc_type}form')]//input[contains(@id, '-delivery_end_date')]  ${ARGUMENTS[0].deliveryDate.endDate}
 
-  #Run Keyword If  'deliveryLocation' in ${item_keys}
-  #...  InputItemDeliveryLocationByWrapper  \#collapseLots div[data-type='lot'].active div[data-type='item'].active  ${ARGUMENTS[0].deliveryLocation}  ${ARGUMENTS[2]}
+  Run Keyword If  'deliveryLocation' in ${item_keys}
+  ...  InputItemDeliveryLocationByWrapper  \#collapseLots div[data-type='lot'].active div[data-type='item'].active  ${ARGUMENTS[0].deliveryLocation}  ${ARGUMENTS[2]}
 
 Додати предмет By Wrapper
   [Arguments]  ${wrapper}  ${data}  ${procurementMethodType}
@@ -422,8 +422,8 @@ InputItemDeliveryAddressByWrapper
 InputItemDeliveryLocationByWrapper
   [Arguments]  ${wrapper}  ${data}  ${procurementMethodType}
 
-  Execute JavaScript  jQuery("${wrapper} input[id$='-delivery_location_latitude']").val("${data.latitude}");
-  Execute JavaScript  jQuery("${wrapper} input[id$='-delivery_location_longitude']").val("${data.longitude}");
+  run keyword and ignore error  Execute JavaScript  jQuery("${wrapper} input[id$='-delivery_location_latitude']").val("${data.latitude}");
+  run keyword and ignore error  Execute JavaScript  jQuery("${wrapper} input[id$='-delivery_location_longitude']").val("${data.longitude}");
 
 InputItemDeliveryDateByWrapper
   [Arguments]  ${wrapper}  ${data}  ${procurementMethodType}
@@ -2039,8 +2039,8 @@ Save Proposal
   Run Keyword If   'status' == '${arguments[2]}' and '${current_tender_uaid}' != '${arguments[1]}'   Sleep  3
   Run Keyword And Return If   'status' == '${arguments[2]}' and '${current_tender_uaid}' != '${arguments[1]}'   get_invisible_text  xpath=//*[contains(@class, 'hidden stage2.opstatus')]
   Run Keyword And Return If   'status' == '${arguments[2]}'   Отримати інформацію із тендера status
-  Run Keyword And Return If   'enquiryPeriod.startDate' == '${arguments[2]}'   Отримати інформацію із тендера enquiryPeriod.startDate
-  Run Keyword And Return If   'enquiryPeriod.endDate' == '${arguments[2]}'   Отримати інформацію із тендера enquiryPeriod.endDate
+  Run Keyword And Return If   'enquiryPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .enquiry-period-start-date.hidden
+  Run Keyword And Return If   'enquiryPeriod.endDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .enquiry-period-end-date.hidden
   Run Keyword And Return If   'complaintPeriod.startDate' == '${arguments[2]}'   Отримати інформацію із тендера complaintPeriod.startDate
   Run Keyword And Return If   'complaintPeriod.endDate' == '${arguments[2]}'   Отримати інформацію із тендера complaintPeriod.endDate
   Run Keyword And Return If   'title' == '${arguments[2]}'   Отримати інформацію із тендера title
@@ -2176,6 +2176,11 @@ Save Proposal
   Run Keyword And Return If   'items[1].deliveryAddress.streetAddress' == '${arguments[2]}'  Get Text  jquery=div[id^='accordionItems']:visible .panel-item-collapse.in .item-info-wrapper .delivery .street-address
   Run Keyword And Return If   'items[1].deliveryLocation.latitude' == '${arguments[2]}'  Get invisible text number by locator  jquery=div[id^='accordionItems']:visible .panel-item-collapse.in .item-info-wrapper .delivery-latitude.hidden
   Run Keyword And Return If   'items[1].deliveryLocation.longitude' == '${arguments[2]}'  Get invisible text number by locator  jquery=div[id^='accordionItems']:visible .panel-item-collapse.in .item-info-wrapper .delivery-longitude.hidden
+
+  ${item2NeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${arguments[2]}  items[2]
+  Run Keyword If   ${item2NeedToBeVisible}  Execute JavaScript  robottesthelpfunctions.showitembyindex(2);
+  Run Keyword If   ${item2NeedToBeVisible}  Sleep  2
+  Run Keyword And Return If   'items[2].description' == '${arguments[2]}'  Get Text  jquery=div[id^='accordionItems']:visible .panel-item-collapse.in .item-info-wrapper p.title .value
 
   ### BOF - BelowFunders ###
   ${funderWrapper}=  Set Variable  \#funderorganizationinfo
@@ -3268,21 +3273,19 @@ Switch To Complaints
 UserChangeOrgnizationInfo
   [Arguments]  ${data}
 
+  ${keys}=  Get Dictionary Keys  ${data}
+
   Go To  ${BROKERS['playtender'].basepage}/user/profile
   Wait Until Page Contains  Інформація про компанію   10
   Sleep  1
 
-  Input text  id=profileform-organization_name  ${data.name}
-  Input text  id=profileform-organization_edrpou  ${data.identifier.id}
-  JsSetScrollToElementBySelector  \#profileform-organization_region_id
-  ${is_address.region}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.region
-  Run Keyword If  ${is_address.region}  Select From List By Label  jquery=#profileform-organization_region_id  ${data.address.region}
-  ${is_address.postalCode}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.postalCode
-  Run Keyword If  ${is_address.postalCode}  Input Text  jquery=#profileform-organization_postal_code  ${data.address.postalCode}
-  ${is_address.locality}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.locality
-  Run Keyword If  ${is_address.locality}    Input Text  jquery=#profileform-organization_locality  ${data.address.locality}
-  ${is_address.streetAddress}=  Run Keyword And Return Status  Dictionary Should Contain Key  ${data}  address.streetAddress
-  Run Keyword If  ${is_address.streetAddress}    Input Text  jquery=#profileform-organization_street_address  ${data.address.streetAddress}
+  Run Keyword If  'name' in ${keys}  Input text  id=profileform-organization_name  ${data.name}
+  Run Keyword If  'identifier' in ${keys}  Input text  id=profileform-organization_edrpou  ${data.identifier.id}
+  Run Keyword If  'address' in ${keys}  JsSetScrollToElementBySelector  \#profileform-organization_region_id
+  Run Keyword If  'address' in ${keys}  Select From List By Label  jquery=#profileform-organization_region_id  ${data.address.region}
+  Run Keyword If  'address' in ${keys}  Input Text  jquery=#profileform-organization_postal_code  ${data.address.postalCode}
+  Run Keyword If  'address' in ${keys}  Input Text  jquery=#profileform-organization_locality  ${data.address.locality}
+  Run Keyword If  'address' in ${keys}  Input Text  jquery=#profileform-organization_street_address  ${data.address.streetAddress}
 
   JsSetScrollToElementBySelector  \#user-profile-form .js-submit-btn
   Click Element   jquery=\#user-profile-form .js-submit-btn
