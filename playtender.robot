@@ -1517,9 +1517,9 @@ GetIsTenderReadyForStage2
   Sleep  1
   Wait Until Page Contains Element    id=tender-form  10
 
-  ${tender_end_date}=  Get Current Date  increment=00:18:00  result_format=%d.%m.%Y %H:%M
+  ${tender_end_date}=  Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
   JsSetScrollToElementBySelector  \#tendercompetitivedialogueuastage2form-tender_period_end_date
-  Input Text  id=tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
+  Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
   Click Element  id=tendercompetitivedialogueuastage2form-draft_mode
 
   Save Tender
@@ -2137,6 +2137,10 @@ Save Proposal
   Run Keyword If   'items[0].description' == '${arguments[2]}'  Execute JavaScript  robottesthelpfunctions.showitembyindex(0);
   Run Keyword If   'items[0].description' == '${arguments[2]}'  Sleep  2
   Run Keyword And Return If   'items[0].description' == '${arguments[2]}'  Get Text  jquery=div[id^='accordionItems']:visible .panel-item-collapse.in .item-info-wrapper p.title .value
+
+  # lots
+   Run Keyword And Return If   'lots[0].title' == '${arguments[2]}'  execute javascript  return $(robottesthelpfunctions.getlotwrapperbyindex(0)).attr('data-title');
+   Run Keyword And Return If   'lots[1].title' == '${arguments[2]}'  execute javascript  return $(robottesthelpfunctions.getlotwrapperbyindex(1)).attr('data-title');
 
   ${item0NeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${arguments[2]}  items[0]
   Run Keyword If   ${item0NeedToBeVisible}  Execute JavaScript  robottesthelpfunctions.showitembyindex(0);
@@ -3126,6 +3130,7 @@ Switch To Complaints
 
 Створити план
   [Arguments]  ${user}  ${plan_data}
+  ${plan_data}=   procuring_entity_name  ${plan_data}
   ${data}=  Get From Dictionary  ${plan_data}  data
   ${data_keys}=  Get Dictionary Keys  ${data}
   ${start_date}=  convert_isodate_to_site_date  ${data.tender.tenderPeriod.startDate}
@@ -3134,7 +3139,7 @@ Switch To Complaints
   ${itemsWrapper}=  Set Variable  a[href='#collapseItems']
 
   ## preparing
-  UserChangeOrgnizationInfo  ${data.procuringEntity}
+#  UserChangeOrgnizationInfo  ${data.procuringEntity}
 
   ## load form page
   Go To  ${BROKERS['playtender'].basepage}/plan/create
@@ -3492,6 +3497,13 @@ Input DateTime XPath
   ${date}=  convert_datetime_for_delivery  ${date}
   ${date}=  Convert Date  ${date}  %d.%m.%Y %H:%M
   Input Text  xpath=//${input_selector}  ${date}
+
+Input Converted DateTime
+   [Arguments]  ${input_jquery_selector}  ${date}
+   Input Text  jquery=${input_jquery_selector}  ${date}
+   sleep    1s
+   execute javascript    $("${input_jquery_selector}").blur();
+   sleep    100ms
 
 Input Text With Checking Input Isset
   [Arguments]  ${input_jquery_selector}  ${text}
