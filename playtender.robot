@@ -950,7 +950,11 @@ Load Sign Data
   ...  AND  Input Text    id=PKeyPassword     12345677
   ...  AND  Wait Until Page Contains Element  id=PKeyReadButton  10
   ...  AND  Click Element   id=PKeyReadButton
-  ...  ELSE  Load Sign Data
+  ...  ELSE  Recursion
+
+Recursion
+  Reload Page
+  Load Sign Data
 
 Wait user action
   [Arguments]  @{ARGUMENTS}
