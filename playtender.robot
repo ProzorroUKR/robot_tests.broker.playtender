@@ -954,6 +954,7 @@ Load Sign Data
 
 Recursion
   Reload Page
+  Click Button  xpath=//*[text()='Накласти ЕЦП']
   Load Sign Data
 
 Wait user action
@@ -1367,16 +1368,18 @@ Save Tender
   ${proposal_id} =  Set Variable If  '-1' == '${proposal_id}'  1  ${proposal_id}
   ${proposal_id} =  Set Variable If  '-2' == '${proposal_id}'  2  ${proposal_id}
 
-  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
-  Click Element   id=prequalificationform-decision
-  Click Element   jquery=#prequalificationform-decision option[value='decline']
-  Wait Until Page Contains Element  id=prequalificationform-description
-  Click Element   jquery=#prequalificationform-title option.js-decline:first
-  Input text  id=prequalificationform-description  GenerateFakeText
-  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
-  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
-  Remove File  ${doc_name}
-
+  # handle sign not loaded
+  : FOR    ${INDEX}    IN RANGE    0    3
+  \  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
+  \  Select From List By Label  xpath=//select[@id='prequalificationform-decision']  Підтвердити
+  \  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
+  \  Click Element  id=prequalificationform-eligible
+  \  Click Element  id=prequalificationform-qualified
+  \  ${passed}=  run keyword and return status  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
+  \  run keyword if  ${passed} == True  Remove File  ${doc_name}
+  \  run keyword if  ${passed} == False  sleep  10
+  \  exit for loop if  ${passed} == True
+   
 Скасувати кваліфікацію
   [Arguments]  ${username}  ${tender_uaid}  ${proposal_id}
   Switch browser   ${username}
@@ -1410,7 +1413,7 @@ Save Tender
 
   Open Tender
   Click Element  xpath=//div[contains(@class, 'aside-menu ')]//a[contains(@href, '/tender/prequalification?id=')]
-  Wait Until Page Contains  Прекваліфікація  10
+  Wait Until Page Contains Element  id=tender-prequalification-form  10
 
   Click Element  id=prequalificationform-qualification
   Click Element  jquery=select#prequalificationform-qualification option:eq(${proposal_index})
@@ -1716,9 +1719,8 @@ Wait For Complaints Sync
 
   ${bid_data_keys}=  Get Dictionary Keys  ${bid.data}
 
-  Run Keyword If  'lotValues' in ${bid_data_keys} and '${mode}' != 'open_esco'  Подати цінову пропозицію Lots  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
+  Run Keyword If  'lotValues' in ${bid_data_keys}  Подати цінову пропозицію Lots  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
   Run Keyword If  'lotValues' not in ${bid_data_keys}  Подати цінову пропозицію No Lots  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
-  Run Keyword If  '${mode}' == 'open_esco'    Подати цінову пропозицію esco  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
 
   Click Element   xpath=//button[contains(text(), 'Подати пропозицію')]
   Sleep  1
@@ -1744,46 +1746,26 @@ Wait For Complaints Sync
   reload page
   sleep  2
 
-Подати цінову пропозицію esco
-  [Arguments]  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
-  Switch browser  ${username}
-
-  ${tender_id}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
-  ${bid_data_keys}=  Get Dictionary Keys  ${bid.data}
-  ${lots}=  Get From Dictionary  ${bid.data}  lotValues
-  ${lots_length}=  Get Length  ${lots}
-
-  Open Tender
-  ${procurementMethodType}=  Отримати інформацію із тендера procurementMethodType
-
-  : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
-  \   Set To Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  last_proposal_lotid=${lots[${INDEX}].relatedLot}
-  \   Go To  ${BROKERS['playtender'].basepage}/tender/bid?id=${tender_id}\#showlotbykey:${lots[${INDEX}].relatedLot}
-  \   Sleep  2
-  \   Run Keyword And Ignore Error  Подати цінову пропозицію Amount_esco  ${lots[${INDEX}].value}
-  \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Input text  xpath=//div[contains(@class, 'active')]//textarea[contains(@id, '-subcontracting_details')]  ${bid.data.tenderers[0].name}
-  \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-self_eligible')]
-  \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-self_qualified')]
-  \   Run Keyword If  'parameters' in ${bid_data_keys}  Подати цінову пропозицію Features  ${bid.data.parameters}
-  \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Run Keyword If  '${procurementMethodType}' != 'aboveThresholdUA'  Подати цінову пропозицію FakeDocs
-
 Подати цінову пропозицію Lots
   [Arguments]  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
   Switch browser  ${username}
 
-  ${tender_id}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
+  ${tender_id}=  Get From Dictionary  ${USERS.users['${PZO_LOGIN_USER}']}  TENDER_ID
   ${bid_data_keys}=  Get Dictionary Keys  ${bid.data}
   ${lots}=  Get From Dictionary  ${bid.data}  lotValues
   ${lots_length}=  Get Length  ${lots}
 
   Open Tender
   ${procurementMethodType}=  Отримати інформацію із тендера procurementMethodType
+  Go To  ${BROKERS['playtender'].basepage}/tender/bid?id=${tender_id}
+  sleep  1
 
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
-  \   Set To Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  last_proposal_lotid=${lots[${INDEX}].relatedLot}
-  \   Go To  ${BROKERS['playtender'].basepage}/tender/bid?id=${tender_id}\#showlotbykey:${lots[${INDEX}].relatedLot}
-  \   Sleep  2
+  \   Set To Dictionary  ${USERS.users['${PZO_LOGIN_USER}']}  last_proposal_lotid=${lots[${INDEX}].relatedLot}
+  \   execute javascript  robottesthelpfunctions.showlotbykey("${lots[${INDEX}].relatedLot}")
+  \   Sleep  1
   \   Run Keyword And Ignore Error  Подати цінову пропозицію Amount  ${lots[${INDEX}].value.amount}
+  \   Run Keyword If  '${procurementMethodType}' == 'esco'  Подати цінову пропозицію Esco  ${lots[${INDEX}].value}
   \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Input text  xpath=//div[contains(@class, 'active')]//textarea[contains(@id, '-subcontracting_details')]  ${bid.data.tenderers[0].name}
   \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-self_eligible')]
   \   Run Keyword If  '${procurementMethodType}' != 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-self_qualified')]
@@ -1807,83 +1789,23 @@ Wait For Complaints Sync
   ${amount}=  convert_float_to_string  ${amount}
   Input text  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-value_amount')]  ${amount}
 
-Подати цінову пропозицію Amount_esco
-  [Arguments]  ${bid}
-  Log Many  CAT777 ${bid}
-#  ${amount}=  convert_float_to_string  ${amount}
-#  Input text  xpath=//div[contains(@class, 'active')]//input[contains(@id, '-value_amount')]  ${amount}
+Подати цінову пропозицію Esco
+   [Arguments]  ${value}
+   ${value_keys}=  Get Dictionary Keys  ${value}
 
-  ${yearlyPaymentsPercentage}=    convert_float_to_string    ${bid.yearlyPaymentsPercentage}
-  Sleep  1
-  Input Text    xpath=//input[contains(@name,'percentage]')]    ${yearlyPaymentsPercentage}
-  Input Text    xpath=//input[contains(@name,'years]')]    ${bid.contractDuration.years}
-  Input Text    xpath=//input[contains(@name,'days]')]    ${bid.contractDuration.days}
+   run keyword and ignore error  input text  jquery=.tab-pane.js-lot-tab.active [id$='-contract_duration_years']  ${value.contractDuration.years}
+   run keyword and ignore error  input text  jquery=.tab-pane.js-lot-tab.active [id$='-contract_duration_days']  ${value.contractDuration.days}
+   run keyword if  'yearlyPaymentsPercentage' in ${value_keys}  input float multiply100  .tab-pane.js-lot-tab.active [id$='-yearly_payments_percentage']  ${value.yearlyPaymentsPercentage}
+   run keyword if  'annualCostsReduction' in ${value_keys}  Подати цінову пропозицію Esco AnnualCostsReduction  ${value.annualCostsReduction}
 
-  ${reduction][0]}=    multiply_hundred    ${bid.annualCostsReduction[0]}
-  ${reduction][0]}=    Convert To Integer  ${reduction][0]}
-#  ${reduction][0]}=    convert_float_to_string  ${reduction][0]}  
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-1']    ${reduction][0]}
-  ${reduction][1]}=    multiply_hundred    ${bid.annualCostsReduction[1]}
-  ${reduction][1]}=    Convert To Integer  ${reduction][1]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-2']    ${reduction][1]}
-  ${reduction][2]}=    multiply_hundred    ${bid.annualCostsReduction[2]}
-  ${reduction][2]}=    Convert To Integer  ${reduction][2]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-3']    ${reduction][2]}
-  ${reduction][3]}=    multiply_hundred    ${bid.annualCostsReduction[3]}
-  ${reduction][3]}=    Convert To Integer  ${reduction][3]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-4']    ${reduction][3]}
-  ${reduction][4]}=    multiply_hundred   ${bid.annualCostsReduction[4]}
-  ${reduction][4]}=    Convert To Integer  ${reduction][4]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-5']    ${reduction][4]}
-  ${reduction][5]}=    multiply_hundred    ${bid.annualCostsReduction[5]}
-  ${reduction][5]}=    Convert To Integer  ${reduction][5]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-6']    ${reduction][5]}
-  ${reduction][6]}=    multiply_hundred    ${bid.annualCostsReduction[6]}
-  ${reduction][6]}=    Convert To Integer  ${reduction][6]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-7']    ${reduction][6]}
-  ${reduction][7]}=    multiply_hundred    ${bid.annualCostsReduction[7]}
-  ${reduction][7]}=    Convert To Integer  ${reduction][7]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-8']    ${reduction][7]}
-  ${reduction][8]}=    multiply_hundred    ${bid.annualCostsReduction[8]}
-  ${reduction][8]}=    Convert To Integer  ${reduction][8]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-9']    ${reduction][8]}
-  ${reduction][9]}=    multiply_hundred    ${bid.annualCostsReduction[9]}
-  ${reduction][9]}=    Convert To Integer  ${reduction][9]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-10']    ${reduction][9]}
-  ${reduction][10]}=    multiply_hundred    ${bid.annualCostsReduction[10]}
-  ${reduction][10]}=    Convert To Integer  ${reduction][10]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-11']    ${reduction][10]}
-  ${reduction][11]}=    multiply_hundred    ${bid.annualCostsReduction[11]}
-  ${reduction][11]}=    Convert To Integer  ${reduction][11]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-12']    ${reduction][11]}
-  ${reduction][12]}=    multiply_hundred    ${bid.annualCostsReduction[12]}
-  ${reduction][12]}=    Convert To Integer  ${reduction][12]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-13']    ${reduction][12]}
-  ${reduction][13]}=    multiply_hundred    ${bid.annualCostsReduction[13]}
-  ${reduction][13]}=    Convert To Integer  ${reduction][13]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-14']    ${reduction][13]}
-  ${reduction][14]}=    multiply_hundred    ${bid.annualCostsReduction[14]}
-  ${reduction][14]}=    Convert To Integer  ${reduction][14]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-15']    ${reduction][14]}
-  ${reduction][15]}=    multiply_hundred    ${bid.annualCostsReduction[15]}
-  ${reduction][15]}=    Convert To Integer  ${reduction][15]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-16']    ${reduction][15]}
-  ${reduction][16]}=    multiply_hundred    ${bid.annualCostsReduction[16]}
-  ${reduction][16]}=    Convert To Integer  ${reduction][16]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-17']    ${reduction][16]}
-  ${reduction][17]}=    multiply_hundred    ${bid.annualCostsReduction[17]}
-  ${reduction][17]}=    Convert To Integer  ${reduction][17]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-18']    ${reduction][17]}
-  ${reduction][18]}=    multiply_hundred    ${bid.annualCostsReduction[18]}
-  ${reduction][18]}=    Convert To Integer  ${reduction][18]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-19']    ${reduction][18]}
-  ${reduction][19]}=    multiply_hundred    ${bid.annualCostsReduction[19]}
-  ${reduction][19]}=    Convert To Integer  ${reduction][19]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-20']    ${reduction][19]}
-  ${reduction][20]}=    multiply_hundred    ${bid.annualCostsReduction[20]}
-  ${reduction][20]}=    Convert To Integer  ${reduction][20]}
-  Input Text    xpath=//input[@class='form-control js-annual-costs-reduction-input js-period-21']    ${reduction][20]}
-  
+ Подати цінову пропозицію Esco AnnualCostsReduction
+   [Arguments]  ${values}
+
+   ${input_index}=  set variable  1
+   : FOR    ${value}    IN    @{values}
+   \  input float  .tab-pane.js-lot-tab.active [id$='-annual_costs_reduction_${input_index}']  ${value}
+   \  ${input_index}=  evaluate  ${input_index} + 1
+
 Подати цінову пропозицію Features
   [Arguments]  ${features}
   ${tender_id}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
@@ -3239,6 +3161,7 @@ Switch To Complaints
   ${data}=  Get From Dictionary  ${plan_data}  data
   ${data_keys}=  Get Dictionary Keys  ${data}
   ${start_date}=  convert_isodate_to_site_date  ${data.tender.tenderPeriod.startDate}
+  ${budget_keys}=  Get Dictionary Keys  ${data.budget}
   ${budget_amount}=  Convert To String  ${data.budget.amount}
   ${classificationWrapper}=  Set Variable  \#collapseGeneral
   ${itemsWrapper}=  Set Variable  a[href='#collapseItems']
@@ -3253,6 +3176,8 @@ Switch To Complaints
 
   ## filling form
   Select From List By Value  id=planform-procurement_method_type  ${data.tender.procurementMethodType}
+  Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_start_date  ${data.budget.period.startDate}
+  Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_end_date  ${data.budget.period.endDate}
   JsInputHiddenText  \#planform-budget_id  ${data.budget.id}
   Input text  id=planform-title  ${data.budget.description}
   Input text  id=planform-value_amount  ${budget_amount}
@@ -3343,6 +3268,7 @@ Switch To Complaints
   ${budget}=  get_invisible_text  jquery=#general-info .budget-amount
 
   PlanOpenByUAID  ${uaid}
+  JsSetScrollToElementBySelector  \#general-info
   Run Keyword And Return If   '${key}' == 'tender.procurementMethodType'  get_invisible_text  jquery=#general-info .procurement-method-type
   Run Keyword And Return If   '${key}' == 'budget.amount'   Convert To Number  ${budget}
   Run Keyword And Return If   '${key}' == 'budget.description'   get_text  jquery=#general-info .budget-description .value
@@ -3350,13 +3276,16 @@ Switch To Complaints
   Run Keyword And Return If   '${key}' == 'budget.id'   get_text  jquery=#general-info .budget-id .value
   Run Keyword And Return If   '${key}' == 'budget.project.id'   get_invisible_text  jquery=#general-info .budget-project-id
   Run Keyword And Return If   '${key}' == 'budget.project.name'   get_invisible_text  jquery=#general-info .budget-project-name
-  Run Keyword And Return If   '${key}' == 'procuringEntity.name'   get_invisible_text  jquery=#procuring-entity-info .name
-  Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.scheme'   get_invisible_text  jquery=#procuring-entity-info .identifier-scheme
-  Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.id'   get_invisible_text  jquery=#procuring-entity-info .identifier-code
   Run Keyword And Return If   '${key}' == 'classification.description'   get_invisible_text  jquery=#general-info .main-classification-description
   Run Keyword And Return If   '${key}' == 'classification.scheme'   get_invisible_text  jquery=#general-info .main-classification-scheme
   Run Keyword And Return If   '${key}' == 'classification.id'   get_invisible_text  jquery=#general-info .main-classification-code
   Run Keyword And Return If   '${key}' == 'tender.tenderPeriod.startDate'   get_invisible_text  jquery=#general-info .tender-start-date-source
+  ${procuringEntityNeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${key}  procuringEntity
+  Run Keyword If   ${procuringEntityNeedToBeVisible}  JsSetScrollToElementBySelector  \#procuring-entity-info
+  Run Keyword And Return If   '${key}' == 'procuringEntity.name'   get_invisible_text  jquery=#procuring-entity-info .name
+  Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.scheme'   get_invisible_text  jquery=#procuring-entity-info .identifier-scheme
+  Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.id'   get_invisible_text  jquery=#procuring-entity-info .identifier-code
+  Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.legalName'   get_invisible_text  jquery=#procuring-entity-info .identifier-code
   ${item0NeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${key}  items[0]
   Run Keyword If   ${item0NeedToBeVisible}    JsCollapseShowAndScroll  ${item0Wrapper}
   Run Keyword And Return If   '${key}' == 'items[0].description'    get_text  jquery=${item0Wrapper} .item-info-wrapper .title .value
