@@ -1750,7 +1750,7 @@ Wait For Complaints Sync
   [Arguments]  ${username}  ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
   Switch browser  ${username}
 
-  ${tender_id}=  Get From Dictionary  ${USERS.users['${PZO_LOGIN_USER}']}  TENDER_ID
+  ${tender_id}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
   ${bid_data_keys}=  Get Dictionary Keys  ${bid.data}
   ${lots}=  Get From Dictionary  ${bid.data}  lotValues
   ${lots_length}=  Get Length  ${lots}
@@ -1761,7 +1761,7 @@ Wait For Complaints Sync
   sleep  1
 
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
-  \   Set To Dictionary  ${USERS.users['${PZO_LOGIN_USER}']}  last_proposal_lotid=${lots[${INDEX}].relatedLot}
+  \   Set To Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  last_proposal_lotid=${lots[${INDEX}].relatedLot}
   \   execute javascript  robottesthelpfunctions.showlotbykey("${lots[${INDEX}].relatedLot}")
   \   Sleep  1
   \   Run Keyword And Ignore Error  Подати цінову пропозицію Amount  ${lots[${INDEX}].value.amount}
