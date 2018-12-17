@@ -1248,6 +1248,7 @@ Save Tender
 
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
+  Sleep  1
   Wait Until Page Contains Element  id=tender-form  10
   Click Element  xpath=//h4[contains(@class, 'panel-title')]//*[contains(@href, '#collapseFeatures')]
   Sleep  1
@@ -1369,18 +1370,16 @@ Save Tender
   ${proposal_id} =  Set Variable If  '-1' == '${proposal_id}'  1  ${proposal_id}
   ${proposal_id} =  Set Variable If  '-2' == '${proposal_id}'  2  ${proposal_id}
 
-  # handle sign not loaded
-  : FOR    ${INDEX}    IN RANGE    0    3
-  \  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
-  \  Select From List By Label  xpath=//select[@id='prequalificationform-decision']  Підтвердити
-  \  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
-  \  Click Element  id=prequalificationform-eligible
-  \  Click Element  id=prequalificationform-qualified
-  \  ${passed}=  run keyword and return status  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
-  \  run keyword if  ${passed} == True  Remove File  ${doc_name}
-  \  run keyword if  ${passed} == False  sleep  10
-  \  exit for loop if  ${passed} == True
-   
+  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
+  Click Element   id=prequalificationform-decision
+  Click Element   jquery=#prequalificationform-decision option[value='decline']
+  Wait Until Page Contains Element  id=prequalificationform-description
+  Click Element   jquery=#prequalificationform-title option.js-decline:first
+  Input text  id=prequalificationform-description  GenerateFakeText
+  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
+  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
+  Remove File  ${doc_name}
+
 Скасувати кваліфікацію
   [Arguments]  ${username}  ${tender_uaid}  ${proposal_id}
   Switch browser   ${username}
@@ -1401,13 +1400,17 @@ Save Tender
   ${proposal_id} =  Set Variable If  '-1' == '${proposal_id}'  1  ${proposal_id}
   ${proposal_id} =  Set Variable If  '-2' == '${proposal_id}'  2  ${proposal_id}
 
-  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
-  Select From List By Label  xpath=//select[@id='prequalificationform-decision']  Підтвердити
-  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
-  Click Element  id=prequalificationform-eligible
-  Click Element  id=prequalificationform-qualified
-  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
-  Remove File  ${doc_name}
+  # handle sign not loaded
+  : FOR    ${INDEX}    IN RANGE    0    3
+  \  Відкрити форму прекваліфікації і потрібну кваліфікацію  ${proposal_id}
+  \  Select From List By Label  xpath=//select[@id='prequalificationform-decision']  Підтвердити
+  \  ${doc_name}=  Завантажити збережений документ у форму кваліфікації  ${proposal_id}
+  \  Click Element  id=prequalificationform-eligible
+  \  Click Element  id=prequalificationform-qualified
+  \  ${passed}=  run keyword and return status  Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
+  \  run keyword if  ${passed} == True  Remove File  ${doc_name}
+  \  run keyword if  ${passed} == False  sleep  10
+  \  exit for loop if  ${passed} == True
 
 Відкрити форму прекваліфікації і потрібну кваліфікацію
   [Arguments]  ${proposal_index}
@@ -3534,11 +3537,11 @@ Input DateTime XPath
   Input Text  xpath=//${input_selector}  ${date}
 
 Input Converted DateTime
-   [Arguments]  ${input_jquery_selector}  ${date}
-   Input Text  jquery=${input_jquery_selector}  ${date}
-   sleep    1s
-   execute javascript    $("${input_jquery_selector}").blur();
-   sleep    100ms
+  [Arguments]  ${input_jquery_selector}  ${date}
+  Input Text  jquery=${input_jquery_selector}  ${date}
+  sleep    1s
+  execute javascript    $("${input_jquery_selector}").blur();
+  sleep    100ms
 
 Input Text With Checking Input Isset
   [Arguments]  ${input_jquery_selector}  ${text}
