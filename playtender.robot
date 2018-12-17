@@ -104,6 +104,7 @@ Login
   ${playtender_proc_type}=  Convert_to_Lowercase  ${procurementMethodType}
   ${playtender_proc_type}=  Remove String  ${playtender_proc_type}  \.
 
+  Select From List By Value  id=tender${playtender_proc_type}form-main_procurement_category  ${tender_data.data.mainProcurementCategory}
   Input text  id=tender${playtender_proc_type}form-title  ${title}
   Run Keyword If  'cause' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-cause  ${tender_data.data.cause}
   Run Keyword If  'causeDescription' in ${tender_data_keys}  Input text  id=tender${playtender_proc_type}form-cause_description  ${tender_data.data.causeDescription}
