@@ -940,23 +940,14 @@ Load Sign
   Sleep  5
 
 Load Sign Data
-  Sleep  60
-  ${sugn_type_status}=  Run Keyword And Return Status  Element Should Be Visible  id=CAsServersSelect
-  Run Keyword If  ${sugn_type_status}  Run Keywords
-  ...  Wait Until Page Contains Element   id=CAsServersSelect   60
-  ...  AND  Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
-  ...  AND  Wait Until Page Contains Element  id=PKeyFileInput  10
-  ...  AND  Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
-  ...  AND  Wait Until Page Contains Element  id=PKeyPassword  10
-  ...  AND  Input Text    id=PKeyPassword     12345677
-  ...  AND  Wait Until Page Contains Element  id=PKeyReadButton  10
-  ...  AND  Click Element   id=PKeyReadButton
-  ...  ELSE  Recursion
-
-Recursion
-  Reload Page
-  Click Button  xpath=//*[text()='Накласти ЕЦП']
-  Load Sign Data
+  Wait Until Page Contains Element   id=CAsServersSelect   60
+  Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
+  Wait Until Page Contains Element  id=PKeyFileInput  10
+  Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
+  Wait Until Page Contains Element  id=PKeyPassword  10
+  Input Text    id=PKeyPassword     12345677
+  Wait Until Page Contains Element  id=PKeyReadButton  10
+  Click Element   id=PKeyReadButton
 
 Wait user action
   [Arguments]  @{ARGUMENTS}
