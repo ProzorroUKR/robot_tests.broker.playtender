@@ -47,7 +47,7 @@ def procuring_entity_name(tender_data):
     if 'contactPoint' in tender_data.data.procuringEntity:
          tender_data.data.procuringEntity.contactPoint['name'] = u"Замовник Тест"
          tender_data.data.procuringEntity.contactPoint['name_en'] = u"Test"
-         tender_data.data.procuringEntity.contactPoint['email'] = u"zamovnuk@rambler.ru"
+         tender_data.data.procuringEntity.contactPoint['email'] = u"chuzhin@mail.ua"
          tender_data.data.procuringEntity.contactPoint['telephone'] = u"+3801111111111"
          tender_data.data.procuringEntity.contactPoint['url'] = u"http://playtender.com.ua"
     return tender_data
