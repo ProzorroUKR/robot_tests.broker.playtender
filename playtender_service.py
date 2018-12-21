@@ -36,7 +36,7 @@ def convert_date_for_compare(datestr):
 def procuring_entity_name(tender_data):
     tender_data.data.procuringEntity['name'] = u"ТОВ \"ПлейТендер\""
     tender_data.data.procuringEntity['name_en'] = u"TOV \"playtender\""
-    tender_data.data.procuringEntity.identifier['id'] = u"1234567890"
+    tender_data.data.procuringEntity.identifier['id'] = u"1234567890-playtender"
     tender_data.data.procuringEntity.identifier['legalName'] = u"ТОВ \"ПлейТендер\""
     tender_data.data.procuringEntity.identifier['legalName_en'] = u"TOV \"playtender\""
     if 'address' in tender_data.data.procuringEntity:
