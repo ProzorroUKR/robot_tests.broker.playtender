@@ -1857,6 +1857,7 @@ Save Proposal
   ...      ${arguments[0]} ==  file_path
   ...      ${arguments[1]} ==  tender_uaid
   ...      ${arguments[2]} ==  doc_type
+  ...      ${arguments[3]} ==  doc_name
   Switch browser  ${username}
   Start Edit Proposal
   ${no_lotid}=  Run Keyword And Return Status  Dictionary Should Not Contain Key  ${USERS.users['${playtender_LOGIN_USER}']}  last_proposal_lotid
