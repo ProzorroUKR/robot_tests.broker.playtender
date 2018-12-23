@@ -113,7 +113,7 @@ Login
   Run Keyword If  'fundingKind' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-funding_kind  ${tender_data.data.fundingKind}
   Run Keyword If  'NBUdiscountRate' in ${tender_data_keys}  Input Float Multiply100  \#tender${playtender_proc_type}form-nbu_discount_rate  ${tender_data.data.NBUdiscountRate}
   Click Element  id=tender${playtender_proc_type}form-value_added_tax_included
-  Run Keyword If  'mainProcurementCategory' in ${tender_data_keys}  Select From List By Value  id=tender${pzo_proc_type}form-main_procurement_category  ${tender_data.data.mainProcurementCategory}
+  Run Keyword If  'mainProcurementCategory' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-main_procurement_category  ${tender_data.data.mainProcurementCategory}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер enquiryPeriod.startDate  ${playtender_proc_type}  ${tender_data.data.enquiryPeriod.startDate}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер enquiryPeriod.endDate  ${playtender_proc_type}  ${tender_data.data.enquiryPeriod.endDate}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер tenderPeriod.startDate  ${playtender_proc_type}  ${tender_data.data.tenderPeriod.startDate}
