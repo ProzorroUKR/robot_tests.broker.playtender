@@ -5,7 +5,6 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.output import librarylogger
 import urllib
 import urllib3
-#import decimal
 
 def get_library():
     return BuiltIn().get_library_instance('Selenium2Library')

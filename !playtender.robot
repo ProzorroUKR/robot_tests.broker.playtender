@@ -2248,9 +2248,9 @@ Save Proposal
   ### BOF - Esco ###
   Run Keyword If   '${arguments[2]}' == 'awards[4].complaintPeriod.endDate'  JsOpenAwardByIndex  4
   Run Keyword And Return If   '${arguments[2]}' == 'awards[4].complaintPeriod.endDate'  get_invisible_text  jquery=.award-list-wrapper:first .panel-collapse.in .complaint-period-end-date.hidden
-  Run Keyword And Return If   '${arguments[2]}' == 'minimalStepPercentage'  get_invisible_text  jquery=#tender-general-info > p.minimal-step-percentage-source.hidden
-  Run Keyword And Return If   '${arguments[2]}' == 'yearlyPaymentsPercentageRange'  get_invisible_text  jquery=#tender-general-info > p.yearly-payments-percentage-range-source.hidden
-  Run Keyword And Return If   '${arguments[2]}' == 'fundingKind'  get_invisible_text  jquery=#tender-general-info > p.funding-kind-source.hidden
+  Run Keyword And Return If   '${arguments[2]}' == 'minimalStepPercentage'  get_invisible_text  jquery=.minimal-step-percentage-source.hidden
+  Run Keyword And Return If   '${arguments[2]}' == 'yearlyPaymentsPercentageRange'  get_invisible_text  jquery=.yearly-payments-percentage-range-source.hidden
+  Run Keyword And Return If   '${arguments[2]}' == 'fundingKind'  get_invisible_text  jquery=.funding-kind-source.hidden
   ### EOF - Esco ###
 
   Fail  Потрібна реалізація в "Отримати інформацію із тендера"
@@ -2281,9 +2281,6 @@ Save Proposal
   Run Keyword And Return If   'minimalStep.valueAddedTaxIncluded' == '${arguments[2]}'   Отримати інформацію із лоту minimalStep.valueAddedTaxIncluded  ${arguments[1]}
   Run Keyword And Return If   'auctionPeriod.startDate' == '${arguments[2]}'  get_invisible_text  jquery=#accordionLots .panel-collapse.in .lot-info-wrapper .auction-period-start-date.hidden
   Run Keyword And Return If   'auctionPeriod.endDate' == '${arguments[2]}'  get_invisible_text  jquery=#accordionLots .panel-collapse.in .lot-info-wrapper .auction-period-end-date.hidden
-  Run Keyword And Return If   'minimalStepPercentage' == '${arguments[2]}'   Get invisible text number by locator  jquery=#accordionLots .lot-info-wrapper:first .minimal-step-percentage-source.hidden
-  Run Keyword And Return If   'fundingKind' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .funding-kind-source.hidden
-  Run Keyword And Return If   'yearlyPaymentsPercentageRange' == '${arguments[2]}'  Get invisible text number by locator   jquery=#accordionLots .lot-info-wrapper:first .yearly-payments-percentage-range-source.hidden
 
   Collapse Lot  ${arguments[1]}
   [return]  playtender.lot.default
