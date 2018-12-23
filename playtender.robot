@@ -104,7 +104,6 @@ Login
   ${playtender_proc_type}=  Convert_to_Lowercase  ${procurementMethodType}
   ${playtender_proc_type}=  Remove String  ${playtender_proc_type}  \.
 
-  Select From List By Value  id=tender${playtender_proc_type}form-main_procurement_category  ${tender_data.data.mainProcurementCategory}
   Input text  id=tender${playtender_proc_type}form-title  ${title}
   Run Keyword If  'cause' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-cause  ${tender_data.data.cause}
   Run Keyword If  'causeDescription' in ${tender_data_keys}  Input text  id=tender${playtender_proc_type}form-cause_description  ${tender_data.data.causeDescription}
@@ -114,6 +113,7 @@ Login
   Run Keyword If  'fundingKind' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-funding_kind  ${tender_data.data.fundingKind}
   Run Keyword If  'NBUdiscountRate' in ${tender_data_keys}  Input Float Multiply100  \#tender${playtender_proc_type}form-nbu_discount_rate  ${tender_data.data.NBUdiscountRate}
   Click Element  id=tender${playtender_proc_type}form-value_added_tax_included
+  Run Keyword If  'mainProcurementCategory' in ${tender_data_keys}  Select From List By Value  id=tender${pzo_proc_type}form-main_procurement_category  ${tender_data.data.mainProcurementCategory}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер enquiryPeriod.startDate  ${playtender_proc_type}  ${tender_data.data.enquiryPeriod.startDate}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер enquiryPeriod.endDate  ${playtender_proc_type}  ${tender_data.data.enquiryPeriod.endDate}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold'  Створити тендер tenderPeriod.startDate  ${playtender_proc_type}  ${tender_data.data.tenderPeriod.startDate}
@@ -1908,9 +1908,10 @@ Save Proposal
   Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, 'active')]//li[contains(@data-title, '${doc_id}')]
   Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, 'active')]//li[contains(@data-titles, '${doc_id}')]
   Sleep  1
-  Click Element  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//input[contains(@id, '-confidentiality')]
+  Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//input[contains(@id, '-confidentiality')]
+  Run Keyword And Ignore Error  Click Element  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//input[contains(@id, '-is_description_decision')]
   Sleep  1
-  Input text  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//textarea[contains(@id, '-confidentiality_rationale')]  ${data.data.confidentialityRationale}
+  Run Keyword And Ignore Error  Input text  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//textarea[contains(@id, '-confidentiality_rationale')]  ${data.data.confidentialityRationale}
   Sleep  1
 
   Save Proposal
@@ -1919,8 +1920,8 @@ Save Proposal
   [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
   Switch browser  ${username}
   Start Edit Proposal
-  Run Keyword If  '${field}' == 'lotValues[0].value.amount'  Подати цінову пропозицію Amount  ${value}
-#  Run Keyword If  '${field}' == 'status'  xxx
+  ${procurementMethodType}=  Отримати інформацію із тендера procurementMethodType
+  Run Keyword If  '${field}' == 'lotValues[0].value.amount' and '${procurementMethodType}' != 'esco'  Подати цінову пропозицію Amount  ${value}
   Sleep  1
 
   Save Proposal
@@ -2052,11 +2053,15 @@ Save Proposal
 
   ${current_tender_uaid}=  Отримати інформацію із тендера tenderID
 
+  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate .value
   Run Keyword And Return If   'auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .auction-start-date
   Run Keyword And Return If   'lots[0].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=#accordionLots .lot-info-wrapper:first .budget-source.hidden
   Run Keyword And Return If   'lots[0].auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .auction-period-start-date.hidden
   Run Keyword And Return If   'lots[0].auctionPeriod.endDate' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .auction-period-end-date.hidden
   Run Keyword And Return If   'auctionPeriod.endDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .auction-end-date
+  Run Keyword And Return If   'lots[0].minimalStepPercentage' == '${arguments[2]}'   Get invisible text number by locator  jquery=#accordionLots .lot-info-wrapper:first .minimal-step-percentage-source.hidden
+  Run Keyword And Return If   'lots[0].fundingKind' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .funding-kind-source.hidden
+  Run Keyword And Return If   'lots[0].yearlyPaymentsPercentageRange' == '${arguments[2]}'  Get invisible text number by locator   jquery=#accordionLots .lot-info-wrapper:first .yearly-payments-percentage-range-source.hidden
   Run Keyword And Return If   'deliveryLocation.longitude' == '${arguments[2]}'   Fail  Не реалізований функціонал
   Run Keyword And Return If   'deliveryLocation.latitude' == '${arguments[2]}'   Fail  Не реалізований функціонал
   Run Keyword And Return If   'tenderPeriod.startDate' == '${arguments[2]}'   Отримати інформацію із тендера tenderPeriod.startDate
@@ -2663,6 +2668,12 @@ Get invisible text number by locator
   ${return_value}=  Convert To Number  ${return_value}
   [return]  ${return_value}
 
+Get number from text by locator
+	  [Arguments]  ${locator}
+	  ${return_value}=  get_text  ${locator}
+	  ${return_value}=  Convert To Number  ${return_value}
+	  [return]  ${return_value}
+	  
 Get invisible text boolean by locator
   [Arguments]  ${locator}
   ${return_value}=  get_invisible_text  ${locator}
