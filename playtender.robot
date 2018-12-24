@@ -31,7 +31,7 @@ ${locator.items[0].additionalClassifications[0].scheme}        xpath=(//p[@class
 ${locator.items[0].additionalClassifications[0].id}            xpath=(//p[@class='classification'])[2]//*[@class='value']
 #${locator.items[0].additionalClassifications[0].description}  xpath=(//p[@class='classification'])[2]//*[@class='value']
 
-#${locator.items[0].unit.code}                                  xpath=(//*[@class='panel-heading'])[1]//*[contains(@class, 'quantity')]
+#${locator.items[0].unit.code}                                  xpath=(//*[@class='form-nav-tabs'])[1]//*[contains(@class, 'quantity')]
 ${locator.items[0].quantity}                                   xpath=//p[@class='quantity']//*[@class='value']
 
 ${locator.questions[0].title}                                  xpath=//div[@class='question-info-wrapper info-wrapper']//p[@class='title']//*[@class='value']
@@ -626,7 +626,7 @@ Load And Wait Text
   Sleep  1
   Wait Until Page Contains Element    id=tender-form  10
 
-  Click Element   xpath=//*[@class='panel-heading']//*[@href='#collapseDocuments']
+  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
   Sleep  1
 
   Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
@@ -665,7 +665,7 @@ Wait For Sync Tender Finish
   Run Keyword If  '${procurementMethodType}' == 'reporting'  Додати постачальника For Reporting  ${ARGUMENTS[2].data.value.amount}  ${ARGUMENTS[2].data.suppliers[0]}
   ### EOF - Reporting ###
 
-  Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element   xpath=//*[@class='panel-heading']//*[@href='#collapseAward']
+  Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element   xpath=//*[@class='form-nav-tabs']//*[@href='#collapseAward']
   Run Keyword If  '${procurementMethodType}' != 'reporting'  Sleep  1
 
   Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element  jquery=div.awards-dynamic-forms-wrapper .nav a.js-dynamic-form-add
@@ -1103,7 +1103,7 @@ Start Edit Lot
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
   Wait Until Page Contains Element    id=tender-form  10
-  Click Element  xpath=//*[contains(@href, '#collapseLots')]
+  Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[contains(@href, '#collapseLots')]
   Sleep  1
   Click Element  xpath=//div[@id='collapseLots']//span[contains(text(), '${lot_id}')]
   Sleep  1
@@ -1175,7 +1175,7 @@ Save Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
   Wait Until Page Contains Element    id=tender-form  10
-  Click Element  xpath=//*[contains(@href, '#collapseLots')]
+  Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[contains(@href, '#collapseLots')]
   Sleep  2
   Click Element  xpath=//a[@href='#add-lots']
   Sleep  2
@@ -1241,7 +1241,7 @@ Save Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
   Wait Until Page Contains Element  id=tender-form  10
-  Click Element  xpath=//h4[contains(@class, 'panel-title')]//*[contains(@href, '#collapseFeatures')]
+  Click Element  xpath=//*[contains(@class, 'form-nav-tabs')]//*[contains(@href, '#collapseFeatures')]
   Sleep  1
   Add Feature  ${feature}  0  ${procurementMethodType}  div[@id='collapseFeatures']  tenderer
 
