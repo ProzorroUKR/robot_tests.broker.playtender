@@ -88,7 +88,8 @@ Login
 #  Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=${BROKERS['playtender'].intervals.belowThreshold.accelerator}
   Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints' and '${procurementMethodType}' == 'belowThreshold'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=360
   Run Keyword If  '${procurementMethodType}' == 'negotiation'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1080
-
+  Run Keyword If  '${procurementMethodType}' == 'aboveThresholdUA.defense'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1200
+  
   Selenium2Library.Switch Browser    ${user}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
   Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
