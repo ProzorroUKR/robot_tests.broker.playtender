@@ -102,7 +102,7 @@ def get_text_excluding_children(locator):
     return text.strip()
 
 def convert_float_to_string(number):
-    return repr(number);
+    return repr(float(number));
 	
 def convert_date_for_compare_ex(datestr):
     return datetime.strptime(datestr, "%d.%m.%Y %H:%M").strftime("%Y-%m-%d %H:%M+02:00")
