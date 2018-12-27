@@ -2150,6 +2150,8 @@ Save Proposal
   Run Keyword And Return If   'awards[0].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper p.budget-amount
   Run Keyword If   'awards[1].value.amount' == '${arguments[2]}'   JsOpenAwardByIndex  1
   Run Keyword And Return If   'awards[1].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper p.budget-amount
+  Run Keyword If   'awards[2].value.amount' == '${arguments[2]}'   JsOpenAwardByIndex  2
+  Run Keyword And Return If   'awards[2].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper p.budget-amount
   Run Keyword If   'awards[0].suppliers[0].contactPoint.name' == '${arguments[2]}'   JsOpenAwardByIndex  0
   Run Keyword And Return If   'awards[0].suppliers[0].contactPoint.name' == '${arguments[2]}'   Get invisible text by locator  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper p.organization-contact-point-name
   Run Keyword If   'contracts[0].status' == '${arguments[2]}'   JsOpenContractByIndex  0
