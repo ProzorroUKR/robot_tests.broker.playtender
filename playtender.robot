@@ -666,7 +666,7 @@ Wait For Sync Tender Finish
   Run Keyword If  '${procurementMethodType}' == 'reporting'  Додати постачальника For Reporting  ${ARGUMENTS[2].data.value.amount}  ${ARGUMENTS[2].data.suppliers[0]}
   ### EOF - Reporting ###
 
-  Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element   xpath=//*[@class='form-nav-tabs']//*[@href='#collapseAward']
+  Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseAward']
   Run Keyword If  '${procurementMethodType}' != 'reporting'  Sleep  1
 
   Run Keyword If  '${procurementMethodType}' != 'reporting'  Click Element  jquery=div.awards-dynamic-forms-wrapper .nav a.js-dynamic-form-add
