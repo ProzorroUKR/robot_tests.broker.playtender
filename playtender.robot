@@ -62,9 +62,11 @@ Login
   [Arguments]  ${username}
   Wait Until Element Is Visible  xpath=//*[contains(@data-language, '1')]  10
   Click Link    xpath=//*[contains(@data-language, '1')]
+  Click Link    xpath=//a[@href='#sidebarCollapse']
+  Sleep    10
 
   Wait Until Element Is Visible  xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light')]  10
-  Click Link    xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light')]
+  Click Link    xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light') and contains(.,'Увійти')]
   Sleep    1
   Wait Until Page Contains Element   id=loginform-email   20
   Input text   id=loginform-email      ${USERS.users['${username}'].login}
