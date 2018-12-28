@@ -736,7 +736,7 @@ Wait For Sync Tender Finish
   ${wrapper}=  Set Variable  \#collapseAward
 
   JsSetScrollToElementBySelector  \#collapseAward
-  Click Element  jquery=.panel-title a[data-toggle="collapse"][href="#collapseAward"]
+  Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseAward']
   Sleep  2
   JsSetScrollToElementBySelector  ${wrapper} \#tenderreportingform-award_organization_name
 
@@ -3175,7 +3175,7 @@ Switch To Complaints
   ${data}=  Get From Dictionary  ${plan_data}  data
   ${data_keys}=  Get Dictionary Keys  ${data}
   ${start_date}=  convert_isodate_to_site_date  ${data.tender.tenderPeriod.startDate}
-  ${budget_amount}=  Convert To String  ${data.budget.amount}
+  ${budget_keys}=  Get Dictionary Keys  ${data.budget}
   ${classificationWrapper}=  Set Variable  \#collapseGeneral
   ${itemsWrapper}=  Set Variable  a[href='#collapseItems']
 
