@@ -63,7 +63,6 @@ Login
   Wait Until Element Is Visible  xpath=//*[contains(@data-language, '1')]  10
   Click Link    xpath=//*[contains(@data-language, '1')]
   Click Link    xpath=//a[@href='#sidebarCollapse']
-  Sleep    10
 
   Wait Until Element Is Visible  xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light')]  10
   Click Link    xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light') and contains(.,'Увійти')]
@@ -560,8 +559,20 @@ Wait For UAID
   Sleep  3
   Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
 
+Клацнути і дочекатися пошук
+  [Arguments]  ${click_locator}  ${wanted_locator}  ${timeout}
+  [Documentation]
+  ...      click_locator: Where to click
+  ...      wanted_locator: What are we waiting for
+  ...      timeout: Timeout
+  Press key      ${click_locator}  \\13
+  Sleep  3
+  Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
+
 Шукати і знайти
-  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#cat  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#cat  Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
+  Клацнути і дочекатися пошук  xpath=//input[@data-ds='query-input']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
 
 Load And Check Text
   [Arguments]  ${url}  ${wanted_text}
@@ -585,7 +596,8 @@ Load And Wait Text
   Load And Wait Text  ${BROKERS['playtender'].homepage}  Публічні закупівлі  4
 
   Wait Until Page Contains Element    id=tendersearchform-query    20
-  Input Text    id=tendersearchform-query    ${ARGUMENTS[1]}
+#cat  Input Text    id=tendersearchform-query    ${ARGUMENTS[1]}
+  Input Text    xpath=//input[@data-ds='query-input']    ${ARGUMENTS[1]}
 
   ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait
 
@@ -622,7 +634,6 @@ Load And Wait Text
   ...      ${ARGUMENTS[1]} ==  ${filepath}
   ...      ${ARGUMENTS[2]} ==  ${TENDER_UAID}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  #ubiz.Пошук тендера по ідентифікатору  ${ARGUMENTS[0]}  ${ARGUMENTS[2]}
   Open Tender
   Wait Until Page Contains  Ідентифікатор закупівлі  20
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
