@@ -1008,7 +1008,7 @@ Wait user action
   Run Keyword If  '${ARGUMENTS[2]}' == 'description'  Input text  id=tender${playtender_proc_type}form-description  ${ARGUMENTS[3]}
   Sleep  1
 
-  Save Tender
+  Run Keyword If  '${ARGUMENTS[2]}' != 'tenderPeriod.endDate' and '${MODE}'!='openDefense'  Save Tender
   Capture Page Screenshot
 
 Внести зміни в тендер tenderPeriod.endDate
@@ -3262,7 +3262,7 @@ Switch To Complaints
   Run Keyword If  '${ARGUMENTS[2]}' == 'budget.description'  Input text  id=planform-title  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].deliveryDate.endDateitem'
   ...  PlanUpdateItemDeliveryEndDate  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
-  Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsCollapseShowAndScroll  \#collapseItems
+  Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  ul.form-nav-tabs a[data-toggle='tab'][href='#collapseItems']
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  \#collapseItems .nav li:first a
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'
   ...  PlanUpdateItemQuantity  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
@@ -3279,7 +3279,7 @@ Switch To Complaints
   [Arguments]  ${username}  ${uaid}  ${item_key}
 
   PlanFormOpenByUAID  ${uaid}
-  JsCollapseShowAndScroll  \#collapseItems
+  JsTabShowAndScroll  ul.form-nav-tabs a[data-toggle='tab'][href='#collapseItems']
   Click Element   jquery=#collapseItems .nav li[data-title^='${item_key}']
   Sleep  1
   Click Element   jquery=#collapseItems .nav li[data-title^='${item_key}'] .js-dynamic-form-remove
@@ -3409,7 +3409,7 @@ InputPlanOneItem
   ${wrapper}=  Set Variable  \#collapseItems .tab-content .tab-pane.active
   ${keys}=  Get Dictionary Keys  ${data}
 
-  JsCollapseShowAndScroll  \#collapseItems
+  JsTabShowAndScroll  ul.form-nav-tabs a[data-toggle='tab'][href='#collapseItems']
   Click Element  jquery=#collapseItems a[href="#add-items"]
   Sleep  2
   Input text  jquery=${wrapper} [id$='-description']  ${data.description}
