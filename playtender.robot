@@ -1008,7 +1008,7 @@ Wait user action
   Run Keyword If  '${ARGUMENTS[2]}' == 'description'  Input text  id=tender${playtender_proc_type}form-description  ${ARGUMENTS[3]}
   Sleep  1
 
-  Run Keyword If  '${ARGUMENTS[2]}' != 'tenderPeriod.endDate' and '${MODE}'!='openDefense'  Save Tender
+  Save Tender
   Capture Page Screenshot
 
 Внести зміни в тендер tenderPeriod.endDate
