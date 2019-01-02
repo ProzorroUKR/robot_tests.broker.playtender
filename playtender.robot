@@ -89,7 +89,7 @@ Login
 #  Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=${BROKERS['playtender'].intervals.belowThreshold.accelerator}
   Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints' and '${procurementMethodType}' == 'belowThreshold'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=360
   Run Keyword If  '${procurementMethodType}' == 'negotiation'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1080
-  Run Keyword If  '${procurementMethodType}' == 'aboveThresholdUA.defense'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1200
+  Run Keyword If  '${procurementMethodType}' == 'aboveThresholdUA.defense'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=720
   
   Selenium2Library.Switch Browser    ${user}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
@@ -609,7 +609,11 @@ Load And Wait Text
 #  Sleep  3
   Wait Until Page Contains Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]    20
   Sleep  3
-  Click Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]
+#cat  Click Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]
+  ${count}=  execute javascript    return $('#tender-list .js-item').length;
+  ${count}=  convert to integer  ${count}
+  run keyword if  ${count} == 1  Click Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]
+  run keyword if  ${count} > 1  Click Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][2]
   Wait Until Page Contains    ${ARGUMENTS[1]}   60
   Save Tender ID
   Capture Page Screenshot
@@ -1122,6 +1126,7 @@ Start Edit Lot
   Sleep  1
 
 Save Tender
+  [Arguments]  ${od}=${None}
   Sleep  1
   JsSetScrollToElementBySelector  \#submitBtn
   Click Button  xpath=//*[text()='Зберегти зміни']
