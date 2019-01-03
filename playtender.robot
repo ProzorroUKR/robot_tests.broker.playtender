@@ -3240,8 +3240,10 @@ Switch To Complaints
 
   Go To  ${BROKERS['playtender'].basepage}/plans
   Wait Until Page Contains Element    id=plansearchform-query    10
-  Input Text    id=plansearchform-query    ${tenderId}
-  Click Element  jquery=#plan-search-form .js-submit-btn
+#cat  Input Text    id=plansearchform-query    ${tenderId}
+#cat  Click Element  jquery=#plan-search-form .js-submit-btn
+  Input Text    xpath=//input[@data-ds='query-input']    ${tenderId}
+  Press key      xpath=//input[@data-ds='query-input']  \\13
   Sleep  1
   Wait Until Page Does Not Contain Element  jquery=#plan-list-pjax.loading-wrapper
   Capture Page Screenshot
