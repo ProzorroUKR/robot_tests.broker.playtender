@@ -3247,10 +3247,16 @@ Switch To Complaints
   Click Element  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']
 #cat  Press key      xpath=//input[@data-ds='query-input']  \\13
   Sleep  1
+  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  360 s  0 s  Шукати і знайти план
+  Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за 360 секунд
+
   Wait Until Page Does Not Contain Element  jquery=#plan-list-pjax.loading-wrapper
   Capture Page Screenshot
   Click Element    xpath=(//div[@id='plan-list-pjax'])//a[contains(@href, '/plan/')][1]
   Sleep  5
+
+Шукати і знайти план
+  Клацнути і дочекатися пошук  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']  xpath=(//div[@id='plan-list-pjax'])//a[contains(@href, '/plan/')][1]  5
 
 Оновити сторінку з планом
   [Arguments]  ${username}  ${tenderId}
@@ -3298,7 +3304,7 @@ Switch To Complaints
 
 Отримати інформацію із плану
   [Arguments]  ${username}  ${uaid}  ${key}
-  ${item0Wrapper}=  Set Variable  \#accordionItems .panel:nth(0) .panel-collapse:first
+  ${item0Wrapper}=  Set Variable  \#accordionItems .panel:nth(0) .panel-collapse:first 
   ${item1Wrapper}=  Set Variable  \#accordionItems .panel:nth(1) .panel-collapse:first
   ${budget}=  get_invisible_text  jquery=#general-info .budget-amount
 
@@ -3323,7 +3329,7 @@ Switch To Complaints
   Run Keyword And Return If   '${key}' == 'procuringEntity.identifier.legalName'   get_text  jquery=#procuring-entity-info .legal-name .value
   ${item0NeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${key}  items[0]
   Run Keyword If   ${item0NeedToBeVisible}    JsCollapseShowAndScroll  ${item0Wrapper}
-  Run Keyword And Return If   '${key}' == 'items[0].description'    get_text  jquery=${item0Wrapper} .item-info-wrapper .title .value
+  Run Keyword And Return If   '${key}' == 'items[0].description'    get_text  jquery=div#accordionItems.panel-group div.panel.panel-default .panel-collapse.collapse.in div.panel-body div#w1.item-info-wrapper.info-wrapper p.title span.value
   Run Keyword And Return If   '${key}' == 'items[0].quantity'    Get invisible text number by locator  jquery=${item0Wrapper} .item-info-wrapper .quantity-source
   Run Keyword And Return If   '${key}' == 'items[0].deliveryDate.endDate'    get_invisible_text  jquery=${item0Wrapper} .item-info-wrapper .delivery-end-date-source
   Run Keyword And Return If   '${key}' == 'items[0].unit.code'   get_invisible_text  jquery=${item0Wrapper} .item-info-wrapper .unit-code-source
