@@ -3244,7 +3244,8 @@ Switch To Complaints
 #cat  Input Text    id=plansearchform-query    ${tenderId}
 #cat  Click Element  jquery=#plan-search-form .js-submit-btn
   Input Text    xpath=//input[@data-ds='query-input']    ${tenderId}
-  Press key      xpath=//input[@data-ds='query-input']  \\13
+  Click Element  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']
+#cat  Press key      xpath=//input[@data-ds='query-input']  \\13
   Sleep  1
   Wait Until Page Does Not Contain Element  jquery=#plan-list-pjax.loading-wrapper
   Capture Page Screenshot
