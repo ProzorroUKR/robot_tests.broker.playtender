@@ -570,10 +570,10 @@ Wait For UAID
   Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
 
 Шукати і знайти
-#cat  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
-#cat  Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
-#cat  Клацнути і дочекатися пошук  xpath=//input[@data-ds='query-input']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
-  Клацнути і дочекатися пошук  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#  Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
+#  Клацнути і дочекатися пошук  xpath=//input[@data-ds='query-input']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+  Клацнути і дочекатися  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
 
 Load And Check Text
   [Arguments]  ${url}  ${wanted_text}
