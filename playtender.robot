@@ -94,7 +94,7 @@ Login
   Selenium2Library.Switch Browser    ${user}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
   Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
-  Wait Until Page Contains          Створення закупівлі  10
+  Wait Until Page Contains          Створення закупівлі  30
 
   ### BOF - Reporting ###
   Run Keyword And Return If  '${procurementMethodType}' == 'reporting'  Створити тендер без лотів  ${user}  ${tender_data}
@@ -570,10 +570,10 @@ Wait For UAID
   Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
 
 Шукати і знайти
-#cat  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
-#cat  Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
-#cat  Клацнути і дочекатися пошук  xpath=//input[@data-ds='query-input']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
-  Клацнути і дочекатися пошук  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#  Клацнути і дочекатися  xpath=//button[contains(text(), 'Пошук')]  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+#  Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
+#  Клацнути і дочекатися пошук  xpath=//input[@data-ds='query-input']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
+  Клацнути і дочекатися  xpath=//button[@class='btn btn-default fa fa-search js-submit-btn']  xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]  5
 
 Load And Check Text
   [Arguments]  ${url}  ${wanted_text}
@@ -1966,7 +1966,7 @@ Save Proposal
   # handle sign not loaded
   : FOR    ${INDEX}    IN RANGE    0    10
   \  run keyword if  ${INDEX} != 0  reload page
-  \  Select From List By Label  xpath=//select[@id='qualificationform-decision']  Визначити переможною
+  \  select from list by value  xpath=//select[@id='qualificationform-decision']  accept
   \  JsSetScrollToElementBySelector  \#qualification-documents
   \  run keyword if  ${INDEX} == 0  Choose File  xpath=//input[@type='file']  ${doc_name}
   \  run keyword if  ${INDEX} == 0  Sleep  2
