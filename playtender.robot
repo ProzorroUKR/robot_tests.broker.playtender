@@ -766,7 +766,11 @@ Wait For Sync Tender Finish
   JsSetScrollToElementBySelector  ${wrapper} \#tenderreportingform-award_organization_name
 
   Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_name  ${data.name}
-  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_edrpou  ${data.identifier.id}
+  Click Element   xpath=//span[@class='select2-selection select2-selection--single']
+  Input Text    xpath=//input[contains(@class,'select2-search__field')]    United State Register, Ukraine
+  Press Key    xpath=//input[contains(@class,'select2-search__field')]    \\13
+  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_identifier_code  ${data.identifier.id}
+#  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_edrpou  ${data.identifier.id}
   JsSetScrollToElementBySelector  ${wrapper} \#tenderreportingform-award_organization_region_id
   Select From List By Label    jquery=${wrapper} \#tenderreportingform-award_organization_region_id  ${data.address.region}
   Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_postal_code  ${data.address.postalCode}
