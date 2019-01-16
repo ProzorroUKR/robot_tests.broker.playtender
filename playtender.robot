@@ -367,10 +367,13 @@ Login
   Wait Until Element Is Visible      xpath=//div[contains(@id, 'classification-modal')]//h4[contains(@id, 'classificationModalLabel')]
   Sleep  1
   Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  ${cpv_id}
+#cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
   Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  20
-  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+#cat  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '99999999-9')]  20
+  Run Keyword If  '99999999-9' == ${cpv_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
+  ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
   Click Element                      xpath=//div[contains(@id, 'classification-modal')]//button[contains(@class, 'btn btn-default waves-effect waves-light js-submit')]
   Sleep  1
 
@@ -739,7 +742,11 @@ Wait For Sync Tender Finish
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
   \   Run Keyword If  '${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].id}' == '${ARGUMENTS[0]}'  Select From List By Label    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active select[id$="-award_lot_key"]     ${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].title}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_name"]    ${ARGUMENTS[1].suppliers[0].identifier.legalName}
-  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_edrpou"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
+  Click Element   xpath=//span[@class='select2-selection select2-selection--single']
+  Input Text    xpath=//input[contains(@class,'select2-search__field')]    United State Register, Ukraine
+  Press Key    xpath=//input[contains(@class,'select2-search__field')]    \\13
+  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_identifier_code"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
+#cat  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_edrpou"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
   Select From List By Label    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active select[id$="-award_organization_region_id"]    ${ARGUMENTS[1].suppliers[0].address.region}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_postal_code"]    ${ARGUMENTS[1].suppliers[0].address.postalCode}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_locality"]    ${ARGUMENTS[1].suppliers[0].address.locality}
@@ -923,7 +930,7 @@ Wait For Sync Tender Finish
   Run Keyword If  '${contract_date_signed}' == ''  Input Text  id=contractform-date_signed  ${date_sign}
   Execute JavaScript    $('#contractform-date_signed').blur();
   Sleep  3
-  Capture Page Screenshot
+#  Capture Page Screenshot
   ${status}=  Run keyword And Return Status  Page Should Contain  Значення "Дата підписання" повинно бути більшим значення
   Run Keyword If  ${status}  Fail  Підписати контракт неможливо
   ${status}=  Run keyword And Return Status  Page Should Contain  Контракт можна буде підписати після
