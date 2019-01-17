@@ -127,7 +127,7 @@ Login
   Run Keyword If  'funders' in ${tender_data_keys}  Створити тендер Funder  ${tender_data.data.funders[0]}
   ### EOF - BelowFunders ###
 
-  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element  xpath=Click Element xpath=//*[contains(@href, '#collapseLots')]
+  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element xpath=//*[contains(@href, '#collapseLots')]
   Click Element  xpath=//*[contains(@href, '#collapseLots')]
   Sleep  1
   JsSetScrollToElementBySelector  \#collapseLots
