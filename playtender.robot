@@ -106,7 +106,8 @@ Login
   ${playtender_proc_type}=  Convert_to_Lowercase  ${procurementMethodType}
   ${playtender_proc_type}=  Remove String  ${playtender_proc_type}  \.
 
-  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element  xpath=//input[@id='tenderbelowthresholdform-is_multilot']
+#  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element  xpath=//input[@id='tenderbelowthresholdform-is_multilot']
+  Run Keyword If  ${number_of_lots} != 0  Click Element  xpath=//input[@id='tenderbelowthresholdform-is_multilot']
   Input text  id=tender${playtender_proc_type}form-title  ${title}
   Run Keyword If  'cause' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-cause  ${tender_data.data.cause}
   Run Keyword If  'causeDescription' in ${tender_data_keys}  Input text  id=tender${playtender_proc_type}form-cause_description  ${tender_data.data.causeDescription}
@@ -842,6 +843,10 @@ Wait For Sync Tender Finish
   ${date_end}=  Get Current Date  increment=04:00:00  result_format=%d.%m.%Y %H:%M
   ${contract_date_end}=  Get Value  id=contractform-date_end
   Run Keyword If  '${contract_date_end}' == ''  Input Text  id=contractform-date_end  ${date_end}
+#########
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Створити FakeDocs
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  2
+##########
   ${document_isset}=  Run keyword And Return Status  Page Should Contain Element  jquery=.contractform-documents-dynamic-forms-wrapper .js-dynamic-forms-list > .js-item:last .js-fileupload-input-wrapper .init-value,.contractform-documents-dynamic-forms-wrapper .js-dynamic-forms-list > .js-item:last .js-fileupload-input-wrapper .btn.js-item
   Run Keyword If  ${document_isset} == False  Завантажити у відкриту форму редагування угоди документ  Fake
 
