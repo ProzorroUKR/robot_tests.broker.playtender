@@ -670,7 +670,8 @@ Load And Wait Text
 
   Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
   Wait Until Page Contains Element  xpath=//input[@type='file']  10
-  Choose File  xpath=//input[@type='file']  ${ARGUMENTS[1]}
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Choose File  xpath=(//input[@type='file'])[2]  ${ARGUMENTS[1]}
+  ...  ELSE  Choose File  xpath=//input[@type='file']  ${ARGUMENTS[1]}
   Sleep  2
 
   Save Tender
@@ -1348,8 +1349,8 @@ Save Tender
 
   Sync Tender
   Go To  ${BROKERS['playtender'].basepage}/tender/question-answer?id=${tender_id}
-  Click Element  xpath=//select[@id='questionanswerform-question']
-  Click Element  xpath=//select[@id='questionanswerform-question']//option[contains(text(), '${question_id}')]
+  Click Element  xpath=//select[@id='questionanswerform-pk']
+  Click Element  xpath=//select[@id='questionanswerform-pk']//option[contains(text(), '${question_id}')]
   Input text  xpath=//textarea[contains(@id, 'questionanswerform-answer')]  ${answer.data.answer}
 
   Click Element   xpath=//button[contains(text(), 'Надати відповідь')]
