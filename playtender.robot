@@ -397,7 +397,7 @@ Login
   Run Keyword If  'additionalClassifications' in ${item_keys}  Input Additional Classifications  ${ARGUMENTS[0].additionalClassifications}  ${wraper}
   Run Keyword If  'additionalClassifications' in ${item_keys}  Sleep  1
 
-#  Run Keyword If  '${ARGUMENTS[2]}' == 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//input[contains(@id, '-delivery')]
+# cat Run Keyword If  '${ARGUMENTS[2]}' == 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//input[contains(@id, '-delivery')]
 
   Select From List By Label          //div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//div[contains(@class, 'form-group field-item${playtender_proc_type}form')]//select[contains(@id, '-delivery_region_id')]  ${region}
   Sleep  1
@@ -3226,7 +3226,7 @@ Switch To Complaints
   ${plan_data}=   procuring_entity_name  ${plan_data}
   ${data}=  Get From Dictionary  ${plan_data}  data
   ${data_keys}=  Get Dictionary Keys  ${data}
-  ${start_date}=  convert_isodate_to_site_date  ${data.tender.tenderPeriod.startDate}
+  ${start_date}=  convert_isodate_to_site_date_plan  ${data.tender.tenderPeriod.startDate}
   ${budget_keys}=  Get Dictionary Keys  ${data.budget}
   ${classificationWrapper}=  Set Variable  \#collapseGeneral
   ${itemsWrapper}=  Set Variable  a[href='#collapseItems']

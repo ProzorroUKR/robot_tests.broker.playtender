@@ -24,6 +24,11 @@ def convert_isodate_to_site_date(isodate):
     date_string = iso_dt.strftime("%d.%m.%Y")
     return date_string
 
+def convert_isodate_to_site_date_plan(isodate):
+    iso_dt = parse_date(isodate)
+    date_string = iso_dt.strftime("%m.%Y")
+    return date_string
+
 def convert_isodate_to_site_datetime(isodate):
     iso_dt = parse_date(isodate)
     date_string = iso_dt.strftime("%d.%m.%Y %H:%M")
