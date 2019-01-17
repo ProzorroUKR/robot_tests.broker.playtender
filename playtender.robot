@@ -198,13 +198,29 @@ Login
   ${Ids}=  Створити тендер Збереження форми
   [return]  ${Ids}
 
+Створити FakeDocs
+  ${file_path}  ${file_name}  ${file_content}=  create_fake_doc
+  Choose File  xpath=//input[@type='file']  ${file_path}
+  Sleep  2
+  
 Створити тендер Збереження форми
+#########
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  1
+#  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Wait Until Page Contains Element  xpath=//input[@type='file']  10
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Створити FakeDocs
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  2
+##########
   JsSetScrollToElementBySelector  \#submitBtn
+  Capture Page Screenshot
   Click Element   xpath=//*[@id='submitBtn']
+  Capture Page Screenshot
   Sleep  1
   Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   10
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
+
 
   Wait For Sync Tender  360
 
