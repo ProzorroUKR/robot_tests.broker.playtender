@@ -106,6 +106,7 @@ Login
   ${playtender_proc_type}=  Convert_to_Lowercase  ${procurementMethodType}
   ${playtender_proc_type}=  Remove String  ${playtender_proc_type}  \.
 
+  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element  xpath=//input[@id='tenderbelowthresholdform-is_multilot']
   Input text  id=tender${playtender_proc_type}form-title  ${title}
   Run Keyword If  'cause' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-cause  ${tender_data.data.cause}
   Run Keyword If  'causeDescription' in ${tender_data_keys}  Input text  id=tender${playtender_proc_type}form-cause_description  ${tender_data.data.causeDescription}
@@ -127,7 +128,6 @@ Login
   Run Keyword If  'funders' in ${tender_data_keys}  Створити тендер Funder  ${tender_data.data.funders[0]}
   ### EOF - BelowFunders ###
 
-  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element xpath=//*[contains(@href, '#collapseLots')]
   Click Element  xpath=//*[contains(@href, '#collapseLots')]
   Sleep  1
   JsSetScrollToElementBySelector  \#collapseLots
