@@ -106,6 +106,7 @@ Login
   ${playtender_proc_type}=  Convert_to_Lowercase  ${procurementMethodType}
   ${playtender_proc_type}=  Remove String  ${playtender_proc_type}  \.
 
+  Run Keyword If  '${mode}' in 'belowThreshold below_funders' and ${number_of_lots} != 0  Click Element  xpath=//input[@id='tenderbelowthresholdform-is_multilot']
   Input text  id=tender${playtender_proc_type}form-title  ${title}
   Run Keyword If  'cause' in ${tender_data_keys}  Select From List By Value  id=tender${playtender_proc_type}form-cause  ${tender_data.data.cause}
   Run Keyword If  'causeDescription' in ${tender_data_keys}  Input text  id=tender${playtender_proc_type}form-cause_description  ${tender_data.data.causeDescription}
@@ -198,13 +199,29 @@ Login
   ${Ids}=  Створити тендер Збереження форми
   [return]  ${Ids}
 
+Створити FakeDocs
+  ${file_path}  ${file_name}  ${file_content}=  create_fake_doc
+  Choose File  xpath=//input[@type='file']  ${file_path}
+  Sleep  2
+  
 Створити тендер Збереження форми
+#########
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  1
+#  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Wait Until Page Contains Element  xpath=//input[@type='file']  10
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Створити FakeDocs
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  2
+##########
   JsSetScrollToElementBySelector  \#submitBtn
+  Capture Page Screenshot
   Click Element   xpath=//*[@id='submitBtn']
+  Capture Page Screenshot
   Sleep  1
   Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   10
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
+
 
   Wait For Sync Tender  360
 
@@ -367,10 +384,13 @@ Login
   Wait Until Element Is Visible      xpath=//div[contains(@id, 'classification-modal')]//h4[contains(@id, 'classificationModalLabel')]
   Sleep  1
   Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  ${cpv_id}
+#cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
   Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  20
-  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+#cat  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '99999999-9')]  20
+  Run Keyword If  '99999999-9' == ${cpv_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
+  ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
   Click Element                      xpath=//div[contains(@id, 'classification-modal')]//button[contains(@class, 'btn btn-default waves-effect waves-light js-submit')]
   Sleep  1
 
@@ -650,7 +670,8 @@ Load And Wait Text
 
   Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
   Wait Until Page Contains Element  xpath=//input[@type='file']  10
-  Choose File  xpath=//input[@type='file']  ${ARGUMENTS[1]}
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Choose File  xpath=(//input[@type='file'])[2]  ${ARGUMENTS[1]}
+  ...  ELSE  Choose File  xpath=//input[@type='file']  ${ARGUMENTS[1]}
   Sleep  2
 
   Save Tender
@@ -739,7 +760,11 @@ Wait For Sync Tender Finish
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
   \   Run Keyword If  '${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].id}' == '${ARGUMENTS[0]}'  Select From List By Label    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active select[id$="-award_lot_key"]     ${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].title}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_name"]    ${ARGUMENTS[1].suppliers[0].identifier.legalName}
-  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_edrpou"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
+  Click Element   xpath=//span[@class='select2-selection select2-selection--single']
+  Input Text    xpath=//input[contains(@class,'select2-search__field')]    United State Register, Ukraine
+  Press Key    xpath=//input[contains(@class,'select2-search__field')]    \\13
+  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_identifier_code"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
+#cat  Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_edrpou"]    ${ARGUMENTS[1].suppliers[0].identifier.id}
   Select From List By Label    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active select[id$="-award_organization_region_id"]    ${ARGUMENTS[1].suppliers[0].address.region}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_postal_code"]    ${ARGUMENTS[1].suppliers[0].address.postalCode}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_locality"]    ${ARGUMENTS[1].suppliers[0].address.locality}
@@ -759,7 +784,11 @@ Wait For Sync Tender Finish
   JsSetScrollToElementBySelector  ${wrapper} \#tenderreportingform-award_organization_name
 
   Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_name  ${data.name}
-  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_edrpou  ${data.identifier.id}
+  Click Element   xpath=//span[@class='select2-selection select2-selection--single']
+  Input Text    xpath=//input[contains(@class,'select2-search__field')]    United State Register, Ukraine
+  Press Key    xpath=//input[contains(@class,'select2-search__field')]    \\13
+  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_identifier_code  ${data.identifier.id}
+#  Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_edrpou  ${data.identifier.id}
   JsSetScrollToElementBySelector  ${wrapper} \#tenderreportingform-award_organization_region_id
   Select From List By Label    jquery=${wrapper} \#tenderreportingform-award_organization_region_id  ${data.address.region}
   Input Text    jquery=${wrapper} \#tenderreportingform-award_organization_postal_code  ${data.address.postalCode}
@@ -923,7 +952,7 @@ Wait For Sync Tender Finish
   Run Keyword If  '${contract_date_signed}' == ''  Input Text  id=contractform-date_signed  ${date_sign}
   Execute JavaScript    $('#contractform-date_signed').blur();
   Sleep  3
-  Capture Page Screenshot
+#  Capture Page Screenshot
   ${status}=  Run keyword And Return Status  Page Should Contain  Значення "Дата підписання" повинно бути більшим значення
   Run Keyword If  ${status}  Fail  Підписати контракт неможливо
   ${status}=  Run keyword And Return Status  Page Should Contain  Контракт можна буде підписати після
@@ -1320,8 +1349,8 @@ Save Tender
 
   Sync Tender
   Go To  ${BROKERS['playtender'].basepage}/tender/question-answer?id=${tender_id}
-  Click Element  xpath=//select[@id='questionanswerform-question']
-  Click Element  xpath=//select[@id='questionanswerform-question']//option[contains(text(), '${question_id}')]
+  Click Element  xpath=//select[@id='questionanswerform-pk']
+  Click Element  xpath=//select[@id='questionanswerform-pk']//option[contains(text(), '${question_id}')]
   Input text  xpath=//textarea[contains(@id, 'questionanswerform-answer')]  ${answer.data.answer}
 
   Click Element   xpath=//button[contains(text(), 'Надати відповідь')]
