@@ -1574,6 +1574,7 @@ GetIsTenderReadyForStage2
   ${tender_end_date}=  Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
   JsSetScrollToElementBySelector  \#tendercompetitivedialogueuastage2form-tender_period_end_date
   Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
+  Створити FakeDocs
   Click Element  id=tendercompetitivedialogueuastage2form-draft_mode
 
   Save Tender
