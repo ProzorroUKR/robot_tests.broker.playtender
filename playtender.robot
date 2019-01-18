@@ -76,6 +76,12 @@ Login
   Set Global Variable  ${playtender_LOGIN_USER}  ${username}
   #Go To  ${USERS.users['${username}'].homepage}
 
+Wait For Page Create Tender
+  [Arguments]  ${url}
+  Go To  ${url}
+  Sleep  10
+  Page Should Contain Element    xpath=//*[text()='Створення закупівлі']
+
 Створити тендер
   [Arguments]  ${user}  ${tender_data}
   ${tender_data}=   procuring_entity_name  ${tender_data}
@@ -92,9 +98,8 @@ Login
   Run Keyword If  '${procurementMethodType}' == 'aboveThresholdUA.defense'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=720
   
   Selenium2Library.Switch Browser    ${user}
-  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
-  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
-  Capture Page Screenshot
+  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
+  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
   Wait Until Page Contains          Створення закупівлі  30
 
   ### BOF - Reporting ###
