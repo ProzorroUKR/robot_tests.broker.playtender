@@ -94,6 +94,7 @@ Login
   Selenium2Library.Switch Browser    ${user}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
   Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
+  Capture Page Screenshot
   Wait Until Page Contains          Створення закупівлі  30
 
   ### BOF - Reporting ###
@@ -3242,6 +3243,7 @@ Switch To Complaints
 
   ## filling form
   Select From List By Value  id=planform-procurement_method_type  ${data.tender.procurementMethodType}
+  Log   CAT ${data.budget.period.startDate}
   Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_start_date  ${data.budget.period.startDate}
   Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_end_date  ${data.budget.period.endDate}
   JsInputHiddenText  \#planform-budget_id  ${data.budget.id}
