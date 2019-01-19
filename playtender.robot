@@ -3248,7 +3248,6 @@ Switch To Complaints
 
   ## filling form
   Select From List By Value  id=planform-procurement_method_type  ${data.tender.procurementMethodType}
-  Log   CAT ${data.budget.period.startDate}
   Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_start_date  ${data.budget.period.startDate}
   Run Keyword If  'period' in ${budget_keys}  input datetime  \#planform-period_end_date  ${data.budget.period.endDate}
   JsInputHiddenText  \#planform-budget_id  ${data.budget.id}
