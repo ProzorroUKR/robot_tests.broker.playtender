@@ -3317,7 +3317,8 @@ Switch To Complaints
   Run Keyword If  '${ARGUMENTS[2]}' == 'budget.amount'  Input text  id=planform-value_amount  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'budget.description'  Input text  id=planform-title  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].deliveryDate.endDateitem'
-  ...  PlanUpdateItemDeliveryEndDate  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
+#  ...  PlanUpdateItemDeliveryEndDate  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
+  ...  PlanUpdateItemDeliveryEndDateNew  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  ul.form-nav-tabs a[data-toggle='tab'][href='#collapseItems']
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  \#collapseItems .nav li:first a
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'
@@ -3478,7 +3479,8 @@ InputPlanOneItem
   InputClassificationByWrapper  ${wrapper}  ${data.classification.id}
   Run Keyword If  'additionalClassifications' in ${keys}
   ...  InputAdditionalClassificationsByWrapper  ${wrapper}  ${data.additionalClassifications}
-  PlanUpdateItemDeliveryEndDate  ${wrapper}  ${data.deliveryDate.endDate}
+#  PlanUpdateItemDeliveryEndDate  ${wrapper}  ${data.deliveryDate.endDate}
+  PlanUpdateItemDeliveryEndDateNew  ${wrapper}  ${data.deliveryDate.endDate}
 
 TenderOpenByUAID
   [Arguments]  ${uaid}
@@ -3519,6 +3521,12 @@ PlanUpdateItemQuantity
 PlanUpdateItemDeliveryEndDate
   [Arguments]  ${wrapper}  ${delivery_end_date}
   ${date}=  convert_isodate_to_site_datetime  ${delivery_end_date}
+
+  JsInputHiddenText  ${wrapper} [id$='-delivery_end_date']  ${date}
+
+PlanUpdateItemDeliveryEndDateNew
+  [Arguments]  ${wrapper}  ${delivery_end_date}
+  ${date}=  convert_isodate_to_site_date  ${delivery_end_date}
 
   JsInputHiddenText  ${wrapper} [id$='-delivery_end_date']  ${date}
 
