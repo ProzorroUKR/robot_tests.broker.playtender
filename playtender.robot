@@ -1381,7 +1381,7 @@ Save Tender
   Run Keyword If  '${answer.data.resolutionType}' == 'resolved'  Select From List By Label  xpath=//select[@id='complaintanswerform-resolution_type']  Задоволено
   Run Keyword If  '${answer.data.resolutionType}' == 'declined'  Select From List By Label  xpath=//select[@id='complaintanswerform-resolution_type']  Відхилено
   Run Keyword If  '${answer.data.resolutionType}' == 'invalid'  Select From List By Label  xpath=//select[@id='complaintanswerform-resolution_type']  Не задоволено
-  Input text  xpath=//textarea[contains(@id, 'complaintanswerform-tenderer_action')]  ${answer.data.tendererAction}
+  Run Keyword And Ignore Error  Input text  xpath=//textarea[contains(@id, 'complaintanswerform-tenderer_action')]  ${answer.data.tendererAction}
 
   Click Element   xpath=//button[contains(text(), 'Надати відповідь')]
   Sleep  1
