@@ -76,6 +76,12 @@ Login
   Set Global Variable  ${playtender_LOGIN_USER}  ${username}
   #Go To  ${USERS.users['${username}'].homepage}
 
+Wait For Page Create Tender
+  [Arguments]  ${url}
+  Go To  ${url}
+  Sleep  10
+  Page Should Contain Element    xpath=//*[text()='Створення закупівлі']
+
 Створити тендер
   [Arguments]  ${user}  ${tender_data}
   ${tender_data}=   procuring_entity_name  ${tender_data}
@@ -92,8 +98,8 @@ Login
   Run Keyword If  '${procurementMethodType}' == 'aboveThresholdUA.defense'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=720
   
   Selenium2Library.Switch Browser    ${user}
-  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
-  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Go To  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
+  Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
+  Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
   Wait Until Page Contains          Створення закупівлі  30
 
   ### BOF - Reporting ###
@@ -397,7 +403,7 @@ Login
   Run Keyword If  'additionalClassifications' in ${item_keys}  Input Additional Classifications  ${ARGUMENTS[0].additionalClassifications}  ${wraper}
   Run Keyword If  'additionalClassifications' in ${item_keys}  Sleep  1
 
-  Run Keyword If  '${ARGUMENTS[2]}' == 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//input[contains(@id, '-delivery')]
+# cat Run Keyword If  '${ARGUMENTS[2]}' == 'belowThreshold'  Click Element  xpath=//div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//input[contains(@id, '-delivery')]
 
   Select From List By Label          //div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//div[contains(@class, 'form-group field-item${playtender_proc_type}form')]//select[contains(@id, '-delivery_region_id')]  ${region}
   Sleep  1
@@ -842,6 +848,10 @@ Wait For Sync Tender Finish
   ${date_end}=  Get Current Date  increment=04:00:00  result_format=%d.%m.%Y %H:%M
   ${contract_date_end}=  Get Value  id=contractform-date_end
   Run Keyword If  '${contract_date_end}' == ''  Input Text  id=contractform-date_end  ${date_end}
+#########
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Створити FakeDocs
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  2
+##########
   ${document_isset}=  Run keyword And Return Status  Page Should Contain Element  jquery=.contractform-documents-dynamic-forms-wrapper .js-dynamic-forms-list > .js-item:last .js-fileupload-input-wrapper .init-value,.contractform-documents-dynamic-forms-wrapper .js-dynamic-forms-list > .js-item:last .js-fileupload-input-wrapper .btn.js-item
   Run Keyword If  ${document_isset} == False  Завантажити у відкриту форму редагування угоди документ  Fake
 
@@ -921,6 +931,7 @@ Wait For Sync Tender Finish
   Click Element  xpath=//a[contains(@href, '/tender/contract-activate?id=')]
   Sleep  1
   Wait Until Page Contains  Активація контракту  20
+  Run Keyword If  "${mode}" == "belowThreshold"   Click Element  xpath=//input[@id='form-signing']
   JsSetScrollToElementBySelector  \#tender-contract-form .js-submit-btn
   ${sign_needed}=  Run keyword And Return Status  Page Should Contain  Накласти ЕЦП
   Click Element   jquery=#tender-contract-form .js-submit-btn
@@ -1570,6 +1581,7 @@ GetIsTenderReadyForStage2
   ${tender_end_date}=  Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
   JsSetScrollToElementBySelector  \#tendercompetitivedialogueuastage2form-tender_period_end_date
   Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
+  Створити FakeDocs
   Click Element  id=tendercompetitivedialogueuastage2form-draft_mode
 
   Save Tender
@@ -3222,7 +3234,7 @@ Switch To Complaints
   ${plan_data}=   procuring_entity_name  ${plan_data}
   ${data}=  Get From Dictionary  ${plan_data}  data
   ${data_keys}=  Get Dictionary Keys  ${data}
-  ${start_date}=  convert_isodate_to_site_date  ${data.tender.tenderPeriod.startDate}
+  ${start_date}=  convert_isodate_to_site_date_plan  ${data.tender.tenderPeriod.startDate}
   ${budget_keys}=  Get Dictionary Keys  ${data.budget}
   ${classificationWrapper}=  Set Variable  \#collapseGeneral
   ${itemsWrapper}=  Set Variable  a[href='#collapseItems']
@@ -3305,7 +3317,8 @@ Switch To Complaints
   Run Keyword If  '${ARGUMENTS[2]}' == 'budget.amount'  Input text  id=planform-value_amount  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'budget.description'  Input text  id=planform-title  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].deliveryDate.endDateitem'
-  ...  PlanUpdateItemDeliveryEndDate  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
+#  ...  PlanUpdateItemDeliveryEndDate  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
+  ...  PlanUpdateItemDeliveryEndDateNew  \#collapseItems .tab-content .tab-pane:first  ${ARGUMENTS[3]}
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  ul.form-nav-tabs a[data-toggle='tab'][href='#collapseItems']
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'  JsTabShowAndScroll  \#collapseItems .nav li:first a
   Run Keyword If  '${ARGUMENTS[2]}' == 'items[0].quantity'
@@ -3412,10 +3425,13 @@ InputClassificationByWrapper
   Wait Until Element Is Visible      xpath=//div[contains(@id, 'classification-modal')]//h4[contains(@id, 'classificationModalLabel')]
   Sleep  1
   Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  ${classification_id}
+#cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
   Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${classification_id}')]  20
-  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+  Run Keyword If  '99999999-9' == ${classification_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
+  ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+#cat  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
   Click Element                      xpath=//div[contains(@id, 'classification-modal')]//button[contains(@class, 'btn btn-default waves-effect waves-light js-submit')]
   Sleep  1
 
@@ -3463,7 +3479,8 @@ InputPlanOneItem
   InputClassificationByWrapper  ${wrapper}  ${data.classification.id}
   Run Keyword If  'additionalClassifications' in ${keys}
   ...  InputAdditionalClassificationsByWrapper  ${wrapper}  ${data.additionalClassifications}
-  PlanUpdateItemDeliveryEndDate  ${wrapper}  ${data.deliveryDate.endDate}
+#  PlanUpdateItemDeliveryEndDate  ${wrapper}  ${data.deliveryDate.endDate}
+  PlanUpdateItemDeliveryEndDateNew  ${wrapper}  ${data.deliveryDate.endDate}
 
 TenderOpenByUAID
   [Arguments]  ${uaid}
@@ -3504,6 +3521,12 @@ PlanUpdateItemQuantity
 PlanUpdateItemDeliveryEndDate
   [Arguments]  ${wrapper}  ${delivery_end_date}
   ${date}=  convert_isodate_to_site_datetime  ${delivery_end_date}
+
+  JsInputHiddenText  ${wrapper} [id$='-delivery_end_date']  ${date}
+
+PlanUpdateItemDeliveryEndDateNew
+  [Arguments]  ${wrapper}  ${delivery_end_date}
+  ${date}=  convert_isodate_to_site_date  ${delivery_end_date}
 
   JsInputHiddenText  ${wrapper} [id$='-delivery_end_date']  ${date}
 
