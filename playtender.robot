@@ -2035,6 +2035,7 @@ Save Proposal
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
   Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
+#cat  Run Keyword And Ignore Error  Input text  id=qualificationform-description1  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
   Choose File  xpath=//input[@type='file']  ${doc_name}
   Sleep  2
@@ -2997,7 +2998,8 @@ Get invisible text boolean by locator
 
 Switch To Complaints
   Click Element                      xpath=//a[contains(@href, '/tender/complaints?id=')]
-  Wait Until Page Contains           Вимоги/скарги   10
+#cat  Wait Until Page Contains           Вимоги/скарги   10
+  Wait Until Page Contains           Вимоги   10
 
 Отримати інформацію із скарги description
   [Arguments]  ${complaint_id}
