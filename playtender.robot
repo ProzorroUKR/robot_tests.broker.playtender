@@ -2217,7 +2217,8 @@ Save Proposal
   Run Keyword If   'awards[0].suppliers[0].contactPoint.name' == '${arguments[2]}'   JsOpenAwardByIndex  0
   Run Keyword And Return If   'awards[0].suppliers[0].contactPoint.name' == '${arguments[2]}'   Get invisible text by locator  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper p.organization-contact-point-name
   Run Keyword If   'contracts[0].status' == '${arguments[2]}'   JsOpenContractByIndex  0
-  Run Keyword And Return If   'contracts[0].status' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.status-source
+#  Run Keyword And Return If   'contracts[0].status' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.status-source
+  Run Keyword And Return If   'contracts[0].status' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.status-source.hidden
 
   ${contract1NeedToBeVisible}=  Run Keyword And Return Status  Should Start With  ${arguments[2]}  contracts[1]
   Run Keyword If   ${contract1NeedToBeVisible}  Execute JavaScript  robottesthelpfunctions.showcontractbyindex(1);
@@ -2225,7 +2226,7 @@ Save Proposal
   Run Keyword And Return If   'contracts[1].dateSigned' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.date-signed-source.hidden
   Run Keyword And Return If   'contracts[1].period.startDate' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.period-start-date.hidden
   Run Keyword And Return If   'contracts[1].period.endDate' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.period-end-date.hidden
-  Run Keyword And Return If   'contracts[1].status' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.status-source
+  Run Keyword And Return If   'contracts[1].status' == '${arguments[2]}'   Get invisible text by locator  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper p.status-source.hidden
 #
   Run Keyword If   'items[0].description' == '${arguments[2]}'  Open Tender
   Run Keyword If   'items[0].description' == '${arguments[2]}'  Execute JavaScript  robottesthelpfunctions.showitembyindex(0);
