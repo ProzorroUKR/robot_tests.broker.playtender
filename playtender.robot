@@ -214,7 +214,7 @@ Wait For Page Create Tender
 #########
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  1
-#  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
+  Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Wait Until Page Contains Element  xpath=//input[@type='file']  10
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Створити FakeDocs
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Sleep  2
@@ -739,14 +739,14 @@ Wait For Sync Tender Finish
 
   Click Element   jquery=#tender-qualification-form .js-submit-btn
   Sleep  1
-  Wait Until Page Contains   Рішення завантажене, тепер потрібно накласти ЕЦП.   60
+  Wait Until Page Contains   Рішення завантажене, тепер потрібно накласти ЕЦП/КЕП.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
   Click Element   jquery=#tender-qualification-form .js-submit-btn
   Sleep  1
   Load Sign
-  Wait Until Page Contains   ЕЦП успішно накладено на рішення, тепер потрібно підтвердити рішення.   20
+  Wait Until Page Contains   ЕЦП/КЕП успішно накладено на рішення, тепер потрібно підтвердити рішення.   20
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
@@ -934,7 +934,7 @@ Wait For Sync Tender Finish
   Wait Until Page Contains  Активація контракту  20
   Run Keyword If  "${mode}" == "belowThreshold"   Click Element  xpath=//input[@id='form-signing']
   JsSetScrollToElementBySelector  \#tender-contract-form .js-submit-btn
-  ${sign_needed}=  Run keyword And Return Status  Page Should Contain  Накласти ЕЦП
+  ${sign_needed}=  Run keyword And Return Status  Page Should Contain  Накласти ЕЦП/КЕП
   Click Element   jquery=#tender-contract-form .js-submit-btn
   Sleep  1
 
@@ -942,7 +942,7 @@ Wait For Sync Tender Finish
   ...  Run Keywords
   ...  Load Sign
   ...  AND
-  ...  Wait Until Page Contains   ЕЦП успішно накладено   20
+  ...  Wait Until Page Contains   ЕЦП/КЕП успішно накладено   20
   ...  AND
   ...  Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   ...  AND
@@ -1509,10 +1509,10 @@ Save Tender
   Sleep  3
 
   Capture Page Screenshot
-  Click Button  xpath=//*[text()='Накласти ЕЦП']
+  Click Button  xpath=//*[text()='Накласти ЕЦП/КЕП']
   Sleep  1
   Load Sign
-  Wait Until Page Contains  ЕЦП успішно накладено на рішення  20
+  Wait Until Page Contains  ЕЦП/КЕП успішно накладено на рішення  20
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -2035,6 +2035,7 @@ Save Proposal
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
   Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
+  Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
   Choose File  xpath=//input[@type='file']  ${doc_name}
   Sleep  2
@@ -2079,7 +2080,7 @@ Save Proposal
   Sleep  2
 
   # check if eds is needed
-  ${eds_isset}=  run keyword and return status  Click Button  xpath=//*[text()='Накласти ЕЦП']
+  ${eds_isset}=  run keyword and return status  Click Button  xpath=//*[text()='Накласти ЕЦП/КЕП']
   run keyword if  ${eds_isset}  Накласти ЕЦП на відкритий попап та закрити його
   run keyword if  ${eds_isset}  JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
   run keyword if  ${eds_isset}  Click Button  jquery=#tender-qualification-form .js-submit-btn
@@ -2091,7 +2092,7 @@ Save Proposal
 
   Sleep  1
   Load Sign
-  Wait Until Page Contains  ЕЦП успішно накладено  20
+  Wait Until Page Contains  ЕЦП/КЕП успішно накладено  20
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -2997,7 +2998,8 @@ Get invisible text boolean by locator
 
 Switch To Complaints
   Click Element                      xpath=//a[contains(@href, '/tender/complaints?id=')]
-  Wait Until Page Contains           Вимоги/скарги   10
+#cat  Wait Until Page Contains           Вимоги/скарги   10
+  Wait Until Page Contains           Вимоги   10
 
 Отримати інформацію із скарги description
   [Arguments]  ${complaint_id}
