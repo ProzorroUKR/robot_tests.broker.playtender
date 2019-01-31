@@ -224,7 +224,7 @@ Wait For Page Create Tender
   Click Element   xpath=//*[@id='submitBtn']
   Capture Page Screenshot
   Sleep  1
-  Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   10
+  Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
@@ -394,7 +394,7 @@ Wait For Page Create Tender
 #cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
-  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  20
+  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  60
 #cat  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '99999999-9')]  20
   Run Keyword If  99999999-9 == ${cpv_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
   ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
@@ -483,7 +483,7 @@ Input Additional Classifications
   \   Input text     jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  ${ARGUMENTS[0][${INDEX}].id}
   \   Press key      jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  \\13
   \   Sleep  2
-  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${ARGUMENTS[0][${INDEX}].id}")  20
+  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${ARGUMENTS[0][${INDEX}].id}")  60
   \   Click Element  jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree li:first i.jstree-checkbox
 
   Click Element  xpath=//div[contains(@id, 'additional-classification-modal')]//button[contains(@class, 'js-submit')]
@@ -723,7 +723,7 @@ Wait For Sync Tender Finish
 
   Click Element   jquery=#tender-part-pjax .list-group-item[href*="tender/qualification"]
   Sleep  1
-  Wait Until Page Contains  Кваліфікація  10
+  Wait Until Page Contains  Кваліфікація  60
   Select From List By Value  id=qualificationform-decision  accept
 
   ### BOF - Reporting ###
@@ -1172,7 +1172,7 @@ Save Tender
   Sleep  1
   JsSetScrollToElementBySelector  \#submitBtn
   Click Button  xpath=//*[text()='Зберегти зміни']
-  Wait Until Page Contains  Закупівля оновлена  10
+  Wait Until Page Contains  Закупівля оновлена  60
   Sleep  1
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
@@ -1471,7 +1471,7 @@ Save Tender
 
   Open Tender
   Click Element  xpath=//div[contains(@class, 'aside-menu ')]//a[contains(@href, '/tender/prequalification?id=')]
-  Wait Until Page Contains Element  id=tender-prequalification-form  10
+  Wait Until Page Contains Element  id=tender-prequalification-form  60
 
   Click Element  id=prequalificationform-qualification
   Click Element  jquery=select#prequalificationform-qualification option:eq(${proposal_index})
@@ -1608,7 +1608,7 @@ GetIsTenderReadyForStage2Update
   Switch browser   ${username}
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/question-create?id=')]
-  Wait Until Page Contains  Нове запитання до закупівлі  10
+  Wait Until Page Contains  Нове запитання до закупівлі  60
   Run Keyword If  '${type}' == 'tender'  Select From List By Label  xpath=//select[@id='questionform-related_of']  Закупівля
   Run Keyword If  '${type}' == 'lot'  Select From List By Label  xpath=//select[@id='questionform-related_of']  Лот
   Run Keyword If  '${type}' == 'lot'  Click Element  xpath=//select[@id='questionform-related_lot']
@@ -2068,7 +2068,7 @@ Save Proposal
   Open Tender
   WaitTenderAuctionEnd  3600
   Click Element  xpath=//div[contains(@class, 'aside-menu ')]//a[contains(@href, '/tender/qualification?id=')]
-  Wait Until Page Contains  Кваліфікація  10
+  Wait Until Page Contains  Кваліфікація  60
   Click Element  id=qualificationform-award
   Click Element  jquery=select#qualificationform-award option:eq(${proposal_index})
   Sleep  2
@@ -3457,7 +3457,7 @@ InputAdditionalClassificationsByWrapper
   \   Input text     jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  ${additionalClassifications[${INDEX}].id}
   \   Press key      jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  \\13
   \   Sleep  2
-  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${additionalClassifications[${INDEX}].id}")  20
+  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${additionalClassifications[${INDEX}].id}")  60
   \   Click Element  jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree li:first i.jstree-checkbox
 
   Click Element  xpath=//div[contains(@id, 'additional-classification-modal')]//button[contains(@class, 'js-submit')]
