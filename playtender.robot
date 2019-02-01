@@ -2040,13 +2040,15 @@ Save Proposal
   ${doc_name}=  Run Keyword If  ${doc_isset}  GetValueFromDictionaryByKey  ${USERS.users['${playtender_LOGIN_USER}']}  qproposal${award_index}_document
   ...  ELSE  GenerateFakeDocument
 
-  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
+#cat  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
 
   Select From List By Value   id=qualificationform-decision  decline
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
   Run Keyword And Ignore Error  Click Element  xpath=//span[@class='select2-selection select2-selection--multiple']
-  Run Keyword And Ignore Error  Click Element  id=#select2-qualificationform-title-result-
+  Execute JavaScript   $('#qualificationform-title').val($('#qualificationform-title option:first').val()).trigger('change')
+#  Run Keyword And Ignore Error  Input text  xpath=//span[@class='select2-selection select2-selection--multiple']  Тендерна пропозиція не відповідає вимогам тендерної документації
+
 #  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
   Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
