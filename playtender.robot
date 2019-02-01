@@ -60,19 +60,19 @@ ${playtender_proc_type}=                                              unknown
 
 Login
   [Arguments]  ${username}
-  Wait Until Element Is Visible  xpath=//*[contains(@data-language, '1')]  10
+  Wait Until Element Is Visible  xpath=//*[contains(@data-language, '1')]  60
   Click Link    xpath=//*[contains(@data-language, '1')]
   Click Link    xpath=//a[@href='#sidebarCollapse']
 
-  Wait Until Element Is Visible  xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light')]  10
+  Wait Until Element Is Visible  xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light')]  60
   Click Link    xpath=//*[contains(@class, 'btn btn-lg btn-default btn-custom waves-effect waves-light') and contains(.,'Увійти')]
   Sleep    1
-  Wait Until Page Contains Element   id=loginform-email   20
+  Wait Until Page Contains Element   id=loginform-email   60
   Input text   id=loginform-email      ${USERS.users['${username}'].login}
   Input text   id=loginform-password      ${USERS.users['${username}'].password}
   # Click Button   xpath=//*[@type='submit']
   Click Button   xpath=//*[@class='btn btn-lg w-lg-x2 btn-success js-submit-btn']
-  Wait Until Page Contains          Активні   20
+  Wait Until Page Contains          Активні   60
   Set Global Variable  ${playtender_LOGIN_USER}  ${username}
   #Go To  ${USERS.users['${username}'].homepage}
 
@@ -100,7 +100,7 @@ Wait For Page Create Tender
   Selenium2Library.Switch Browser    ${user}
   Run Keyword If  '${procurementMethodType}' == 'belowThreshold' and 'lots' not in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}&multilot=0
   Run Keyword If  '${procurementMethodType}' != 'belowThreshold' or 'lots' in ${tender_data_keys}  Wait Until Keyword Succeeds    100 s    10 s    Wait For Page Create Tender  ${BROKERS['playtender'].basepage}/tender/create?type=${procurementMethodType}
-  Wait Until Page Contains          Створення закупівлі  30
+  Wait Until Page Contains          Створення закупівлі  60
 
   ### BOF - Reporting ###
   Run Keyword And Return If  '${procurementMethodType}' == 'reporting'  Створити тендер без лотів  ${user}  ${tender_data}
@@ -221,10 +221,13 @@ Wait For Page Create Tender
 ##########
   JsSetScrollToElementBySelector  \#submitBtn
   Capture Page Screenshot
-  Click Element   xpath=//*[@id='submitBtn']
+  Sleep  1
+  Execute Javascript    $("#submitBtn").trigger("click")
+#  Click Element   xpath=//*[@id='submitBtn']
   Capture Page Screenshot
   Sleep  1
-  Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   10
+#  Run Keyword And Ignore Error  Click Element   xpath=//*[@id='submitBtn']
+  Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
@@ -394,7 +397,7 @@ Wait For Page Create Tender
 #cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
-  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  20
+  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  60
 #cat  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '99999999-9')]  20
   Run Keyword If  99999999-9 == ${cpv_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
   ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
@@ -483,7 +486,7 @@ Input Additional Classifications
   \   Input text     jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  ${ARGUMENTS[0][${INDEX}].id}
   \   Press key      jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  \\13
   \   Sleep  2
-  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${ARGUMENTS[0][${INDEX}].id}")  20
+  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${ARGUMENTS[0][${INDEX}].id}")  60
   \   Click Element  jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree li:first i.jstree-checkbox
 
   Click Element  xpath=//div[contains(@id, 'additional-classification-modal')]//button[contains(@class, 'js-submit')]
@@ -623,7 +626,7 @@ Load And Wait Text
 
   Load And Wait Text  ${BROKERS['playtender'].homepage}  Публічні закупівлі  4
 
-  Wait Until Page Contains Element    id=tendersearchform-query    20
+  Wait Until Page Contains Element    id=tendersearchform-query    60
 #cat  Input Text    id=tendersearchform-query    ${ARGUMENTS[1]}
   Input Text    xpath=//input[@data-ds='query-input']    ${ARGUMENTS[1]}
 
@@ -635,7 +638,7 @@ Load And Wait Text
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за 360 секунд
 
 #  Sleep  3
-  Wait Until Page Contains Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]    20
+  Wait Until Page Contains Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]    60
   Sleep  3
 #cat  Click Element    xpath=(//div[@id='tender-list'])//a[contains(@href, '/tender/')][1]
   ${count}=  execute javascript    return $('#tender-list .js-item').length;
@@ -651,13 +654,13 @@ Load And Wait Text
   ${identifier}=  Set Variable  ${arguments[0]}
 
   Go To  ${BROKERS['playtender'].basepage}/tenders?funder_organization=${identifier}
-  Wait Until Page Contains Element    id=tender-list    30
+  Wait Until Page Contains Element    id=tender-list    60
   Capture Page Screenshot  tender_with_funders_search_result
   Sleep  5
 
   # redirect to tender view for getting data
   Go To  ${BROKERS['playtender'].basepage}/tender/${TENDER.TENDER_UAID}
-  Wait Until Page Contains    ${TENDER.TENDER_UAID}    10
+  Wait Until Page Contains    ${TENDER.TENDER_UAID}    60
 
 Завантажити документ
   [Arguments]  @{ARGUMENTS}
@@ -667,16 +670,16 @@ Load And Wait Text
   ...      ${ARGUMENTS[2]} ==  ${TENDER_UAID}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Open Tender
-  Wait Until Page Contains  Ідентифікатор закупівлі  20
+  Wait Until Page Contains  Ідентифікатор закупівлі  60
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
 
   Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
   Sleep  1
 
   Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
-  Wait Until Page Contains Element  xpath=//input[@type='file']  10
+  Wait Until Page Contains Element  xpath=//input[@type='file']  20
   Run Keyword If  '${mode}' in 'belowThreshold openua openeu open_competitive_dialogue openua_defense below_funders open_esco'  Choose File  xpath=(//input[@type='file'])[2]  ${ARGUMENTS[1]}
   ...  ELSE  Choose File  xpath=//input[@type='file']  ${ARGUMENTS[1]}
   Sleep  2
@@ -702,10 +705,10 @@ Wait For Sync Tender Finish
   ...      ${ARGUMENTS[3]} ==  ${filepath}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Open Tender
-  Wait Until Page Contains  Ідентифікатор закупівлі  20
+  Wait Until Page Contains  Ідентифікатор закупівлі  60
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
 
   ### BOF - Reporting ###
   ${procurementMethodType}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  tender_methodtype
@@ -723,7 +726,7 @@ Wait For Sync Tender Finish
 
   Click Element   jquery=#tender-part-pjax .list-group-item[href*="tender/qualification"]
   Sleep  1
-  Wait Until Page Contains  Кваліфікація  10
+  Wait Until Page Contains  Кваліфікація  60
   Select From List By Value  id=qualificationform-decision  accept
 
   ### BOF - Reporting ###
@@ -746,13 +749,13 @@ Wait For Sync Tender Finish
   Click Element   jquery=#tender-qualification-form .js-submit-btn
   Sleep  1
   Load Sign
-  Wait Until Page Contains   ЕЦП/КЕП успішно накладено на рішення, тепер потрібно підтвердити рішення.   20
+  Wait Until Page Contains   ЕЦП/КЕП успішно накладено на рішення, тепер потрібно підтвердити рішення.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
   Click Element   jquery=#tender-qualification-form .js-submit-btn
   Sleep  1
-  Wait Until Page Contains   Рішення підтверджене, очікує опублікування на сайті уповноваженого органу.   20
+  Wait Until Page Contains   Рішення підтверджене, очікує опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
 
@@ -827,7 +830,7 @@ Wait For Sync Tender Finish
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/contract?id=')]
   Sleep  1
-  Wait Until Page Contains  Завантаження контракту  10
+  Wait Until Page Contains  Завантаження контракту  60
 
   # wait complaint period ended
   JsSetScrollToElementBySelector  .js-award-complaint-period-wrapper
@@ -861,7 +864,7 @@ Wait For Sync Tender Finish
   Click Element   jquery=\#tender-contract-form .js-submit-btn
   Sleep  1
   Capture Page Screenshot
-  Wait Until Page Contains   Контракт успішно завантажений   10
+  Wait Until Page Contains   Контракт успішно завантажений   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
 
   # wait sync
@@ -906,10 +909,10 @@ Wait For Sync Tender Finish
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Sleep  61
   Open Tender
-  Wait Until Page Contains  Ідентифікатор закупівлі  20
+  Wait Until Page Contains  Ідентифікатор закупівлі  60
   Click Element  xpath=//a[contains(@href, '/tender/contract?id=')]
   Sleep  1
-  Wait Until Page Contains  Завантаження контракту  10
+  Wait Until Page Contains  Завантаження контракту  60
   Перевірити неможливість підписання контракту
   ${contract_number}=  Get Value  id=contractform-contract_number
   Run Keyword If  '${contract_number}' == ''  Input Text  id=contractform-contract_number  1234567890
@@ -924,14 +927,14 @@ Wait For Sync Tender Finish
 
   Click Element   jquery=#tender-contract-form .js-submit-btn
   Sleep  1
-  Wait Until Page Contains   Контракт успішно завантажений   20
+  Wait Until Page Contains   Контракт успішно завантажений   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   WaitPageSyncing  62
 
-  Wait Until Page Contains   Активувати контракт   20
+  Wait Until Page Contains   Активувати контракт   60
   Click Element  xpath=//a[contains(@href, '/tender/contract-activate?id=')]
   Sleep  1
-  Wait Until Page Contains  Активація контракту  20
+  Wait Until Page Contains  Активація контракту  60
   Run Keyword If  "${mode}" == "belowThreshold"   Click Element  xpath=//input[@id='form-signing']
   JsSetScrollToElementBySelector  \#tender-contract-form .js-submit-btn
   ${sign_needed}=  Run keyword And Return Status  Page Should Contain  Накласти ЕЦП/КЕП
@@ -942,7 +945,7 @@ Wait For Sync Tender Finish
   ...  Run Keywords
   ...  Load Sign
   ...  AND
-  ...  Wait Until Page Contains   ЕЦП/КЕП успішно накладено   20
+  ...  Wait Until Page Contains   ЕЦП/КЕП успішно накладено   60
   ...  AND
   ...  Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   ...  AND
@@ -952,7 +955,7 @@ Wait For Sync Tender Finish
   ...  AND
   ...  Sleep  1
 
-  Wait Until Page Contains   Контракт успішно активовано   20
+  Wait Until Page Contains   Контракт успішно активовано   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
 
   # wait sync
@@ -1001,11 +1004,11 @@ Load Sign
 Load Sign Data
   Wait Until Page Contains Element   id=CAsServersSelect   60
   Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
-  Wait Until Page Contains Element  id=PKeyFileInput  10
+  Wait Until Page Contains Element  id=PKeyFileInput  60
   Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
-  Wait Until Page Contains Element  id=PKeyPassword  10
+  Wait Until Page Contains Element  id=PKeyPassword  60
   Input Text    id=PKeyPassword     12345677
-  Wait Until Page Contains Element  id=PKeyReadButton  10
+  Wait Until Page Contains Element  id=PKeyReadButton  60
   Click Element   id=PKeyReadButton
 
 Wait user action
@@ -1048,7 +1051,7 @@ Wait user action
 
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
 
   Run Keyword If  '${ARGUMENTS[2]}' == 'tenderPeriod.endDate'  Внести зміни в тендер tenderPeriod.endDate  ${ARGUMENTS[3]}  ${procurementMethodType}
   Run Keyword If  '${ARGUMENTS[2]}' == 'description'  Input text  id=tender${playtender_proc_type}form-description  ${ARGUMENTS[3]}
@@ -1089,7 +1092,7 @@ Wait date
 
 Switch To Questions
   Click Element                      xpath=//a[contains(@href, '/tender/questions?id=')]
-  Wait Until Page Contains Element  id=tender-question-list  10
+  Wait Until Page Contains Element  id=tender-question-list  60
 
 Save tender ID
   ${status}=  Run keyword And Return Status  Dictionary Should Not Contain Key  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
@@ -1123,7 +1126,7 @@ Open Tender
   Wait Until Page Contains Element  id=tender-general-info  3
 
 Wait For All Transfer Complete
-  ${sync_passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  100 s  0 s  Wait For Transfer Complete
+  ${sync_passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  300 s  3 s  Wait For Transfer Complete
   Run Keyword Unless  ${sync_passed}  Fatal Error  Sync not finish in 100 sec
 
 Wait For Transfer Complete
@@ -1161,7 +1164,7 @@ Start Edit Lot
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
   Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[contains(@href, '#collapseLots')]
   Sleep  1
   Click Element  xpath=//div[@id='collapseLots']//span[contains(text(), '${lot_id}')]
@@ -1171,8 +1174,9 @@ Save Tender
   [Arguments]  ${od}=${None}
   Sleep  1
   JsSetScrollToElementBySelector  \#submitBtn
-  Click Button  xpath=//*[text()='Зберегти зміни']
-  Wait Until Page Contains  Закупівля оновлена  10
+  Execute Javascript    $("#submitBtn").trigger("click")
+#  Click Button  xpath=//*[text()='Зберегти зміни']
+  Wait Until Page Contains  Закупівля оновлена  60
   Sleep  1
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
@@ -1191,7 +1195,7 @@ Save Tender
   Click Element  xpath=//div[@id='collapseLots']//div[contains(@class, 'form-group lot${playtender_proc_type}form-documents-dynamic-forms-wrapper')]//a[@href='#add-documents']
   Sleep  1
 
-  Wait Until Page Contains Element  xpath=//div[@id='collapseLots']//div[contains(@class, 'form-group lot${playtender_proc_type}form-documents-dynamic-forms-wrapper')]//input[@type='file']  10
+  Wait Until Page Contains Element  xpath=//div[@id='collapseLots']//div[contains(@class, 'form-group lot${playtender_proc_type}form-documents-dynamic-forms-wrapper')]//input[@type='file']  60
   Choose File  xpath=//div[@id='collapseLots']//div[contains(@class, 'form-group lot${playtender_proc_type}form-documents-dynamic-forms-wrapper')]//input[@type='file']  ${filepath}
   Sleep  2
 
@@ -1234,7 +1238,7 @@ Save Tender
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
   Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[contains(@href, '#collapseLots')]
   Sleep  2
   Click Element  xpath=//a[@href='#add-lots']
@@ -1300,7 +1304,7 @@ Save Tender
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element  id=tender-form  10
+  Wait Until Page Contains Element  id=tender-form  60
   Click Element  xpath=//*[contains(@class, 'form-nav-tabs')]//*[contains(@href, '#collapseFeatures')]
   Sleep  1
   Add Feature  ${feature}  0  ${procurementMethodType}  div[@id='collapseFeatures']  tenderer
@@ -1368,7 +1372,9 @@ Save Tender
   Click Element   xpath=//button[contains(text(), 'Надати відповідь')]
   Sleep  1
   Click Element   xpath=//div[contains(@class, 'jconfirm')]//button[contains(text(), 'Закрити')]
-  Sleep  20
+  Sleep  2
+
+  WaitPageSyncing  180
 
 Відповісти на вимогу
   [Arguments]  ${username}  ${tender_uaid}  ${claim_id}  ${answer}  ${award_index}
@@ -1388,6 +1394,7 @@ Save Tender
   Sleep  1
   Click Element   xpath=//div[contains(@class, 'jconfirm')]//button[contains(text(), 'Закрити')]
   Sleep  2
+  WaitPageSyncing  180
 
 Відповісти на вимогу про виправлення умов закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${claim_id}  ${answer}
@@ -1468,7 +1475,7 @@ Save Tender
 
   Open Tender
   Click Element  xpath=//div[contains(@class, 'aside-menu ')]//a[contains(@href, '/tender/prequalification?id=')]
-  Wait Until Page Contains Element  id=tender-prequalification-form  10
+  Wait Until Page Contains Element  id=tender-prequalification-form  60
 
   Click Element  id=prequalificationform-qualification
   Click Element  jquery=select#prequalificationform-qualification option:eq(${proposal_index})
@@ -1495,7 +1502,7 @@ Save Tender
 Підтвердити рішення кваліфікації і повернутися на перегляд закупівлі
   JsSetScrollToElementBySelector  \#tender-prequalification-form .js-submit-btn
   Click Button  jquery=#tender-prequalification-form .js-submit-btn
-  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  20
+  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -1504,7 +1511,7 @@ Save Tender
 Завантажити рішення кваліфікації і накласти ЕЦП і повернутися на перегляд закупівлі
   JsSetScrollToElementBySelector  \#tender-prequalification-form .js-submit-btn  
   Click Button  jquery=#tender-prequalification-form .js-submit-btn
-  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  20 
+  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60 
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -1512,7 +1519,7 @@ Save Tender
   Click Button  xpath=//*[text()='Накласти ЕЦП/КЕП']
   Sleep  1
   Load Sign
-  Wait Until Page Contains  ЕЦП/КЕП успішно накладено на рішення  20
+  Wait Until Page Contains  ЕЦП/КЕП успішно накладено на рішення  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -1527,7 +1534,7 @@ Save Tender
   Click Element  xpath=//a[contains(@href, '/tender/prequalification-approve?id=')]
   Sleep  1
   Click Button  xpath=//*[text()='Так']
-  Wait Until Page Contains  Прекваліфікація підтверджена  20
+  Wait Until Page Contains  Прекваліфікація підтверджена  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
 
   Sleep  2
@@ -1544,7 +1551,7 @@ Save Tender
   Click Element  xpath=//a[contains(@href, '/tender/confirm-stage2?id=')]
   Sleep  1
   Click Button  xpath=//*[text()='Так']
-  Wait Until Page Contains  Підтвердження успішно надане  20
+  Wait Until Page Contains  Підтвердження успішно надане  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
 
   Sleep  2
@@ -1577,13 +1584,17 @@ GetIsTenderReadyForStage2
 
   Click Element  xpath=//a[contains(@href, '/tender/update?id=')]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
 
   ${tender_end_date}=  Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
   JsSetScrollToElementBySelector  \#tendercompetitivedialogueuastage2form-tender_period_end_date
-  Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
-  Створити FakeDocs
   Click Element  id=tendercompetitivedialogueuastage2form-draft_mode
+  Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
+  Run Keyword And Ignore Error  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
+  Sleep  1
+  Run Keyword And Ignore Error  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
+  Run Keyword And Ignore Error  Wait Until Page Contains Element  xpath=//input[@type='file']  10
+  Створити FakeDocs
 
   Save Tender
 
@@ -1605,7 +1616,7 @@ GetIsTenderReadyForStage2Update
   Switch browser   ${username}
   Open Tender
   Click Element  xpath=//a[contains(@href, '/tender/question-create?id=')]
-  Wait Until Page Contains  Нове запитання до закупівлі  10
+  Wait Until Page Contains  Нове запитання до закупівлі  60
   Run Keyword If  '${type}' == 'tender'  Select From List By Label  xpath=//select[@id='questionform-related_of']  Закупівля
   Run Keyword If  '${type}' == 'lot'  Select From List By Label  xpath=//select[@id='questionform-related_of']  Лот
   Run Keyword If  '${type}' == 'lot'  Click Element  xpath=//select[@id='questionform-related_lot']
@@ -1642,7 +1653,7 @@ Wait For Complaints Sync
   Open Tender
   Capture Page Screenshot
   Click Element  xpath=//a[contains(@href, '/tender/complaint-create?id=')]  
-  Wait Until Page Contains Element  xpath=//div[contains(@class, 'complaint-create-form-wrapper')]  10
+  Wait Until Page Contains Element  xpath=//div[contains(@class, 'complaint-create-form-wrapper')]  60
   # fill complaintform
   Run Keyword And Ignore Error  Run Keyword If  '${type}' == 'tender'  Select From List By Label  xpath=//select[@id='complaintform-related_of']  Закупівля
   Run Keyword And Ignore Error  Run Keyword If  '${type}' == 'lot'  Select From List By Label  xpath=//select[@id='complaintform-related_of']  Лот
@@ -1735,7 +1746,7 @@ Wait For Complaints Sync
   ${tender_id}=  Get From Dictionary  ${USERS.users['${playtender_LOGIN_USER}']}  TENDER_ID
   Open Tender
   Go To  ${BROKERS['playtender'].basepage}/tender/complaint-resolve?id=${tender_id}
-  Wait Until Page Contains Element  xpath=//select[@id='complaintresolveform-complaint']  10
+  Wait Until Page Contains Element  xpath=//select[@id='complaintresolveform-complaint']  60
   Click Element  xpath=//select[@id='complaintresolveform-complaint']
   Click Element  xpath=//select[@id='complaintresolveform-complaint']//option[@data-complaintid='${claim}']
   #
@@ -1930,7 +1941,7 @@ Save Proposal
   Run Keyword If  ${no_lotid} == True  Choose File  xpath=//div[contains(@class, 'active')]//input[@type='file']  ${arguments[0]}
   Sleep  2
   @{f_name}=  Split String From Right  ${arguments[0]}  /  1
-  Wait Until Page Contains  ${f_name[1]}  20
+  Wait Until Page Contains  ${f_name[1]}  60
   Run Keyword If  ${no_lotid} == False  Select From List By Label  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//select[contains(@id, '-document_type')]  Технічний опис предмету закупівлі
   Run Keyword If  ${no_lotid} == True  Select From List By Label  xpath=//div[contains(@class, 'active')]//select[contains(@id, '-document_type')]  Технічний опис предмету закупівлі
   Run Keyword If  ${no_lotid} == False  Run Keyword And Ignore Error  Run Keyword If  '${arguments[2]}' == 'financial_documents'  Select From List By Label  xpath=//div[contains(@class, 'active')]//div[contains(@class, 'active')]//select[contains(@id, '-document_type')]  Цінова пропозиція
@@ -2029,12 +2040,16 @@ Save Proposal
   ${doc_name}=  Run Keyword If  ${doc_isset}  GetValueFromDictionaryByKey  ${USERS.users['${playtender_LOGIN_USER}']}  qproposal${award_index}_document
   ...  ELSE  GenerateFakeDocument
 
-  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
+#cat  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
 
   Select From List By Value   id=qualificationform-decision  decline
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
-  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
+  Run Keyword And Ignore Error  Click Element  xpath=//span[@class='select2-selection select2-selection--multiple']
+  Execute JavaScript   $('#qualificationform-title').val($('#qualificationform-title option:first').val()).trigger('change')
+#  Run Keyword And Ignore Error  Input text  xpath=//span[@class='select2-selection select2-selection--multiple']  Тендерна пропозиція не відповідає вимогам тендерної документації
+
+#  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
   Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
   Choose File  xpath=//input[@type='file']  ${doc_name}
@@ -2065,7 +2080,7 @@ Save Proposal
   Open Tender
   WaitTenderAuctionEnd  3600
   Click Element  xpath=//div[contains(@class, 'aside-menu ')]//a[contains(@href, '/tender/qualification?id=')]
-  Wait Until Page Contains  Кваліфікація  10
+  Wait Until Page Contains  Кваліфікація  60
   Click Element  id=qualificationform-award
   Click Element  jquery=select#qualificationform-award option:eq(${proposal_index})
   Sleep  2
@@ -2075,7 +2090,7 @@ Save Proposal
 Підтвердити рішення кваліфікації переможця
   JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
   Click Button  jquery=#tender-qualification-form .js-submit-btn
-  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  20
+  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  2
 
@@ -2084,7 +2099,7 @@ Save Proposal
   run keyword if  ${eds_isset}  Накласти ЕЦП на відкритий попап та закрити його
   run keyword if  ${eds_isset}  JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
   run keyword if  ${eds_isset}  Click Button  jquery=#tender-qualification-form .js-submit-btn
-  run keyword if  ${eds_isset}  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  20
+  run keyword if  ${eds_isset}  Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60
   run keyword if  ${eds_isset}  Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   run keyword if  ${eds_isset}  Sleep  3
 
@@ -2092,7 +2107,7 @@ Save Proposal
 
   Sleep  1
   Load Sign
-  Wait Until Page Contains  ЕЦП/КЕП успішно накладено  20
+  Wait Until Page Contains  ЕЦП/КЕП успішно накладено  60
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  3
 
@@ -2687,7 +2702,7 @@ JsOpenItemByContainsText
   [Arguments]  ${text}
   Execute JavaScript  robottesthelpfunctions.showitembytext('${text}');
   Sleep  3
-  Wait Until Page Contains Element  jquery=.panel-lot-collapse.in .panel-item-collapse.in .item-info-wrapper  10
+  Wait Until Page Contains Element  jquery=.panel-lot-collapse.in .panel-item-collapse.in .item-info-wrapper  60
 
 JsOpenItemByIndex
   [Arguments]  ${index}
@@ -2697,19 +2712,19 @@ JsOpenDocumentByIndex
   [Arguments]  ${index}
   Execute JavaScript  robottesthelpfunctions.showdocumentbyindex(${index});
   Sleep  3
-  Wait Until Page Contains Element  jquery=#documents .panel-collapse.in .document-info-wrapper  10
+  Wait Until Page Contains Element  jquery=#documents .panel-collapse.in .document-info-wrapper  60
 
 JsOpenAwardByIndex
   [Arguments]  ${index}
   Execute JavaScript  robottesthelpfunctions.showawardbyindex(${index});
   Sleep  3
-  Wait Until Page Contains Element  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper  10
+  Wait Until Page Contains Element  jquery=.award-list-wrapper .panel-collapse.in .award-info-wrapper  60
 
 JsOpenContractByIndex
   [Arguments]  ${index}
   Execute JavaScript  robottesthelpfunctions.showcontractbyindex(${index});
   Sleep  3
-  Wait Until Page Contains Element  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper  10
+  Wait Until Page Contains Element  jquery=#accordionContracts .panel-collapse.in .contract-info-wrapper  60
 
 # --------------------------------------------------------- #
 
@@ -2997,10 +3012,11 @@ Get invisible text boolean by locator
   [return]  ${return_value}
 
 Switch To Complaints
+  ${procurementMethodType}=  Отримати інформацію із тендера procurementMethodType	
   Click Element                      xpath=//a[contains(@href, '/tender/complaints?id=')]
-#cat  Wait Until Page Contains           Вимоги/скарги   10
-  Wait Until Page Contains           Вимоги   10
-
+  run keyword if  '${procurementMethodType}' != 'belowThreshold'  Wait Until Page Contains           Вимоги/скарги   60
+  run keyword if  '${procurementMethodType}' == 'belowThreshold'  Wait Until Page Contains           Вимоги   60
+	
 Отримати інформацію із скарги description
   [Arguments]  ${complaint_id}
   Capture Page Screenshot
@@ -3247,7 +3263,7 @@ Switch To Complaints
 
   ## load form page
   Go To  ${BROKERS['playtender'].basepage}/plan/create
-  Wait Until Page Contains  Створення плану   10
+  Wait Until Page Contains  Створення плану   60
   Sleep  1
 
   ## filling form
@@ -3268,9 +3284,9 @@ Switch To Complaints
   ## submit form
   Click Element   xpath=//*[@id='submitBtn']
   Sleep  1
-  Wait Until Page Contains   План закупівлі створений, дочекайтесь опублікування на сайті уповноваженого органу.   10
+  Wait Until Page Contains   План закупівлі створений, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
-  Wait For Sync Tender  60
+  Wait For Sync Tender  360
   ${plan_id}  Get Text  jquery=.content-part .plan-info-wrapper .plan-id .value
   [Return]  ${plan_id}
 
@@ -3284,7 +3300,7 @@ Switch To Complaints
   Run Keyword If  '${ROLE}' == 'viewer' and ${planNotSynced}  Sleep  30
 
   Go To  ${BROKERS['playtender'].basepage}/plans
-  Wait Until Page Contains Element    id=plansearchform-query    10
+  Wait Until Page Contains Element    id=plansearchform-query    60
 #cat  Input Text    id=plansearchform-query    ${tenderId}
 #cat  Click Element  jquery=#plan-search-form .js-submit-btn
   Input Text    xpath=//input[@data-ds='query-input']    ${tenderId}
@@ -3343,7 +3359,7 @@ Switch To Complaints
   Click Element   jquery=#collapseItems .nav li[data-title^='${item_key}']
   Sleep  1
   Click Element   jquery=#collapseItems .nav li[data-title^='${item_key}'] .js-dynamic-form-remove
-  Wait Until Page Contains   Ви впевнені що бажаєте видали обрану номенклатуру?   10
+  Wait Until Page Contains   Ви впевнені що бажаєте видали обрану номенклатуру?   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   PlanUpdateSave
 
@@ -3404,7 +3420,7 @@ UserChangeOrgnizationInfo
   ${keys}=  Get Dictionary Keys  ${data}
 
   Go To  ${BROKERS['playtender'].basepage}/user/profile
-  Wait Until Page Contains  Інформація про компанію   10
+  Wait Until Page Contains  Інформація про компанію   60
   Sleep  1
 
   Run Keyword If  'name' in ${keys}  Input text  id=profileform-organization_name  ${data.name}
@@ -3418,7 +3434,7 @@ UserChangeOrgnizationInfo
   JsSetScrollToElementBySelector  \#user-profile-form .js-submit-btn
   Click Element   jquery=\#user-profile-form .js-submit-btn
   Sleep  1
-  Wait Until Page Contains   Контактна інформація успішно оновлена   10
+  Wait Until Page Contains   Контактна інформація успішно оновлена   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
 
 InputClassificationByWrapper
@@ -3431,7 +3447,7 @@ InputClassificationByWrapper
 #cat  Input text                         xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  99999999-9
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
-  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${classification_id}')]  20
+  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${classification_id}')]  60
   Run Keyword If  99999999-9 == ${classification_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
   ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
 #cat  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
@@ -3453,7 +3469,7 @@ InputAdditionalClassificationsByWrapper
   \   Input text     jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  ${additionalClassifications[${INDEX}].id}
   \   Press key      jquery=#additional-classification-modal .tab-pane.tree-wrapper.active input.js-input  \\13
   \   Sleep  2
-  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${additionalClassifications[${INDEX}].id}")  20
+  \   Wait Until Page Contains Element   jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree strong:contains("${additionalClassifications[${INDEX}].id}")  60
   \   Click Element  jquery=#additional-classification-modal .tab-pane.tree-wrapper.active .tree.js-search-tree li:first i.jstree-checkbox
 
   Click Element  xpath=//div[contains(@id, 'additional-classification-modal')]//button[contains(@class, 'js-submit')]
@@ -3489,7 +3505,7 @@ TenderOpenByUAID
   [Arguments]  ${uaid}
 
   Go To  ${BROKERS['playtender'].basepage}/tender/${uaid}
-  Wait Until Page Contains    Закупівля ${uaid}    10
+  Wait Until Page Contains    Закупівля ${uaid}    60
 
 TenderFormOpenByUAID
   [Arguments]  ${uaid}
@@ -3497,21 +3513,21 @@ TenderFormOpenByUAID
   TenderOpenByUAID  ${uaid}
   Click Element  xpath=//a[contains(@href, '/tender/update')][1]
   Sleep  1
-  Wait Until Page Contains Element    id=tender-form  10
+  Wait Until Page Contains Element    id=tender-form  60
   Sleep  1
 
 PlanOpenByUAID
   [Arguments]  ${uaid}
 
   Go To  ${BROKERS['playtender'].basepage}/plan/${uaid}
-  Wait Until Page Contains    План ${uaid}    10
+  Wait Until Page Contains    План ${uaid}    60
 
 PlanFormOpenByUAID
   [Arguments]  ${uaid}
 
   PlanOpenByUAID  ${uaid}
   Click Element  xpath=//a[contains(@href, '/plan/update')][1]
-  Wait Until Page Contains  Редагування   10
+  Wait Until Page Contains  Редагування   60
   Sleep  1
 
 PlanUpdateItemQuantity
@@ -3538,7 +3554,7 @@ PlanUpdateSave
   JsSetScrollToElementBySelector  \#submitBtn
   Click Element   xpath=//*[@id='submitBtn']
   Sleep  1
-  Wait Until Page Contains   План оновлений, дочекайтесь опублікування на сайті уповноваженого органу.   10
+  Wait Until Page Contains   План оновлений, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Wait For Sync Tender  60
 
