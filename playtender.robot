@@ -1588,9 +1588,13 @@ GetIsTenderReadyForStage2
 
   ${tender_end_date}=  Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
   JsSetScrollToElementBySelector  \#tendercompetitivedialogueuastage2form-tender_period_end_date
-  Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
-  Створити FakeDocs
   Click Element  id=tendercompetitivedialogueuastage2form-draft_mode
+  Input Converted DateTime  \#tendercompetitivedialogueuastage2form-tender_period_end_date  ${tender_end_date}
+  Run Keyword And Ignore Error  Click Element   xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[@href='#collapseDocuments']
+  Sleep  1
+  Run Keyword And Ignore Error  Click Element  xpath=//a[contains(@data-url, '/tender/get-document-form')]
+  Run Keyword And Ignore Error  Wait Until Page Contains Element  xpath=//input[@type='file']  10
+  Створити FakeDocs
 
   Save Tender
 
@@ -2041,7 +2045,9 @@ Save Proposal
   Select From List By Value   id=qualificationform-decision  decline
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
-  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
+  Run Keyword And Ignore Error  Click Element  xpath=//span[@class='select2-selection select2-selection--multiple']
+  Run Keyword And Ignore Error  Click Element  id=#select2-qualificationform-title-result-
+#  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
   Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
   Choose File  xpath=//input[@type='file']  ${doc_name}
@@ -3278,7 +3284,7 @@ Switch To Complaints
   Sleep  1
   Wait Until Page Contains   План закупівлі створений, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
-  Wait For Sync Tender  60
+  Wait For Sync Tender  360
   ${plan_id}  Get Text  jquery=.content-part .plan-info-wrapper .plan-id .value
   [Return]  ${plan_id}
 
