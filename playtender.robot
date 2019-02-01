@@ -221,9 +221,12 @@ Wait For Page Create Tender
 ##########
   JsSetScrollToElementBySelector  \#submitBtn
   Capture Page Screenshot
-  Click Element   xpath=//*[@id='submitBtn']
+  Sleep  1
+  Execute Javascript    $("#submitBtn").trigger("click")
+#  Click Element   xpath=//*[@id='submitBtn']
   Capture Page Screenshot
   Sleep  1
+#  Run Keyword And Ignore Error  Click Element   xpath=//*[@id='submitBtn']
   Wait Until Page Contains   Закупівля створена, дочекайтесь опублікування на сайті уповноваженого органу.   60
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
   Sleep  1
@@ -1171,7 +1174,8 @@ Save Tender
   [Arguments]  ${od}=${None}
   Sleep  1
   JsSetScrollToElementBySelector  \#submitBtn
-  Click Button  xpath=//*[text()='Зберегти зміни']
+  Execute Javascript    $("#submitBtn").trigger("click")
+#  Click Button  xpath=//*[text()='Зберегти зміни']
   Wait Until Page Contains  Закупівля оновлена  60
   Sleep  1
   Click Element   xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(@class, 'btn btn-default waves-effect waves-light btn-lg')]
