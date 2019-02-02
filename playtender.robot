@@ -1274,7 +1274,6 @@ Save Tender
   Start Edit Lot  ${lot_id}
   Click Element  xpath=//div[contains(@class, 'active')]//span[contains(text(), '${item_id}')]
   Sleep  1
-  Wait Until Element Is Enabled  xpath=//*[contains(text(), 'Ви впевнені що бажаєте видалити поточний лот?')]
   Click Element  xpath=//li[contains(@data-title, '${item_id}')]//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Sleep  1
   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
