@@ -147,8 +147,10 @@ Wait For Page Create Tender
 
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
   \   Sleep  2
-  \   Click Element  xpath=//a[@href='#add-lots']
+#cat  \   Click Element  xpath=//a[@href='#add-lots']
+  \   Execute Javascript    $( 'a[href="#add-lots"]' ).trigger( 'click' )
   \   Sleep  2
+  \   Wait Until Page Contains   Товар/послуга №  60
   \   Click Element  jquery=div[data-type="lot"].active span[data-confirm-text="Ви впевнені що бажаєте видалити поточний товар/послугу?"]
   \   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
   \   Sleep  1
@@ -188,6 +190,7 @@ Wait For Page Create Tender
   Click Element  xpath=//*[contains(@href, '#collapseItems')]
   Sleep  1
   JsSetScrollToElementBySelector  \#collapseItems
+  Wait Until Page Contains   Товар/послуга №  60
   Click Element  xpath=//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
 
@@ -1242,6 +1245,7 @@ Save Tender
   Click Element  xpath=//*[@class='form-nav-tabs nav nav-tabs nav-justified']//*[contains(@href, '#collapseLots')]
   Sleep  2
   Click Element  xpath=//a[@href='#add-lots']
+#cat  Execute Javascript    $( 'a[href="#add-lots"]' ).trigger( 'click' )
   Sleep  2
   Додати лот Ex  ${lot.data}  0  ${procurementMethodType}
   Додати предмет Ex  ${item}  0  ${procurementMethodType}
@@ -1270,6 +1274,7 @@ Save Tender
   Start Edit Lot  ${lot_id}
   Click Element  xpath=//div[contains(@class, 'active')]//span[contains(text(), '${item_id}')]
   Sleep  1
+  Wait Until Page Contains   Товар/послуга №  60
   Click Element  xpath=//li[contains(@data-title, '${item_id}')]//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Sleep  1
   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
