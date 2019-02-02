@@ -402,8 +402,7 @@ Wait For Page Create Tender
   Sleep  1
   Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${cpv_id}')]  60
 #cat  Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '99999999-9')]  20
-  Run Keyword If  99999999-9 == ${cpv_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
-  ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
   Click Element                      xpath=//div[contains(@id, 'classification-modal')]//button[contains(@class, 'btn btn-default waves-effect waves-light js-submit')]
   Sleep  1
 
@@ -1274,6 +1273,7 @@ Save Tender
   Start Edit Lot  ${lot_id}
   Click Element  xpath=//div[contains(@class, 'active')]//span[contains(text(), '${item_id}')]
   Sleep  1
+  Wait Until Element Is Enabled  xpath=//*[contains(text(), 'Ви впевнені що бажаєте видалити поточний лот?')]
   Click Element  xpath=//li[contains(@data-title, '${item_id}')]//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Sleep  1
   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
@@ -3452,8 +3452,7 @@ InputClassificationByWrapper
   Press key                          xpath=//div[contains(@id, 'classification-modal')]//input[@class='form-control js-input']  \\13
   Sleep  1
   Wait Until Page Contains Element   xpath=//div[contains(@id, 'classification-modal')]//strong[contains(., '${classification_id}')]  60
-  Run Keyword If  99999999-9 == ${classification_id}  Click Element                      xpath=(//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox'])[1]
-  ...  ELSE  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
+  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
 #cat  Click Element                      xpath=//div[contains(@id, 'classification-modal')]//i[@class='jstree-icon jstree-checkbox']
   Click Element                      xpath=//div[contains(@id, 'classification-modal')]//button[contains(@class, 'btn btn-default waves-effect waves-light js-submit')]
   Sleep  1
