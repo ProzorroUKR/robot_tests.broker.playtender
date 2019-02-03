@@ -85,6 +85,10 @@ def split_take_slice_to(value, separator, to):
     librarylogger.console('split_take_slice_to')
     return split_take_slice(value, separator, to=to)
 
+def split_NBU(text):
+    text = text[:-1]    
+    return text
+
 def join(l, separator):
     librarylogger.console('join')
     librarylogger.console(l)
