@@ -2047,7 +2047,7 @@ Save Proposal
   ${doc_name}=  Run Keyword If  ${doc_isset}  GetValueFromDictionaryByKey  ${USERS.users['${playtender_LOGIN_USER}']}  qproposal${award_index}_document
   ...  ELSE  GenerateFakeDocument
 
-#cat  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
+  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
 
   Select From List By Value   id=qualificationform-decision  decline
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
