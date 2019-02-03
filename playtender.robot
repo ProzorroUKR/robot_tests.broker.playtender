@@ -2763,6 +2763,7 @@ Get number from text by locator
   ${return_value}=  get_text  ${locator}
   ${return_value}=  split_NBU  ${return_value}
   ${return_value}=  Convert To Number  ${return_value}
+  ${return_value}=  division_hundred  ${return_value}
   [return]  ${return_value}
 	  
 Get invisible text boolean by locator
