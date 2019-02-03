@@ -386,6 +386,7 @@ Wait For Page Create Tender
   ${wraper}=  Convert To String  div[contains(@class, 'form-group lot${playtender_proc_type}form-items-dynamic-forms-wrapper')]
   ${jqueryWrapper}=  Set Variable  \#collapseLots div[data-type='lot'].active div[data-type='item'].active div[class^='form-group field-item${playtender_proc_type}form']
 
+  Wait Until Page Contains   Товар/послуга №  60
   Input text                         xpath=//div[contains(@class, 'active')]//${wraper}//div[contains(@class, 'active')]//div[contains(@class, 'form-group field-item${playtender_proc_type}form')]//input[contains(@id, '-description')]  ${description}
   Run Keyword If  'description_en' in ${item_keys}
   ...  Input Text With Checking Input Isset  ${jqueryWrapper} input[id$='-description_en']  ${ARGUMENTS[0].description_en}
@@ -429,6 +430,7 @@ Wait For Page Create Tender
   ${playtender_proc_type}=  GetInputProcTypeByProcurementMethodType  ${procurementMethodType}
 
   JsSetScrollToElementBySelector  ${wrapper} div[class^='form-group field-item${playtender_proc_type}form'] input[id$='-description']
+  Wait Until Page Contains   Товар/послуга №  60
   Input text  jquery=${wrapper} div[class^='form-group field-item${playtender_proc_type}form'] input[id$='-description']  ${data.description}
   Run Keyword If  'description_en' in ${data_keys}  Input Text With Checking Input Isset  ${wrapper} div[class^='form-group field-item${playtender_proc_type}form'] input[id$='-description_en']  ${data.description_en}
   JsSetScrollToElementBySelector  ${wrapper} div[class^='form-group field-item${playtender_proc_type}form'] input[id$='-quantity']
@@ -770,6 +772,7 @@ Wait For Sync Tender Finish
   ...      ${ARGUMENTS[1]} =  ${award_data}
   ${lots_length}=  Get Length  ${USERS.users['${playtender_LOGIN_USER}'].lots}
   : FOR    ${INDEX}    IN RANGE    0    ${lots_length}
+  \   Wait Until Page Contains   Постачальник №  60
   \   Run Keyword If  '${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].id}' == '${ARGUMENTS[0]}'  Select From List By Label    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active select[id$="-award_lot_key"]     ${USERS.users['${playtender_LOGIN_USER}'].lots[${INDEX}].title}
   Input Text    jquery=div.awards-dynamic-forms-wrapper div.dynamic-forms-list div[data-type="award"].active input[id$="-award_organization_name"]    ${ARGUMENTS[1].suppliers[0].identifier.legalName}
   Click Element   xpath=//span[@class='select2-selection select2-selection--single']
@@ -1273,7 +1276,7 @@ Save Tender
   Start Edit Lot  ${lot_id}
   Click Element  xpath=//div[contains(@class, 'active')]//span[contains(text(), '${item_id}')]
   Sleep  1
-  Wait Until Element Is Enabled  xpath=//*[contains(text(), 'Ви впевнені що бажаєте видалити поточний лот?')]
+  Wait Until Element Is Enabled  xpath=//li[contains(@data-title, '${item_id}')]//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Click Element  xpath=//li[contains(@data-title, '${item_id}')]//span[@data-confirm-text='Ви впевнені що бажаєте видалити поточний товар/послугу?']
   Sleep  1
   Click Element  xpath=//div[contains(@class, 'jconfirm-box')]//button[contains(text(), 'Так')]
@@ -2044,7 +2047,7 @@ Save Proposal
   ${doc_name}=  Run Keyword If  ${doc_isset}  GetValueFromDictionaryByKey  ${USERS.users['${playtender_LOGIN_USER}']}  qproposal${award_index}_document
   ...  ELSE  GenerateFakeDocument
 
-#cat  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
+  Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
 
   Select From List By Value   id=qualificationform-decision  decline
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
@@ -2134,7 +2137,8 @@ Save Proposal
 
   ${current_tender_uaid}=  Отримати інформацію із тендера tenderID
 
-  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate .value
+#cat  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate .value
+  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate-source.hidden
   Run Keyword And Return If   'auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .auction-start-date
   Run Keyword And Return If   'lots[0].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=#accordionLots .lot-info-wrapper:first .budget-source.hidden
   Run Keyword And Return If   'lots[0].auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .auction-period-start-date.hidden
