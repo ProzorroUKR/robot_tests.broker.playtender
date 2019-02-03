@@ -2056,8 +2056,8 @@ Save Proposal
   Execute JavaScript   $('#qualificationform-title').val($('#qualificationform-title option:first').val()).trigger('change')
 #  Run Keyword And Ignore Error  Input text  xpath=//span[@class='select2-selection select2-selection--multiple']  Тендерна пропозиція не відповідає вимогам тендерної документації
 
-#  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
-  Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
+  Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
+#  Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
   Choose File  xpath=//input[@type='file']  ${doc_name}
   Sleep  2
