@@ -2107,7 +2107,8 @@ Save Proposal
 Підтвердити рішення кваліфікації переможця
   JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
   Capture Page Screenshot
-  Click Button  jquery=#tender-qualification-form .js-submit-btn
+  execute javascript  $("#tender-qualification-form .js-submit-btn").trigger("click");
+#  Click Button  jquery=#tender-qualification-form .js-submit-btn
   Capture Page Screenshot
   Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60
   Capture Page Screenshot
