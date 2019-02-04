@@ -125,6 +125,9 @@ def convert_date_for_compare_ex2(datestr):
 def download_file(url, file_name, output_dir):
     urllib.urlretrieve(url, ('{}/{}'.format(output_dir, file_name)))
 
+def multiply_hundred(number):
+    return number*100
+
 def inject_urllib3():
     import urllib3.contrib.pyopenssl
     urllib3.contrib.pyopenssl.inject_into_urllib3()
