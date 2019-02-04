@@ -2047,22 +2047,32 @@ Save Proposal
   ${doc_name}=  Run Keyword If  ${doc_isset}  GetValueFromDictionaryByKey  ${USERS.users['${playtender_LOGIN_USER}']}  qproposal${award_index}_document
   ...  ELSE  GenerateFakeDocument
 
+  Capture Page Screenshot
   Відкрити форму кваліфікації переможця і потрібну кваліфікацію  0
 
+  Capture Page Screenshot
   Select From List By Value   id=qualificationform-decision  decline
+  Capture Page Screenshot
   Run Keyword And Ignore Error  Click Element  id=qualificationform-title
+  Capture Page Screenshot
   Run Keyword And Ignore Error  Click Element  jquery=#qualificationform-title option.js-cancel:first
+  Capture Page Screenshot
   Run Keyword And Ignore Error  Click Element  xpath=//span[@class='select2-selection select2-selection--multiple']
+  Capture Page Screenshot
   Execute JavaScript   $('#qualificationform-title').val($('#qualificationform-title option:first').val()).trigger('change')
 #  Run Keyword And Ignore Error  Input text  xpath=//span[@class='select2-selection select2-selection--multiple']  Тендерна пропозиція не відповідає вимогам тендерної документації
 
+  Capture Page Screenshot
   Run Keyword And Ignore Error  Input text  id=qualificationform-description  GenerateFakeText
 #  Run Keyword And Ignore Error  Input text  id=qualification_form_title  GenerateFakeText
   JsSetScrollToElementBySelector  \#qualification-documents
+  Capture Page Screenshot
   Choose File  xpath=//input[@type='file']  ${doc_name}
   Sleep  2
+  Capture Page Screenshot
   JsSetScrollToElementBySelector  .tab-pane.active [id$='-document_type']
   Select From List By Label  jquery=.tab-pane.active [id$='-document_type']  Повідомлення про рішення
+  Capture Page Screenshot
 
   Підтвердити рішення кваліфікації переможця
   Open Tender
@@ -2096,8 +2106,11 @@ Save Proposal
 
 Підтвердити рішення кваліфікації переможця
   JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
+  Capture Page Screenshot
   Click Button  jquery=#tender-qualification-form .js-submit-btn
+  Capture Page Screenshot
   Wait Until Page Contains Element  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']  60
+  Capture Page Screenshot
   Click Button  xpath=//div[contains(@class, 'jconfirm')]//*[text()='Закрити']
   Sleep  2
 
