@@ -85,6 +85,13 @@ def split_take_slice_to(value, separator, to):
     librarylogger.console('split_take_slice_to')
     return split_take_slice(value, separator, to=to)
 
+def split_NBU(text):
+    text = text[:-1]    
+    return text
+
+def division_hundred(number):
+    return number/100
+
 def join(l, separator):
     librarylogger.console('join')
     librarylogger.console(l)
@@ -117,9 +124,6 @@ def convert_date_for_compare_ex2(datestr):
 
 def download_file(url, file_name, output_dir):
     urllib.urlretrieve(url, ('{}/{}'.format(output_dir, file_name)))
-
-def multiply_hundred(number):
-    return number*100
 
 def inject_urllib3():
     import urllib3.contrib.pyopenssl

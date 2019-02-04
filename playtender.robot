@@ -2137,8 +2137,8 @@ Save Proposal
 
   ${current_tender_uaid}=  Отримати інформацію із тендера tenderID
 
-#cat  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate .value
-  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate-source.hidden
+  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate .value
+#cat  Run Keyword And Return If   'NBUdiscountRate' == '${arguments[2]}'   Get number from text by locator  jquery=#tender-general-info .nbu-discount-rate-source
   Run Keyword And Return If   'auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=.timeline-info-wrapper .auction-start-date
   Run Keyword And Return If   'lots[0].value.amount' == '${arguments[2]}'   Get invisible text number by locator  jquery=#accordionLots .lot-info-wrapper:first .budget-source.hidden
   Run Keyword And Return If   'lots[0].auctionPeriod.startDate' == '${arguments[2]}'   get_invisible_text  jquery=#accordionLots .lot-info-wrapper:first .auction-period-start-date.hidden
@@ -2759,10 +2759,12 @@ Get invisible text number by locator
   [return]  ${return_value}
 
 Get number from text by locator
-	  [Arguments]  ${locator}
-	  ${return_value}=  get_text  ${locator}
-	  ${return_value}=  Convert To Number  ${return_value}
-	  [return]  ${return_value}
+  [Arguments]  ${locator}
+  ${return_value}=  get_text  ${locator}
+  ${return_value}=  split_NBU  ${return_value}
+  ${return_value}=  Convert To Number  ${return_value}
+  ${return_value}=  division_hundred  ${return_value}
+  [return]  ${return_value}
 	  
 Get invisible text boolean by locator
   [Arguments]  ${locator}
