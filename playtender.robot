@@ -2107,7 +2107,6 @@ Save Proposal
 Підтвердити рішення кваліфікації переможця
   JsSetScrollToElementBySelector  \#tender-qualification-form .js-submit-btn
   Capture Page Screenshot
-  Wait Until Element Is Visible  xpath=//button[contains(@data-action,'submit')]  20
   execute javascript  $("#tender-qualification-form .js-submit-btn").trigger("click");
 #  Click Button  jquery=#tender-qualification-form .js-submit-btn
   Capture Page Screenshot
