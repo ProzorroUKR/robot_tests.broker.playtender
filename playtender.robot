@@ -149,7 +149,7 @@ Resource                                                        playtender_contr
     [Documentation]                                             Отримати значення поля field_name для тендера tender_uaid.
 
     # fix for preventing error "Resolving variable '${award.value.amount}' failed: AttributeError: value" in next keywords for owner role
-    run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
+    #run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
 
     open tender page by uaid                                    ${tender_uaid}
 #    wait until page does not contain element with reloading     ${tender_sync_element_locator}
