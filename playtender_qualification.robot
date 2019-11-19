@@ -310,8 +310,9 @@ confirm awards
     [Documentation]                                             Перевести постачальників для тендера tender_uaid
     ...                                                         в статус active.
 
+    wait until page contains element with reloading             ${qualification_agreement_form_approve_submit_btn_locator}  720  30
     click visible element                                       ${qualification_agreement_form_approve_submit_btn_locator}
-    wait until page contains                                    ${qualification_form_approve_question_msg}
+    wait until page contains                                    ${qualification_agreement_form_approve_question_msg}
     Execute Javascript  ${qualification_form_approve_js_submit_btn_locator}
     Wait Until Page Contains                                    ${qualification_agreement_form_approve_success_msg}  60
     wait until alert is visible                                 ${qualification_agreement_form_approve_success_msg}

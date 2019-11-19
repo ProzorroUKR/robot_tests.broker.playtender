@@ -424,8 +424,7 @@ activate stage 2
     [Documentation]                                             Перевести тендер tender_uaid в статус active.tendering.
 
     open popup by btn locator                                   ${tender_form_general_panel_edit_btn_locator}
-    ${tender_end_date} =                                        Get Current Date  increment=00:35:00  result_format=%Y-%m-%dT%H:%M:%S.%f%z+02:00
-#    ${tender_end_date} =                                        Get Current Date  increment=00:25:00  result_format=%d.%m.%Y %H:%M
+    ${tender_end_date} =                                        Get Current Date  increment=00:30:00
     input datetime to visible input                             ${tender_tender_period_end_date_input_locator}  ${tender_end_date}
     capture page screenshot
     click visible element                                       ${tender_form_general_panel_draft_mode_input_locator}

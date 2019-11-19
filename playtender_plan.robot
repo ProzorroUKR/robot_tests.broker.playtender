@@ -103,8 +103,16 @@ fill plan form items
     \  run keyword if condition is not none                     ${item_update_index}  click visible element  ${open_form_btn_locator}
     \  run keyword if condition is none                         ${item_update_index}  click visible element  ${plan_form_add_item_btn_locator}
     \  wait until popup is visible
-    \  fill item form in opened popup                           ${item_attributes}
+    \  fill plan item form in opened popup                      ${item_attributes}
     \  run keyword and ignore error  submit current visible popup
+
+fill plan item form in opened popup
+    [Arguments]                                                 ${data}
+
+    fill item form in opened popup                              ${data}
+
+    ${delivery_end_date} =                                      get from dictionary by keys  ${data}  deliveryDate  endDate
+    run keyword if condition is not none                        ${delivery_end_date}  run keyword and ignore error  input date to input  ${item_form_popup_delivery_end_date_input_locator}  ${delivery_end_date}
 
 fill plan form buyers
     [Arguments]                                                 ${buyer_attributes_array}

@@ -34,6 +34,8 @@ init environment
     ${is_test_role_owner} =                                     set variable if  '${test_role}' == 'tender_owner'  ${True}  ${False}
     set global variable                                         ${is_test_role_owner}  ${is_test_role_owner}
 
+    register keyword to run on failure                          __private__handle_keyword_failure
+
 set site language by code
     [Arguments]                                                 ${language_code}
     [Documentation]                                             змінити мову сайту
@@ -149,13 +151,23 @@ input text to exist visible input
     run keyword if                                              ${input_exists} == ${True}  input text to visible input  ${locator}  ${text}
     ...  ELSE                                                   __private__log  input ${locator} does not exist
 
+input date to input
+    [Arguments]                                                 ${locator}  ${isodate}  ${format}=%d.%m.%Y
+
+    ${date} =                                                   isodate format  ${isodate}  ${format}
+    input text to hidden input                                  ${locator}  ${date}
+
+input datetime to input
+    [Arguments]                                                 ${locator}  ${isodate}  ${format}=%d.%m.%Y %H:%M
+
+    input date to input                                         ${locator}  ${isodate}  ${format}
+
 input date to visible input
     [Arguments]                                                 ${locator}  ${isodate}  ${format}=%d.%m.%Y
     [Documentation]                                             перевіряє чи елемент видимий у вікні браузера, після чого заповнює його відформатовоною датою
 
     __private__set_element_visible_in_browser_area              ${locator}
-    ${date} =                                                   isodate format  ${isodate}  ${format}
-    input text                                                  ${locator}  ${date}
+    input date to input                                         ${locator}  ${isodate}  ${format}
 
 input datetime to visible input
     [Arguments]                                                 ${locator}  ${isodate}  ${format}=%d.%m.%Y %H:%M
@@ -308,7 +320,10 @@ wait until popup is visible
 
     ${popup_locator_is_none} =                                  get variable is none  ${popup_locator}
     ${popup_locator} =                                          set variable if  ${popup_locator_is_none} == ${False}  ${popup_locator}  ${popup_opened_content_locator}
-    wait until element is visible                               ${popup_locator}  ${waiting_timeout}  ${waiting_error}
+    ${status} =                                                 run keyword and return status  wait until element is visible  ${popup_locator}  ${waiting_timeout}  ${waiting_error}
+    # trying to prevent "StaleElementReferenceException: Message: stale element reference: element is not attached to the page document" error
+    run keyword if                                              ${status} == ${False}  sleep  1
+    run keyword if                                              ${status} == ${False}  wait until element is visible  ${popup_locator}  1  ${waiting_error}
 
 wait until alert is visible
     [Arguments]                                                 ${message}=${None}
@@ -396,6 +411,27 @@ wait until 404 page disappears
 ########################################################################################################################
 ################################################### PRIVATE KEYWORDS ###################################################
 ########################################################################################################################
+
+__private__handle_keyword_failure
+    [Documentation]                                             обробка падіння тесту, збір можливої інформації для аналізу проблеми
+
+    capture page screenshot
+    ${form_errors} =                                            __private__get_all_form_errors
+    log dictionary                                              ${form_errors}
+
+__private__get_all_form_errors
+    [Documentation]                                             збирає всі помилки форм на сторінці
+
+    ${errors} =                                                 execute javascript
+    ...                                                         var errors = {};
+    ...                                                         $('.has-error .help-block-error').each(function () {
+	...                                                             var cssClass = $(this).attr('class'), text = $(this).text();
+	...                                                             cssClass = cssClass.replace("help-block-error", "");
+	...                                                             cssClass = cssClass.replace("help-block", "");
+	...                                                             errors[cssClass] = text;
+    ...                                                         });
+    ...                                                         return errors;
+    [Return]                                                    ${errors}
 
 __private__log
     [Arguments]                                                 ${msg}

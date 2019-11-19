@@ -103,7 +103,7 @@ ${tender_lots_0_auctionPeriod_endDate_value_locator} =              jquery=#tend
 ${tender_status_active_tendering_value_locator} =                   xpath=//*[contains(text(), "active.tendering")]
 ${tender_status_active_auction_value_locator} =                     xpath=//*[contains(text(), "active.auction")]
 ${tender_status_active_pre_qualification_value_locator} =           xpath=//*[contains(text(), "active.pre-qualification")]
-${tender_status_complete_value_locator} =                           xpath=//*[contains(text(), "complete")]
+${tender_status_complete_value_locator} =                           jquery=#aside-part-pjax .hidden.opstatus:contains(complete)
 ${tender_status_active_stage2_pending_value_locator} =              xpath=//*[contains(text(), "active.stage2.pending")]
 ${tender_status_active_stage2_waiting_value_locator} =              xpath=//*[contains(text(), "active.stage2.waiting")]
 ${tender_status_active_complete_value_locator} =                    jquery=#aside-part-pjax .hidden.opstatus:contains(complete)
@@ -172,5 +172,5 @@ ${wait_msg_contract} =                                              Завант
 ${tender_maxAwardsCount_value_locator} =                            jquery=#tender-general-info .max-award-count.hidden
 ${tender_maxAwardsCount_value_type} =                               integer
 ${tender_agreementDuration_value_locator} =                         jquery=#tender-general-info .agreement-duration
-${tender_agreements_0_status_value_locator} =                       jquery=#agreement-contracts-list .agreement-info-wrapper .status-source.hidden
+${tender_agreements_0_status_value_locator} =                       jquery=.tabs__pane--visible[id*="tab-agreement-contract"] .status-source.hidden
 ${tender_agreements_status_active_value_locator} =                  jquery=.tabs__pane--visible[id*="tab-agreement-contract"] .status-source.hidden:contains(active)
