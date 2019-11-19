@@ -806,8 +806,8 @@ Resource                                                        playtender_contr
 
     open tender form by uaid                                    ${tender_uaid}
     activate stage 2
-#    save tender form and wait synchronization
     submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}
+    sleep  15m
 
 
 Отримати тендер другого етапу та зберегти його
@@ -836,7 +836,7 @@ Resource                                                        playtender_contr
 Отримати документ
     [Arguments]                                                 ${username}  ${tender_uaid}  ${doc_id}
     [Documentation]                                             Завантажити файл з doc_id в заголовку для тендера tender_uaid в
-    ...                                                         директорію ${OUTPUT_DIR} для перевірки вмісту цього файлу.
+    ...                                                         директорію OUTPUT_DIR для перевірки вмісту цього файлу.
 
     open tender page by uaid                                    ${tender_uaid}
     ${tender_new_doc_locator} =                                 replace string  ${tender_new_doc_locator_tpl}  %doc_id%  ${doc_id}
@@ -851,7 +851,7 @@ Resource                                                        playtender_contr
 Отримати документ до лоту
     [Arguments]                                                 ${username}  ${tender_uaid}  ${lot_id}  ${doc_id}
     [Documentation]                                             Завантажити файл з doc_id в заголовку для тендера tender_uaid для лоту lot_id
-    ...                                                         в директорію ${OUTPUT_DIR} для перевірки вмісту цього файлу.
+    ...                                                         в директорію OUTPUT_DIR для перевірки вмісту цього файлу.
 
     open tender page by uaid                                    ${tender_uaid}
     ${tender_new_doc_locator} =                                 replace string  ${tender_new_doc_locator_tpl}  %doc_id%  ${doc_id}
@@ -898,7 +898,7 @@ Resource                                                        playtender_contr
 
 Видалити донора
     [Arguments]                                                 ${username}  ${tender_uaid}  ${funders_index}
-    [Documentation]                                             Видалити донора для користувача username для тендера ${tender_uaid} з індексом ${funders_index}
+    [Documentation]                                             Видалити донора для користувача username для тендера tender_uaid з індексом funders_index
 
     open tender form by uaid                                    ${tender_uaid}
     open popup by btn locator                                   ${plan_form_general_panel_edit_btn_locator}
@@ -908,7 +908,7 @@ Resource                                                        playtender_contr
 
 Додати донора
     [Arguments]                                                 ${username}  ${tender_uaid}  ${funders_data}
-    [Documentation]                                             Додати донора для користувача username для тендера ${tender_uaid} з даними ${funders_data}
+    [Documentation]                                             Додати донора для користувача username для тендера tender_uaid з даними funders_data
 
     open tender form by uaid                                    ${tender_uaid}
     open popup by btn locator                                   ${plan_form_general_panel_edit_btn_locator}
@@ -927,7 +927,7 @@ Resource                                                        playtender_contr
 
 Редагувати угоду
     [Arguments]                                                 ${username}  ${tender_uaid}  ${contract_index}  ${field_name}  ${amount}
-    [Documentation]                                             Редагувати контракт для користувача username для тендера ${tender_uaid} з індексом ${contract_index}
+    [Documentation]                                             Редагувати контракт для користувача username для тендера tender_uaid з індексом contract_index
     ...                                                         для поля field_name та значення amount.
 
     open tender page by uaid                                    ${tender_uaid}
@@ -936,7 +936,7 @@ Resource                                                        playtender_contr
 
 Встановити дату підписання угоди
     [Arguments]                                                 ${username}  ${tender_uaid}  ${contract_index}  ${dateSigned}
-    [Documentation]                                             Редагувати контракт для користувача username для тендера ${tender_uaid} з індексом ${contract_index}
+    [Documentation]                                             Редагувати контракт для користувача username для тендера tender_uaid з індексом contract_index
     ...                                                         для поля Дата підписання задати значення dateSigned.
 
     open tender page by uaid                                    ${tender_uaid}
@@ -953,8 +953,8 @@ Resource                                                        playtender_contr
 
 Вказати період дії угоди
     [Arguments]                                                 ${username}  ${tender_uaid}  ${contract_index}  ${startDate}  ${endDate}
-    [Documentation]                                             Редагувати контракт для користувача username для тендера ${tender_uaid} з індексом ${contract_index}
-    ...                                                         для поля Дата підписання задати значення dateSigned.
+    [Documentation]                                             Редагувати контракт для користувача username для тендера tender_uaid з індексом contract_index
+    ...                                                         для поля Дата початку дії контракту задати значення startDate, для дати завершення - endDate.
 
     open tender page by uaid                                    ${tender_uaid}
 #    edit contract                                               ${contract_index}  ${dateSigned}  ${dateSigned}
@@ -971,8 +971,8 @@ Resource                                                        playtender_contr
 
 Завантажити документ в угоду
     [Arguments]                                                 ${username}  ${document}  ${tender_uaid}  ${contract_index}
-    [Documentation]                                             Редагувати контракт для користувача username для тендера ${tender_uaid} з індексом ${contract_index}
-    ...                                                         для поля Дата підписання задати значення dateSigned.
+    [Documentation]                                             Редагувати контракт для користувача username для тендера tender_uaid з індексом contract_index
+    ...                                                         для додавання документу використовувати значення document.
 
     open tender page by uaid                                    ${tender_uaid}
 #    edit contract                                               ${contract_index}  ${dateSigned}  ${dateSigned}
@@ -1000,7 +1000,7 @@ Resource                                                        playtender_contr
 
 Підтвердити підписання контракту
     [Arguments]                                                 ${username}  ${tender_uaid}  ${contract_index}
-    [Documentation]                                             Редагувати контракт для користувача username для тендера ${tender_uaid} з індексом ${contract_index}
+    [Documentation]                                             Редагувати контракт для користувача username для тендера tender_uaid з індексом contract_index
     ...                                                         для поля Дата підписання задати значення dateSigned.
 
     open tender page by uaid                                    ${tender_uaid}
@@ -1020,6 +1020,22 @@ Resource                                                        playtender_contr
     capture page screenshot
 
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
+
+Встановити ціну за одиницю для контракту
+    [Arguments]                                                 ${username}  ${tender_uaid}  ${contract_data}
+    [Documentation]                                             Встановити ціну за одиницю для контракту для користувача username для тендера tender_uaid,
+    ...                                                         використовуючи значення з contract_data.
+
+    open tender page by uaid                                    ${tender_uaid}
+    edit unitprices                                             ${tender_uaid}  ${contract_data}
+
+Зареєструвати угоду
+    [Arguments]                                                 ${username}  ${tender_uaid}  ${startDate}  ${endDate}
+    [Documentation]                                             Зареєструвати угоду для користувача username для тендера tender_uaid,
+    ...                                                         для поля Дата початку дії угоди задати значення startDate, для дати завершення - endDate.
+
+    open tender page by uaid                                    ${tender_uaid}
+    active agreement contract                                   ${startDate}  ${endDate}
 
 ########################################################################################################################
 ################################################### END CONTRACTS KEYWORDS ####################################

@@ -26,6 +26,7 @@ ${qualification_form_approve_success_msg} =                         Преква
 ${qualification_form_approve_js_submit_btn_locator} =                $('.jconfirm-box-container .btn.btn-default').click()
 ${qualification_agreement_form_approve_submit_btn_locator} =        jquery=.aside__inner a.js-qualification-approve
 ${qualification_agreement_form_approve_success_msg} =               Кваліфікація підтверджена, дочекайтесь опублікування на сайті уповноваженого органу.
+${qualification_agreement_form_approve_question_msg} =              Ви впевнені що бажаєте завершити кваліфікацію і перейти до наступного етапу?
 
 ${qualification_form_0_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(1) a[href*="/tender/qualification"]
 ${qualification_form_1_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(2) a[href*="/tender/qualification"]

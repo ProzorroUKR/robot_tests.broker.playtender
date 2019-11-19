@@ -472,6 +472,7 @@ Wait For QualificationsPeriodEnd
 #    ${tmp} =                                                    get value by locator on opened page  ${tender_contracts_0_status_value_locator}
 #    ${return_value} =                                           Set Variable If  '${tmp}' in 'Підписаний Новий'  active  other
     Run Keyword If                                              '${TEST_NAME}' == 'Відображення статусу підписаної угоди з постачальником переговорної процедури'   Wait Until Keyword Succeeds    800 s    20 s    Wait For contractactive
+    Run Keyword If                                              '${TEST_NAME}' == 'Відображення статусу підписаної угоди з постачальником звіту про укладений договір'   Wait Until Keyword Succeeds    800 s    20 s    Wait For contractactive
     Run Keyword If                                              '${TEST_NAME}' == 'Відображення статусу підписаної угоди з постачальником закупівлі'   Wait Until Keyword Succeeds    800 s    20 s    Wait For contractactive
     ${return_value} =                                           get value by locator on opened page  ${tender_contracts_0_status_value_locator}
     [return]                                                    ${return_value}
