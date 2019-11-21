@@ -80,8 +80,6 @@ fill tender general info
     wait until page does not contain element                    ${tender_load_form_after_mode_locator}
 
     open popup by btn locator                                   ${plan_form_general_panel_edit_btn_locator}
-    ${plan_path} =                                              Get Variable Value  ${ARTIFACT_FILE}  artifact.yaml
-    ${ARTIFACT} =                                               load_data_from  ${plan_path}
     run keyword and ignore error                                run keyword if condition is not none  ${ARTIFACT.tender_uaid}  input text to visible input  ${tender_form_general_tender_plan_id_locator}  ${ARTIFACT.tender_uaid}
     ${title} =                                                  get from dictionary by keys  ${data}  title
     run keyword if condition is not none                        ${title}  input text to visible input  ${tender_form_general_tender_title_locator}  ${title}
