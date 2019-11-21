@@ -212,7 +212,7 @@ get value from item
     [Documentation]                                             Отримати значення поля quantity з предмету з item_id в описі для тендера tender_uaid.
 
     ${tender_items_quantity_value_locator} =                    replace string  ${tender_items_quantity_value_locator_tpl}  %item_id%  ${item_id}
-    ${return_value} =                                           get value by locator on opened page  ${tender_items_quantity_value_locator}
+    ${return_value} =                                           get value by locator on opened page  ${tender_items_quantity_value_locator}  float
     [return]                                                    ${return_value}
 
 get value from lot
@@ -487,20 +487,25 @@ Wait For contractactive
 Отримати інформацію із awards.complaintPeriod.endDate
     [Documentation]                                             Отримати значення поля awards.complaintPeriod.endDate
 
-#    run keyword and ignore error                                run keyword if  '${mode}' in 'belowThreshold below_funders'  Wait Until Keyword Succeeds  600 s  30 s  Wait For complaintPeriodendDate
     run keyword and ignore error                                Wait Until Keyword Succeeds  600 s  30 s  Wait For complaintPeriodendDate
-#    run keyword and ignore error                                click visible element                                       ${contract_form_0_open_btn_locator}
-#    wait until element is visible                               ${tender_awards_complaintPeriod_endDate_value_locator}  60
-    ${return_value} =                                           run keyword if  '${mode}' in 'negotiation'  get value by locator on opened page  ${tender_awards_negotiation_complaintPeriod_endDate_value_locator}
-    ...                                                         ELSE  get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
-    ${return_value} =                                           run keyword if  '${mode}' in 'negotiation'  parse_complaintPeriod_date  ${return_value}
+    ${return_value} =                                           get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
+#    ${return_value} =                                           run keyword if  '${mode}' in 'negotiation'  get value by locator on opened page  ${tender_awards_negotiation_complaintPeriod_endDate_value_locator}
+#    ...                                                         ELSE  get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
+#    ${return_value} =                                           run keyword if  '${mode}' in 'negotiation'  parse_complaintPeriod_date  ${return_value}
+#    ...                                                         ELSE  set variable  ${return_value}
+    [return]                                                    ${return_value}
+
+Отримати інформацію із complaintPeriod.endDate
+    [Documentation]                                             Отримати значення поля complaintPeriod.endDate
+
+    ${return_value} =                                           get value by locator on opened page  ${tender_complaintPeriod_endDate_value_locator}
     [return]                                                    ${return_value}
 
 Wait For complaintPeriodendDate
     [Documentation]                                             Очикування появи дати завершення подачи скарг на кваліфікацію закупівлі в belowThreshold та below_funders
 
     reload page
-    ${complaintPeriod} =                                        run keyword and ignore error  get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
+    ${complaintPeriod} =                                        get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
     :FOR    ${INDEX}    IN RANGE    1    60
     \                                                           Run Keyword If    '${complaintPeriod}' != ''    Exit For Loop
     \                                                           Reload Page
@@ -544,6 +549,11 @@ wait for agreements status active
     Reload Page
     ${return_value} =                                           get value by locator on opened page  ${tender_agreements_0_status_value_locator}
     Page Should Contain Element                                 ${tender_agreements_status_active_value_locator}
+
+Wait date
+  [Arguments]  ${date}
+  ${sleep}=  wait_to_date  ${date}
+  Run Keyword If  ${sleep} > 0  Sleep  ${sleep}
 
 
 

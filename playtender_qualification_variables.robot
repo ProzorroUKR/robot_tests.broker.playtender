@@ -1,10 +1,13 @@
 *** Variables ***
 
 #qualification
-${prequalification_form_0_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row:nth(1) a[href*="/tender/prequalification"]
-${prequalification_form_1_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row:nth(2) a[href*="/tender/prequalification"]
-${prequalification_form_2_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row:nth(3) a[href*="/tender/prequalification"]
-${prequalification_form_3_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row:nth(4) a[href*="/tender/prequalification"]
+${prequalification_form_0_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row[qualification-index="0"] a[href*="/tender/prequalification"]
+${prequalification_form_1_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row[qualification-index="1"] a[href*="/tender/prequalification"]
+${prequalification_form_2_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row[qualification-index="2"] a[href*="/tender/prequalification"]
+${prequalification_form_3_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row[qualification-index="3"] a[href*="/tender/prequalification"]
+${prequalification_form_-1_open_btn_locator} =                      jquery=#bids-pjax .pseudo-table__row[qualification-negative-index="-1"] a[href*="/tender/prequalification"]
+${prequalification_form_-2_open_btn_locator} =                      jquery=#bids-pjax .pseudo-table__row[qualification-negative-index="-2"] a[href*="/tender/prequalification"]
+${prequalification_form_last_open_btn_locator} =                    jquery=#bids-pjax .pseudo-table__row[qualification-index-last] a[href*="/tender/prequalification"]
 ${prequalification_form_approve_open_btn_locator} =                 jquery=.aside__inner a[href*="/tender/prequalification-approve"]
 ${prequalification_form_accept_input_locator} =                     $('#prequalificationform-decision').val('accept').change()
 ${prequalification_form_decline_input_locator} =                    $('#prequalificationform-decision').val('decline').change()
@@ -28,10 +31,11 @@ ${qualification_agreement_form_approve_submit_btn_locator} =        jquery=.asid
 ${qualification_agreement_form_approve_success_msg} =               Кваліфікація підтверджена, дочекайтесь опублікування на сайті уповноваженого органу.
 ${qualification_agreement_form_approve_question_msg} =              Ви впевнені що бажаєте завершити кваліфікацію і перейти до наступного етапу?
 
-${qualification_form_0_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(1) a[href*="/tender/qualification"]
-${qualification_form_1_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(2) a[href*="/tender/qualification"]
-${qualification_form_2_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(3) a[href*="/tender/qualification"]
-${qualification_form_3_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row:nth(4) a[href*="/tender/qualification"]
+${qualification_form_0_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row[award-index="0"] a[href*="/tender/qualification"]
+${qualification_form_1_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row[award-index="1"] a[href*="/tender/qualification"]
+${qualification_form_2_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row[award-index="2"] a[href*="/tender/qualification"]
+${qualification_form_3_open_btn_locator} =                          jquery=#bids-pjax .pseudo-table__row[award-index="3"] a[href*="/tender/qualification"]
+${qualification_form_last_open_btn_locator} =                       jquery=#bids-pjax .pseudo-table__row[award-index-last] a[href*="/tender/qualification"]
 ${qualification_form_eligible_input_locator} =                      jquery=#qualificationform-eligible
 ${qualification_form_qualified_input_locator} =                     jquery=#qualificationform-qualified
 ${qualification_award_form_submit_success_msg} =                    Рішення завантажене, тепер потрібно накласти ЕЦП/КЕП.

@@ -12,24 +12,19 @@ open tender form prequalification
     [Arguments]                                                 ${qualification_num}
     [Documentation]                                             Відкрити форму прекваліфікації і потрібну кваліфікацію під номером qualification_num
 
-    run keyword if                                              ${qualification_num} == 0  click visible element  ${prequalification_form_0_open_btn_locator}
-    run keyword if                                              ${qualification_num} == 1 or ${qualification_num} == -1  wait until page contains element with reloading  ${prequalification_form_1_open_btn_locator}
-    run keyword if                                              ${qualification_num} == 1 or ${qualification_num} == -1  click visible element  ${prequalification_form_1_open_btn_locator}
-    run keyword if                                              ${qualification_num} == -2  wait until page contains element with reloading  ${prequalification_form_2_open_btn_locator}
-#    run keyword if                                              ${qualification_num} == -2  click visible element  ${prequalification_form_2_open_btn_locator}
-    run keyword if                                              ${qualification_num} == -2  execute javascript  $('#bids-pjax .pseudo-table__row:last a[href*="/tender/prequalification"]').click()
-    sleep  3
+    run keyword if                                              ${qualification_num} == 0  wait until page contains element with reloading  ${prequalification_form_0_open_btn_locator}
+    run keyword if                                              ${qualification_num} == 0  open popup by btn locator  ${prequalification_form_0_open_btn_locator}
+    run keyword if                                              ${qualification_num} == 1  open popup by btn locator  ${prequalification_form_1_open_btn_locator}
+    run keyword if                                              ${qualification_num} == -1  open popup by btn locator  ${prequalification_form_-1_open_btn_locator}
+    run keyword if                                              ${qualification_num} == -2  wait until page contains element with reloading  ${prequalification_form_-2_open_btn_locator}
+    run keyword if                                              ${qualification_num} == -2  open popup by btn locator  ${prequalification_form_-2_open_btn_locator}
+#    run keyword if                                              ${qualification_num} == -2  execute javascript  $('#bids-pjax .pseudo-table__row:last a[href*="/tender/prequalification"]').click()
 
 confirm qualifications
     [Documentation]                                             Відкрити форму прекваліфікації і перевести кваліфікацію під номером qualification_num до тендера
     ...                                                         tender_uaid в статус active.
 
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${qualification_form_submit_btn_locator}  60
-#    wait until popup is visible
-#    Execute Javascript                                          ${qualification_form_accept_input_locator}
     Execute Javascript  $('#prequalificationform-decision').val('accept').change()
-#    select from visible list by label  ${tender_form_award_organization_region_id_locator}  ${region}
     capture page screenshot
     wait until page contains element                            ${prequalification_form_eligible_input_locator}
     capture page screenshot
@@ -41,13 +36,8 @@ reject qualifications
     [Documentation]                                             Відкрити форму прекваліфікації і перевестикваліфікацію під номером qualification_num до тендера
     ...                                                         tender_uaid в статус unsuccessful.
 
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${qualification_form_submit_btn_locator}  60
-#    wait until popup is visible
-#    Execute Javascript                                          ${qualification_form_decline_input_locator}
     Execute Javascript  $('#prequalificationform-decision').val('decline').change()
     capture page screenshot
-#    select from visible list by label  ${tender_form_award_organization_region_id_locator}  ${region}
     wait until page contains element                            ${qualification_form_reasons_cancellation_input_locator}
     capture page screenshot
     input text to exist visible input                           ${qualification_form_reasons_cancellation_input_locator}  GenerateFakeText
@@ -63,10 +53,6 @@ cancel qualifications
     [Documentation]                                             Відкрити форму прекваліфікації і перевести кваліфікацію під номером qualification_num до тендера
     ...                                                         tender_uaid в статус cancelled.
 
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${qualification_form_submit_btn_locator}  60
-#    wait until popup is visible
-#    Execute Javascript                                          ${qualification_form_cancel_input_locator}
     wait until page contains element                            ${prequalification_form_description_cancellation_input_locator}
     Execute Javascript  $('#prequalificationform-decision').val('cancel').change()
 #    select from visible list by label  ${tender_form_award_organization_region_id_locator}  ${region}
@@ -81,8 +67,6 @@ approve the final qualification decision
     [Documentation]                                             Перевести тендер tender_uaid в статус active.pre-qualification.stand-still.
 
     wait until page contains                                    ${qualification_form_approve_question_msg}
-#    click visible element                                       ${qualification_form_description_cancellation_input_locator}
-##    submit form and check result                                ${qualification_form_approve_submit_btn_locator}  ${qualification_form_approve_success_msg}  ${tender_created_checker_element_locator}
     Execute Javascript  ${qualification_form_approve_js_submit_btn_locator}
     Wait Until Page Contains                                    ${qualification_form_approve_success_msg}  60
     wait until alert is visible                                 ${qualification_form_approve_success_msg}
@@ -96,19 +80,18 @@ open tender form qualification
 
     run keyword if                                              "${mode}" not in "open_framework"  Run Keywords
     ...                                                         run keyword if  ${award_num} == 0  wait until page contains element with reloading  ${qualification_form_0_open_btn_locator}
-    ...  AND                                                    run keyword if  ${award_num} == 0  click visible element  ${qualification_form_0_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 0  open popup by btn locator  ${qualification_form_0_open_btn_locator}
 ##### BOF - TMP #####
-    ...  AND                                                    run keyword if  ${award_num} == 1 or ${award_num} == -1  click visible element  ${qualification_form_0_open_btn_locator}
-    ...  AND                                                    run keyword if  ${award_num} == 2  click visible element  ${qualification_form_0_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 1  open popup by btn locator  ${qualification_form_1_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == -1  open popup by btn locator  ${qualification_form_last_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 2  open popup by btn locator  ${qualification_form_2_open_btn_locator}
     ...  ELSE IF                                                "${mode}" in "open_framework"  Run Keywords
     ...                                                         run keyword if  ${award_num} == 0  wait until page contains element with reloading  ${qualification_form_0_open_btn_locator}
-    ...  AND                                                    run keyword if  ${award_num} == 0  click visible element  ${qualification_form_0_open_btn_locator}
-##### BOF - TMP #####
-    ...  AND                                                    run keyword if  ${award_num} == 1 or ${award_num} == -1  click visible element  ${qualification_form_1_open_btn_locator}
-    ...  AND                                                    run keyword if  ${award_num} == 2  click visible element  ${qualification_form_2_open_btn_locator}
-#    ...  AND                                                    run keyword if  ${award_num} == 3  click visible element  ${qualification_form_3_open_btn_locator}
-##### EOF - TMP #####
-#    run keyword if                                              ${award_num} == 1 or ${award_num} == -1  click visible element  ${qualification_form_1_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 0  open popup by btn locator  ${qualification_form_0_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 1  open popup by btn locator  ${qualification_form_1_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == -1  open popup by btn locator  ${qualification_form_last_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 2  open popup by btn locator  ${qualification_form_2_open_btn_locator}
+    ...  AND                                                    run keyword if  ${award_num} == 3  open popup by btn locator  ${qualification_form_3_open_btn_locator}
 
 copy file qualification
     [Arguments]                                                 ${username}  ${document}  ${award_num}
@@ -125,7 +108,6 @@ confirm award qualification
     [Documentation]                                             Перевести постачальника під номером award_num для тендера tender_uaid
     ...                                                         в статус active.
 
-#    wait until popup is visible
     Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
     run keyword and ignore error                                wait until element is visible  ${tender_status_active_qualification_value_locator}  10
     wait until element is visible                               ${qualification_form_submit_btn_locator}  60

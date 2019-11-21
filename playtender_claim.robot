@@ -13,16 +13,9 @@ Resource                                                        playtender_claim
     open tender page by uaid                                    ${tender_uaid}
     click visible element                                       ${claim_page_open_btn_locator}
     capture page screenshot
-#    wait until page contains element with reloading             ${claim_form_open_btn_locator}
-#    click visible element and wait until page contains element  ${claim_page_open_btn_locator}  ${claim_form_open_btn_locator}
-##    submit form and check result                                ${claim_form_open_btn_locator}  ${None}  ${popup_opened_content_locator}
     wait until page contains element with reloading             ${claim_form_open_btn_locator}
-    click visible element                                       ${claim_form_open_btn_locator}
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${claim_form_complaintform_submit_btn_locator}  60
-##    wait until element is visible                               ${popup_opened_content_locator}  60
+    open popup by btn locator                                   ${claim_form_open_btn_locator}
     capture page screenshot
-#    wait until popup is visible
     input text to exist visible input                           ${claim_form_complaintform_title_input_locator}  ${claim.data.title}
     capture page screenshot
     input text to exist visible input                           ${claim_form_complaintform_description_input_locator}  ${claim.data.description}
@@ -67,14 +60,8 @@ Resource                                                        playtender_claim
     wait until page contains element with reloading             ${claim_open_form_answer_locator}
     ${claim_form_cancel_open_btn_locator} =                     replace string  ${claim_form_cancel_open_btn_locator_tpl}  %complaint_id%  ${complaintID}
     wait until page contains element with reloading             ${claim_form_cancel_open_btn_locator}
-    click visible element                                       ${claim_form_cancel_open_btn_locator}
-#    submit form and check result                                ${claim_form_cancel_open_btn_locator}  ${None}  ${popup_opened_content_locator}
+    open popup by btn locator                                   ${claim_form_cancel_open_btn_locator}
     capture page screenshot
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${claim_form_cancellation_reason_input_locator}  60
-##    wait until element is visible                               ${popup_opened_content_locator}  60
-    capture page screenshot
-#    wait until popup is visible
     input text to exist visible input                           ${claim_form_cancellation_reason_input_locator}  ${cancellation_data.data.cancellationReason}
     capture page screenshot
     submit form and check result                                ${claim_form_complaintform_submit_btn_locator}  ${claim_cancel_submit_success_msg}  ${tender_created_checker_element_locator}
@@ -166,9 +153,6 @@ get document complaint
     click visible element and wait until page contains element  ${claim_page_open_btn_locator}  ${claim_form_open_btn_locator}
     ${claim_form_resolved_input_locator} =                      replace string  ${claim_form_resolved_input_locator_tpl}  %complaint_id%  ${complaintID}
     open popup by btn locator                                   ${claim_form_resolved_input_locator}
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${claim_form_complaintform_submit_btn_locator}  60
-##    wait until element is visible                               ${popup_opened_content_locator}  60
     ${value} =                                                  Set Variable If  '${data.data.satisfied}'  Задоволен  Не задоволен
     run keyword and ignore error                                select from visible list by label  ${claim_form_satisfied_input_locator}  ${value}
     capture page screenshot
@@ -187,9 +171,6 @@ get document complaint
     ${claim_form_open_form_answer_btn_locator} =                replace string  ${claim_form_open_form_answer_btn_locator_tpl}  %title%  ${complaintID}
     wait until page contains element with reloading             ${claim_form_open_form_answer_btn_locator}
     open popup by btn locator                                   ${claim_form_open_form_answer_btn_locator}
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${claim_form_answer_resolution_value_locator}  60
-
     input text to exist visible input                           ${claim_form_answer_resolution_value_locator}  ${answer_data.data.resolution}
     Run Keyword If                                              '${answer_data.data.resolutionType}' == 'resolved'  select from list by value  ${claim_form_answer_resolution_type_value_locator}  resolved
     Run Keyword If                                              '${answer_data.data.resolutionType}' == 'declined'  select from list by value  ${claim_form_answer_resolution_type_value_locator}  declined

@@ -152,7 +152,8 @@ Resource                                                        playtender_contr
     #run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
 
     open tender page by uaid                                    ${tender_uaid}
-#    wait until page does not contain element with reloading     ${tender_sync_element_locator}
+    Run Keyword And Return If                                   '${field_name}' == 'complaintPeriod.endDate'   Отримати інформацію із complaintPeriod.endDate
+    Run Keyword And Return If                                   '${field_name}' == 'items[0].deliveryLocation.latitude'   Fail   Поле не відображаем
     run keyword if                                              '${field_name}' == 'status'  wait for tender status
     run keyword if                                              '${field_name}' == 'agreements[0].status'  Wait Until Keyword Succeeds    1600 s    20 s    wait for agreements status active
     run keyword if                                              '${field_name}' == 'qualificationPeriod.endDate'  Wait Until Keyword Succeeds    1600 s    20 s    Wait For QualificationsPeriodEnd
@@ -685,7 +686,7 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     open tender form qualification                              ${award_num}
-    run keyword if                                              ${award_num} != 3  confirm award qualification                                 ${username}  ${award_num}
+    confirm award qualification                                 ${username}  ${award_num}
 
 Дискваліфікувати постачальника
     [Arguments]                                                 ${username}  ${tender_uaid}  ${award_num}
@@ -782,7 +783,7 @@ Resource                                                        playtender_contr
     [Documentation]                                             Перевести тендер tender_uaid в статус active.pre-qualification.stand-still.
 
     open tender page by uaid                                    ${tender_uaid}
-    wait until element is visible                               ${prequalification_form_approve_open_btn_locator}  30
+    wait until page contains element with reloading             ${prequalification_form_approve_open_btn_locator}
     click visible element                                       ${prequalification_form_approve_open_btn_locator}
     approve the final qualification decision
 
