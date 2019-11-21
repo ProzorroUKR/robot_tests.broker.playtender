@@ -3,6 +3,7 @@
 #question
 ${question_form_open_btn_locator} =                                 jquery=#aside-part-pjax a[href*="/tender/questions"]
 ${question_open_form_answer_btn_locator_tpl} =                      jquery=#tender-question-list .js-item div[data-title*="%title%"]
+${question_open_form_answer_js_btn_locator_tpl} =                   $('#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default').click()
 ${question_form_open_form_answer_btn_locator_tpl} =                 jquery=#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default
 ${question_form_open_form_answer_input_locator} =                   jquery=.fancybox-is-open .fancybox-content #tender-question-answer-form #questionanswerform-answer
 ${question_form_answer_submit_btn_locator} =                        jquery=.fancybox-is-open .fancybox-content button.js-submit-btn
@@ -18,6 +19,9 @@ ${question_form_create_questionform_related_lot_input_locator} =    jquery=.fanc
 ${question_form_create_questionform_related_lot_input_locator} =    jquery=.fancybox-is-open .fancybox-content #questionform-related_lot
 ${question_form_create_questionform_related_lot_input_locator_tpl} =  jquery=.fancybox-is-open .fancybox-content #questionform-related_lot option:contains("%type_id%")
 ${question_form_open_create_btn_locator} =                           jquery=#tender-part-pjax a[href*="/tender/question-create"]:first
+
+${question_answer_form_answer_input_locator} =                      jquery=#questionanswerform-answer
+${question_answer_form_submit_btn_locator} =                        jquery=#tender-question-answer-form .js-submit-btn
 
 #for viewer
 ${question_answer_value_locator_tpl} =                              jquery=#tender-question-list .js-item div[data-title*="%title%"] .info-row.answer span.value

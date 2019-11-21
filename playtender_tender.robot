@@ -15,7 +15,7 @@ open new tender form
     open page and wait element by locator                       ${broker_baseurl}/tender/create  ${tender_form_locator}
 
 update tender queue
-    [Documentation]                                             запускає оновлення планів з ЦБД і додає їх в чергу, тобто синхронізація може відбутися не відразу
+    [Documentation]                                             запускає оновлення тендерів з ЦБД і додає їх в чергу, тобто синхронізація може відбутися не відразу
     ...                                                         поточна сторіка повертається
 
     ${current_url} =                                            get location
@@ -58,7 +58,7 @@ fill tender form
     ${lots} =                                                   get from dictionary by keys  ${data}  lots
     run keyword if condition is not none                        ${lots}  fill tender form lots  ${lots}
     ${supplier_data} =                                          op_robot_tests.tests_files.service_keywords . Test Supplier Data
-    Run Keyword And Ignore Error                                fill tender from award reporting  ${supplier_data.data.value.amount}  ${supplier_data.data.suppliers[0]}
+    run keyword if                                              '${mode}' in 'negotiation reporting'  fill tender from award reporting  ${supplier_data.data.value.amount}  ${supplier_data.data.suppliers[0]}
     Run Keyword And Ignore Error                                fill tender required documents
 
 fill tender general info

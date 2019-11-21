@@ -47,8 +47,9 @@ login to site
     [Arguments]                                                 ${user_data}
     [Documentation]                                             авторизувати вказаного користувача, масив повинен містити login, password
 
-    click visible element                                       ${login_popup_open_locator}
-    wait until popup is visible
+#    click visible element                                       ${login_popup_open_locator}
+#    wait until popup is visible
+    open popup by btn locator                                   ${login_popup_open_locator}
     input text to visible input                                 ${login_popup_login_input_locator}  ${user_data['login']}
     input text to visible input                                 ${login_popup_password_input_locator}  ${user_data['password']}
     click visible element                                       ${login_popup_submit_btn_locator}
@@ -289,7 +290,9 @@ open popup by btn locator
     [Documentation]                                             натискає кнопку відкриття попапу і чекає поки він відмалюється
 
     click visible element                                       ${btn_locator}
-    wait until popup is visible                                 ${popup_locator}
+    ${result} =                                                 run keyword and return status  wait until popup is visible  ${popup_locator}
+    run keyword if                                              ${result} == ${False}  js click element  ${btn_locator}
+    run keyword if                                              ${result} == ${False}  wait until popup is visible  ${popup_locator}
 
 submit current visible popup
     [Documentation]                                             натискає кнопку сабміту в поточному попапі і чекає поки він закриється
@@ -334,6 +337,9 @@ wait until alert is visible
     ${alert_message_locator} =                                  replace string  ${alert_message_contains_text_locator_tpl}  %text%  ${message}
     run keyword if                                              ${message_is_none} == ${True}  wait until page contains element  ${alert_opened_locator}  60s  Alert was not shown
     run keyword if                                              ${message_is_none} == ${False}  wait until page contains element  ${alert_message_locator}  60s  Alert was not shown
+
+    # wait for ending animation
+    sleep                                                       500ms
 
 close current visible alert
     [Documentation]                                             закриває поточний alert

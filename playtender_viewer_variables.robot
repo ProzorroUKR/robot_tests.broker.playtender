@@ -73,6 +73,11 @@ ${tender_lot_item_delivery_end_date_value_locator} =                jquery=.tabs
 ${tender_lot_item_delivery_latitude_value_locator} =                jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper .delivery-latitude
 ${tender_lot_item_delivery_longitude_value_locator} =               jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper .delivery-longitude
 
+${tender_procurementMethodType_value_locator} =                     jquery=#aside-part-pjax .aside__inner .opprocurementmethodtype
+${tender_complaintPeriod_endDate_value_locator} =                   jquery=#tender-general-info .info-row.complaint-period .end-date
+${tender_qualifications_0_status_value_locator} =                   jquery=.pjax-container .pseudo-table__row[qualification-index="0"] .qualification-info-wrapper .status-source
+${tender_qualifications_1_status_value_locator} =                   jquery=.pjax-container .pseudo-table__row[qualification-index="1"] .qualification-info-wrapper .status-source
+
 #lots
 ${tender_lots_title_value_locator_tpl} =                             jquery=#lots .tabs__content .tabs__pane--visible > span div.textvalue:first
 ${tender_lots_description_value_locator_tpl} =                       jquery=#lots .tabs__content .tabs__pane--visible > span div.textvalue.hidden

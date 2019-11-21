@@ -70,6 +70,15 @@ def get_is_element_exist(locator):
     return True
 
 
+# click
+def js_click_element(locator):
+    element = get_library()._element_find(locator, None, True)
+    get_webdriver_instance().execute_script(
+        'var $el = jQuery(arguments[0]); if($el.length) $el.click();',
+        element
+    )
+
+
 # convert locator to jquery locator
 def convert_locator_to_jquery(locator):
     locator_params = locator.split('=', 1)
@@ -344,7 +353,6 @@ def download_file(url, file_name, output_dir):
 
 def parse_complaintPeriod_date(date_string):
     date_str = datetime.strptime(date_string, "%d.%m.%Y %H:%M")
-    date_str -= timedelta(minutes=5)
     date = datetime(date_str.year, date_str.month, date_str.day, date_str.hour, date_str.minute, date_str.second,
                     date_str.microsecond)
     date = TZ.localize(date).isoformat()

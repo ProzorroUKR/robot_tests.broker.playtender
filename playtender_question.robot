@@ -10,7 +10,7 @@ add question
     [Documentation]                                             Створити запитання з question в описі для тендера tender_uaid.
 
     click visible element                                       ${question_form_open_btn_locator}
-    click visible element                                       ${question_form_open_create_btn_locator}
+    open popup by btn locator                                   ${question_form_open_create_btn_locator}
     Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
     wait until element is visible                               ${question_form_create_questionform_title_input_locator}  60
     wait until popup is visible
@@ -38,19 +38,16 @@ answer question
     ${question_open_form_answer_locator} =                      replace string  ${question_open_form_answer_btn_locator_tpl}  %title%  ${question_id}
     wait until page contains element with reloading             ${question_open_form_answer_locator}
     ${question_form_open_form_answer_btn_locator} =             replace string  ${question_form_open_form_answer_btn_locator_tpl}  %title%  ${question_id}
-    click visible element                                       ${question_form_open_form_answer_btn_locator}
-    Wait Until Page Contains                                    ${popup_opened_content_success_locator}  60
-    wait until element is visible                               ${question_form_open_form_answer_input_locator}  60
-    input text to exist visible input                           ${question_form_open_form_answer_input_locator}  ${answer_data.data.answer}
-    submit form and check result                                ${question_form_answer_submit_btn_locator}  ${question_form_submit_answer_success_msg}  ${tender_created_checker_element_locator}
+    wait until page contains element with reloading             ${question_form_open_form_answer_btn_locator}
+    open popup by btn locator                                   ${question_form_open_form_answer_btn_locator}
+    input text to exist visible input                           ${question_answer_form_answer_input_locator}  ${answer_data.data.answer}
+    submit form and check result                                ${question_answer_form_submit_btn_locator}  ${question_form_submit_answer_success_msg}
 
 get question information
     [Arguments]                                                 ${question_id}  ${field_name}
     [Documentation]                                             Отримати значення поля field_name із запитання з question_id
     ...                                                         в описі для тендера tender_uaid.
 
-    capture page screenshot
-    run keyword and ignore error  save tender form and wait synchronization
     click visible element                                       ${question_form_open_btn_locator}
     ${question_open_form_answer_locator} =                      replace string  ${question_open_form_answer_btn_locator_tpl}  %title%  ${question_id}
     wait until page contains element with reloading             ${question_open_form_answer_locator}
