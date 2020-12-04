@@ -29,7 +29,7 @@ Resource                                                        playtender_claim
     Run Keyword And Ignore Error                                Run Keyword If  '${type}' == 'lot'  Click Element  ${claim_form_complaintform_related_lot_select_locator}
     capture page screenshot
     Run Keyword And Ignore Error                                Select From List By Label  ${claim_form_complaintform_complaintform_type_input_locator}  Вимога
-    Run Keyword And Ignore Error                                Run Keyword If  '${type}' == 'winner_complaint'  Select From List By Label  ${claim_form_complaintform_complaintform_type_input_locator}  Скарга
+    Run Keyword And Ignore Error                                Run Keyword If  '${type}' == 'winner_complaint' or '${claim.data.type}' == 'complaint'   Select From List By Label  ${claim_form_complaintform_complaintform_type_input_locator}  Скарга
 
     capture page screenshot
 ###    Run Keyword If  '${doc_name}' != 'null'                     click visible element   ${claim_form_complaintform_document_btn_locator}
@@ -76,7 +76,7 @@ get claim information
     click visible element                                       ${claim_page_open_btn_locator}
     capture page screenshot
     ${claim_open_form_answer_locator} =                         replace string  ${claim_open_form_answer_btn_locator_tpl}  %title%  ${complaintID}
-    wait until page contains element with reloading             ${claim_open_form_answer_locator}
+    wait until page contains element with reloading             ${claim_open_form_answer_locator}  30m
     capture page screenshot
 
     ${claim_wrapper_complain_id_value_locator} =                set variable  ${claim_open_form_answer_locator}

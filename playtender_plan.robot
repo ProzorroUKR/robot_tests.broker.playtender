@@ -32,8 +32,11 @@ open plan page by uaid
     ${current_location} =                                       get location
     ${needed_location} =                                        set variable  ${broker_baseurl}/plan/${uaid}
     run keyword if                                              '${current_location}' != '${needed_location}' or ${refresh} == ${True}  open site page and wait content element  ${needed_location}
+    log many  1
     ${is_plan_found} =                                          get is element exist  ${plan_view_checker_element_locator}
+    log many  2
     return from keyword if                                      ${is_plan_found} == ${True}
+    log many  3
     ${is_plan_not_found} =                                      get is 404 page
     ${is_needed_to_update_and_wait_sync} =                      set variable if  ${is_test_role_owner} == ${False} and ${is_plan_not_found}  ${True}  ${False}
     run keyword if                                              ${is_needed_to_update_and_wait_sync}  update plan queue
@@ -56,9 +59,9 @@ fill plan form
     ${buyers} =                                                 get from dictionary by keys  ${data}  buyers
     run keyword if condition is not none                        ${buyers}  fill plan form buyers  ${buyers}
 #Пока не передает Дятлов
-#    ${budget_breakdowns} =                                      get from dictionary by keys  ${data}  BudgetBreakdowns
-#    run keyword if condition is not none                        ${budget_breakdowns}  fill plan form budgetbreakdowns  ${budget_breakdowns}
-    fill plan form budgetbreakdowns
+    ${budget_breakdowns} =                                      get from dictionary by keys  ${data}  budget  breakdown
+    run keyword if condition is not none                        ${budget_breakdowns}  fill plan form budgetbreakdowns  ${budget_breakdowns}
+#    fill plan form budgetbreakdowns
 
 fill plan general info
     [Arguments]                                                 ${data}
@@ -90,6 +93,7 @@ fill plan general info
     ${additional_classifications} =                             get from dictionary by keys  ${data}  additionalClassifications
     run keyword if condition is not none                        ${additional_classifications}  select classification by array of code attributes  ${plan_form_additional_classification_edit_btn_locator}  ${additional_classifications}  ${None}  ${kekv_schemes}
     run keyword if condition is not none                        ${additional_classifications}  select classification by array of code attributes  ${plan_form_kekv_classification_edit_btn_locator}  ${additional_classifications}  ${kekv_schemes}
+    Execute Javascript  $('[id$="planreportingform-test_mode"]').click()
     submit current visible popup
 
 fill plan form items
@@ -134,38 +138,46 @@ fill buyer form in opened popup
     run keyword if condition is not none                        ${identifier_id}  input text to visible input  ${buyer_form_popup_identifier_id_input_locator}  ${identifier_id}
 
 fill plan form budgetbreakdowns
-#    [Arguments]                                                 ${budgetbreakdowns_attributes_array}
+    [Arguments]                                                 ${budgetbreakdowns_attributes_array}
     [Documentation]                                             заповнення Джерел фінансування плану
 
     click visible element                                       ${plan_form_update_budgetbreakdowns_btn_locator}
     wait until popup is visible
-#    :FOR  ${budgetbreakdowns_attributes}  IN  @{budgetbreakdowns_attributes_array}
-#    \  click visible element                                    ${plan_form_add_budgetbreakdowns_btn_locator}
-#    \  wait until page does not contain element                 ${popup_dynamic_form_loading_element_locator}
-#    \  fill budgetbreakdowns form in opened popup               ${budgetbreakdowns_attributes}
-#    \  submit current visible popup
-    click visible element                                    ${plan_form_add_budgetbreakdowns_btn_locator}
-    wait until page does not contain element                 ${popup_dynamic_form_loading_element_locator}
-    fill budgetbreakdowns form in opened popup
+    :FOR  ${budgetbreakdowns_attributes}  IN  @{budgetbreakdowns_attributes_array}
+    \  click visible element                                    ${plan_form_add_budgetbreakdowns_btn_locator}
+    \  wait until page does not contain element                 ${popup_dynamic_form_loading_element_locator}
+    \  fill budgetbreakdowns form in opened popup               ${budgetbreakdowns_attributes}
+###    \  submit current visible popup
+##    click visible element                                    ${plan_form_add_budgetbreakdowns_btn_locator}
+##    wait until page does not contain element                 ${popup_dynamic_form_loading_element_locator}
+##    fill budgetbreakdowns form in opened popup
 #    fill budgetbreakdowns form in opened popup               ${budgetbreakdowns_attributes}
     submit current visible popup
 
 fill budgetbreakdowns form in opened popup
-#    [Arguments]                                                 ${data}
+    [Arguments]                                                 ${data}
     [Documentation]                                             заповнює відкриту форму згідно вказаних даних про Джерела фінансування
 
-#    ${title} =                                                  get from dictionary by keys  ${data}  title
-#    run keyword if condition is not none                        ${title}  select from visible list by label  ${plan_budgetbreakdowns_form_popup_title_input_locator}  ${title}
-#    ${value_amount} =                                           get from dictionary by keys  ${data}  value  amount
-#    run keyword if condition is not none                        ${value_amount}  input number to visible input  ${plan_budgetbreakdowns_value_amount_input_locator}  ${amount}
-    input number to visible input                               ${plan_budgetbreakdowns_value_amount_input_locator}  56333.77
-#    ${description} =                                            get from dictionary by keys  ${data}  description
-#    run keyword if condition is not none                        ${description}  input text to visible input  ${plan_budgetbreakdowns_description_input_locator}  ${description}
-    input text to visible input                                 ${plan_budgetbreakdowns_description_input_locator}  description
+    ${title} =                                                  get from dictionary by keys  ${data}  title
+    run keyword if condition is not none                        ${title}  select from visible list by label  ${plan_budgetbreakdowns_form_popup_title_input_locator}  ${title}
+    ${value_amount} =                                           get from dictionary by keys  ${data}  value  amount
+    run keyword if condition is not none                        ${value_amount}  input number to visible input  ${plan_budgetbreakdowns_value_amount_input_locator}  ${value_amount}
+##    input number to visible input                               ${plan_budgetbreakdowns_value_amount_input_locator}  56333.77
+    ${description} =                                            get from dictionary by keys  ${data}  description
+    run keyword if condition is not none                        ${description}  input text to visible input  ${plan_budgetbreakdowns_description_input_locator}  ${description}
+##    input text to visible input                                 ${plan_budgetbreakdowns_description_input_locator}  description
 
 save plan form and wait synchronization
     [Documentation]                                             натискає кнопку "Зберегти" і чекає синхронізації плану
 
-    submit form and check result                                ${plan_form_submit_btn_locator}  ${plan_form_submit_success_msg}  ${plan_created_checker_element_locator}
+    submit form and check result                                ${plan_form_submit_btn_locator}  ${plan_form_submit_success_msg}  ${plan_created_checker_element_locator}  ${false}  ${true}
     wait until page does not contain element with reloading     ${plan_sync_element_locator}
 
+delete plan
+    [Arguments]                                                 ${data}
+    [Documentation]                                             натискає кнопку "Скасувати рядок плану" і видаляє план
+
+    click visible element                                       ${plan_delete_btn_locator}
+    ${reason} =                                                 get from dictionary by keys  ${data}  reason
+    run keyword if condition is not none                        ${reason}  input text to visible input  ${plan_form_delete_reason_value_locator}  ${reason}
+    submit form and check result                                ${plan_form_delete_sucess_btn_locator}  ${plan_form_delete_submit_success_msg}

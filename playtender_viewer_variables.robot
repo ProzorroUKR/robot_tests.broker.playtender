@@ -31,7 +31,8 @@ ${tender_items_delivery_end_date_value_locator_tpl} =               jquery=.tabs
 ${tender_items_delivery_latitude_value_locator_tpl} =               jquery=.tabs__content .tabs__pane--visible .item-item-wrapper[data-title*="%item_id%"] .item-info-wrapper.hidden.info-wrapper .delivery-latitude
 ${tender_items_delivery_longitude_value_locator_tpl} =              jquery=.tabs__content .tabs__pane--visible .item-item-wrapper[data-title*="%item_id%"] .item-info-wrapper.hidden.info-wrapper .delivery-longitude
 
-${tender_item_description_value_locator} =                          jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .textvalue.hidden
+#${tender_item_description_value_locator} =                          jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .textvalue.hidden
+${tender_item_description_value_locator} =                          jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper .description
 ${tender_item_description_ru_value_locator} =                       jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper [id$='-description_ru']
 ${tender_item_description_en_value_locator} =                       jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper [id$='-description_en']
 ${tender_item_quantity_value_locator} =                             jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper .quantity-source
@@ -79,6 +80,8 @@ ${tender_qualifications_0_status_value_locator} =                   jquery=.pjax
 ${tender_qualifications_1_status_value_locator} =                   jquery=.pjax-container .pseudo-table__row[qualification-index="1"] .qualification-info-wrapper .status-source
 
 #lots
+${tender_lots_0_title_value_locator} =                               jquery=#lots .tabs__list .tabs__item--active .tabs__tab-big-text
+${tender_lots_0_description_value_locator} =                         jquery=#lots .tabs__content .tabs__pane--visible > span div:nth(1)
 ${tender_lots_title_value_locator_tpl} =                             jquery=#lots .tabs__content .tabs__pane--visible > span div.textvalue:first
 ${tender_lots_description_value_locator_tpl} =                       jquery=#lots .tabs__content .tabs__pane--visible > span div.textvalue.hidden
 ${tender_lots_value_amount_value_locator_tpl} =                      jquery=#lots .tabs__content .tabs__pane--visible .budget-source.hidden
@@ -95,10 +98,10 @@ ${tender_new_doc_locator_tpl} =                                     jquery=.docs
 ${tender_new_doc_title_locator_tpl} =                               $('.docs__list .docs__item.js-item:contains("%doc_id%")').attr("data-title")
 #${tender_new_doc_locator_tpl} =                                     jquery=.docs__list .docs__item.js-item:first .doc__title:contains("%doc_id%")
 ${tender_auction_locator} =                                         jquery=#auction-info
-${tender_auction_input_locator} =                                   $('#auction-info a[href*="https://auction-sandbox"]').attr("href")
-${tender_auction_belowThreshold_locator} =                          jquery=#aside-part-pjax a[href*="https://auction-sandbox"]
-${tender_auction_belowThreshold_input_locator} =                    jquery=#aside-part-pjax a[href*="https://auction-sandbox"]
-${tender_auction_belowThreshold_value_locator} =                    $('#aside-part-pjax a[href*="https://auction-sandbox"]').attr("href")
+${tender_auction_input_locator} =                                   $('#auction-info a[href*="https://auction-staging"]').attr("href")
+${tender_auction_belowThreshold_locator} =                          jquery=#aside-part-pjax a[href*="https://auction-staging"]
+${tender_auction_belowThreshold_input_locator} =                    jquery=#aside-part-pjax a[href*="https://auction-staging"]
+${tender_auction_belowThreshold_value_locator} =                    $('#aside-part-pjax a[href*="https://auction-staging"]').attr("href")
 ${tender_auctionPeriod_startDate_value_locator} =                   jquery=#tender-general-info .auction-start-date.hidden
 ${tender_auctionPeriod_endDate_value_locator} =                     jquery=#tender-general-info .auction-end-date.hidden
 ${tender_lots_0_auctionPeriod_endDate_value_locator} =              jquery=#tender-general-info .auction-end-date.hidden
@@ -126,10 +129,45 @@ ${tender_funders_0_identifier_legalName_value_locator} =            jquery=#tend
 ${tender_funders_0_identifier_scheme_value_locator} =               jquery=#tender-general-info .funder-organization .value .popup__inner .definitions__list .identifier_scheme.hidden .definitions__value
 
 #negotiation
-${tender_procuringEntity_contactPoint_name_value_locator} =         jquery=#tender-general-info .organization .value .popup__inner .definitions__list .contact-point-name.hidden .definitions__value
-${tender_procuringEntity_contactPoint_telephone_value_locator} =    jquery=#tender-general-info .organization .value .popup__inner .definitions__list .contact-point-phone.hidden .definitions__value
-${tender_procuringEntity_identifier_legalName_value_locator} =      jquery=#tender-general-info .organization .value .popup__inner .definitions__list .identifier_legal_name.hidden .definitions__value
-${tender_procuringEntity_identifier_scheme_value_locator} =         jquery=#tender-general-info .organization .value .popup__inner .definitions__list .identifier_scheme.hidden .definitions__value
+#${tender_procuringEntity_contactPoint_name_value_locator} =         jquery=#tender-general-info .organization .value .popup__inner .definitions__list .contact-point-name.hidden .definitions__value
+#${tender_procuringEntity_contactPoint_telephone_value_locator} =    jquery=#tender-general-info .organization .value .popup__inner .definitions__list .contact-point-phone.hidden .definitions__value
+#${tender_procuringEntity_identifier_legalName_value_locator} =      jquery=#tender-general-info .organization .value .popup__inner .definitions__list .identifier_legal_name.hidden .definitions__value
+#${tender_procuringEntity_identifier_scheme_value_locator} =         jquery=#tender-general-info .organization .value .popup__inner .definitions__list .identifier_scheme.hidden .definitions__value
+${tender_procuringEntity_contactPoint_name_value_locator} =         jquery=#w0tooltip-content > ul > li.definitions__item.contact-point-name.hidden .definitions__value
+${tender_procuringEntity_contactPoint_telephone_value_locator} =    jquery=#w0tooltip-content > ul > li.definitions__item.contact-point-phone.hidden .definitions__value
+${tender_procuringEntity_identifier_legalName_value_locator} =      jquery=#w0tooltip-content > ul > li.definitions__item.identifier_legal_name.hidden .definitions__value
+${tender_procuringEntity_identifier_scheme_value_locator} =         jquery=#w0tooltip-content > ul > li.definitions__item.identifier_scheme.hidden .definitions__value
+
+${tender_procuringEntity_organization_name_value_locator} =         jquery=#w0tooltip-content > ul > li.definitions__item.organization-name.hidden .definitions__value
+${tender_procuringEntity_address_countryName_value_locator} =       jquery=#w0tooltip-content > ul > li.definitions__item.country.hidden .definitions__value
+${tender_procuringEntity_address_locality_value_locator} =          jquery=#w0tooltip-content > ul > li.definitions__item.locality.hidden .definitions__value
+${tender_procuringEntity_address_postalCode_value_locator} =        jquery=#w0tooltip-content > ul > li.definitions__item.postcode.hidden .definitions__value
+${tender_procuringEntity_address_region_value_locator} =            jquery=#w0tooltip-content > ul > li.definitions__item.region.hidden .definitions__value
+${tender_procuringEntity_address_streetAddress_value_locator} =     jquery=#w0tooltip-content > ul > li.definitions__item.street-address.hidden .definitions__value
+${tender_procuringEntity_contactPoint_url_value_locator} =          jquery=#w0tooltip-content > ul > li.definitions__item.url .definitions__value
+${tender_procuringEntity_identifier_id_value_locator} =             jquery=#w0tooltip-content > ul > li.definitions__item.identifier_id.hidden .definitions__value
+
+${tender_items_1_description_value_locator} =                       jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .description
+${tender_items_1_quantity_value_locator} =                          jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .quantity-source
+${tender_items_1_quantity_value_type} =                             float
+${tender_items_1_unit_title_value_locator} =                        jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .unit-title-source
+${tender_items_1_unit_code_value_locator} =                         jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .unit-code-source
+${tender_items_1_classification_scheme_value_locator} =             jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .main-classification-scheme
+${tender_items_1_classification_code_value_locator} =               jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .main-classification-code
+${tender_items_1_classification_description_value_locator} =        jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .main-classification-description
+${tender_items_1_additional_classification_scheme_value_locator} =  jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .additional-classification-scheme
+${tender_items_1_additional_classification_code_value_locator} =    jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .additional-classification-code
+${tender_items_1_additional_classification_description_value_locator} =  jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .additional-classification-description
+${tender_items_1_delivery_country_value_locator} =                  jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-country
+${tender_items_1_delivery_region_id_value_locator} =                jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-region
+${tender_items_1_delivery_postal_code_value_locator} =              jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-postalcode
+${tender_items_1_delivery_locality_value_locator} =                 jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-locality
+${tender_items_1_delivery_street_address_value_locator} =           jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-street-address
+${tender_items_1_delivery_start_date_value_locator} =               jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-start-date-source
+${tender_items_1_delivery_end_date_value_locator} =                 jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-end-date-source
+${tender_items_1_delivery_latitude_value_locator} =                 jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-latitude
+${tender_items_1_delivery_longitude_value_locator} =                jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(1) .item-info-wrapper.hidden.info-wrapper .delivery-longitude
+
 
 ${tender_awards_0_suppliers_0_contactPoint_telephone_value_locator} =  jquery=#bids-pjax .hint__popup_organization_info .definitions__list .contact-point-phone.hidden .definitions__value
 ${tender_awards_0_suppliers_0_contactPoint_name_value_locator} =    jquery=#bids-pjax .hint__popup_organization_info .definitions__list .contact-point-name.hidden .definitions__value
@@ -163,7 +201,7 @@ ${tender_awards_negotiation_complaintPeriod_endDate_value_locator} =   jquery=#b
 #${tender_awards_complaintPeriod_endDate_value_locator} =            jquery=#tender-contract-form .js-award-complaint-period-wrapper .end-date
 ${tender_awards_negotiation_documents_btn_locator} =                jquery=[href*="/tender/view-qualification-result-documents?award"]
 ${tender_awards_negotiation_documents_close_btn_locator} =          jquery=.modal.fade.fancybox-content .modal-footer .btn.btn-default
-${tender_awards_0_documents_0_title_value_locator} =                jquery=.doc__table_title a[href*="https://public-docs-sandbox.prozorro.gov.ua"]
+${tender_awards_0_documents_0_title_value_locator} =                jquery=.doc__table_title a[href*="https://public-docs-staging.prozorro.gov.ua"]
 ${tender_awards_0_status_value_locator} =                           jquery=.award-info-wrapper.hidden .status-source
 
 #status contract
@@ -179,3 +217,5 @@ ${tender_maxAwardsCount_value_type} =                               integer
 ${tender_agreementDuration_value_locator} =                         jquery=#tender-general-info .agreement-duration
 ${tender_agreements_0_status_value_locator} =                       jquery=.tabs__pane--visible[id*="tab-agreement-contract"] .status-source.hidden
 ${tender_agreements_status_active_value_locator} =                  jquery=.tabs__pane--visible[id*="tab-agreement-contract"] .status-source.hidden:contains(active)
+
+${tender_agreements_0_agreementID_value_locator} =                  jquery=#agreement-contracts-list .agreement-info-wrapper.info-wrapper .agreement-id .value

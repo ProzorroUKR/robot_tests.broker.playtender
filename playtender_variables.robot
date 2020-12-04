@@ -33,7 +33,8 @@ ${classification_popup_serach_item_locator_tpl} =                   jquery=.fanc
 
 # authorization
 ${login_popup_open_locator} =                                       jquery=.page__header a[data-action="login"]
-${login_popup_login_input_locator} =                                id=loginform-email
+${login_popup_login_input_locator} =                                id=loginform-identity
+#${login_popup_login_input_locator} =                                id=loginform-email
 ${login_popup_password_input_locator} =                             id=loginform-password
 ${login_popup_submit_btn_locator} =                                 jquery=#login-form .js-submit-btn
 ${user_logged_checker_element_locator} =                            id=notifications-button  # елемент для перевірки чи авторизований користувач
@@ -59,7 +60,9 @@ ${buyer_form_popup_identifier_id_input_locator} =                   jquery=.fanc
 
 # tender form
 ${tender_load_form_after_mode_locator} =                            jquery=#tender-form-pjax.loading-wrapper
-${tender_form_submit_success_msg} =                                 дочекайтесь опублікування на сайті уповноваженого органу.
+#${tender_form_submit_success_msg} =                                 дочекайтеся опублікування на сайті уповноваженого органу
+${tender_form_submit_success_msg} =                                 опублікування на сайті уповноваженого органу
+${tender_form_submit_reporting_success_msg} =                       Закупівля успішно створена, дочекайтесь закінчення синхронізації, після чого потрібно накласти ЕЦП/КЕП
 ${tender_form_locator} =                                            id=tender-form
 ${tender_form_procurement_method_type_input_locator} =              jquery=.form-inline [id$="form-procurement_method_type"]
 ${tender_multilot_locator} =                                        jquery=[id$="form-is_multilot"]
@@ -71,16 +74,20 @@ ${tender_form_general_tender_description_locator} =                 jquery=[id$=
 ${tender_form_general_tender_description_en_locator} =              jquery=[id$="form-description_en"]
 ${tender_form_general_tender_funder_locator} =                      jquery=[id$="form-is_donor"]
 ${tender_form_general_tender_funder_name_locator} =                 jquery=[id$="-funder_organization_id"]
-${tender_form_general_value_amount_input_locator} =                 jquery=[id$="form-value_amount"]
+${tender_form_general_value_amount_input_locator} =                 jquery=[id$="form-value_amount-disp"]
 ${tender_form_general_value_currency_input_locator} =               jquery=[id$="form-value_currency"]
 ${tender_form_general_value_added_tax_input_locator} =              jquery=[id$="form-value_added_tax_included"]
-${tender_form_general_minimalStep_amount_input_locator} =           jquery=[id$="form-min_step_amount"]
+#${tender_form_general_minimalStep_amount_input_locator} =           jquery=[id$="form-min_step_amount"]
+${tender_form_general_minimalStep_amount_input_locator} =           jquery=[id$="form-min_step_amount-disp"]
 ${tender_form_general_main_procurement_category_input_locator} =    jquery=[id$="form-main_procurement_category"]
 ${tender_enquiry_period_start_date_input_locator} =                 jquery=[id$="form-enquiry_period_start_date"]
 ${tender_enquiry_period_end_date_input_locator} =                   jquery=[id$="form-enquiry_period_end_date"]
 ${tender_tender_period_start_date_input_locator} =                  jquery=[id$="form-tender_period_start_date"]
 ${tender_tender_period_end_date_input_locator} =                    jquery=[id$="form-tender_period_end_date"]
 ${tender_tender_quick_mode_locator} =                               jquery=[id$="form-quick_mode"]
+${tender_cpv_form_submit_success_msg} =                             Вид предмету закупівлі не відповідає вказаному коду CPV
+${tender_cpv_submit_btn_locator} =                                  jquery=.animated-content .js-btn-confirm
+${tender_cpv_js_submit_btn_locator} =                               $('.animated-content .js-btn-confirm').click()
 
 #esco
 ${tender_form_general_funding_kind_input_locator} =                 id=tenderescoform-funding_kind
@@ -92,9 +99,19 @@ ${tender_form_general_max_awards_count_input_locator} =             jquery=[id$=
 ${tender_form_general_agreement_duration_years_input_locator} =     jquery=[id$="form-agreement_duration_years"]
 ${tender_form_general_agreement_duration_months_input_locator} =    jquery=[id$="form-agreement_duration_months"]
 ${tender_form_general_agreement_duration_days_input_locator} =      jquery=[id$="form-agreement_duration_days"]
+#closeFrameworkAgreementSelectionUA
+${tender_form_general_agreementid_input_locator} =                  jquery=[id$="form-agreement_id"]
+${tender_form_item_edit_btn_locator} =                              jquery=.form-group-popup-panel[data-attribute="items"]:last > .panel-collapse.collapse.in .panel-heading .js-form-popup-update:first
+#${tender_form_general_max_awards_count_input_locator} =             jquery=[id$="form-max_awards_count"]
+#${tender_form_general_agreement_duration_years_input_locator} =     jquery=[id$="form-agreement_duration_years"]
+#${tender_form_general_agreement_duration_months_input_locator} =    jquery=[id$="form-agreement_duration_months"]
+#${tender_form_general_agreement_duration_days_input_locator} =      jquery=[id$="form-agreement_duration_days"]
 #negotiation
 ${tender_form_general_cause_input_locator} =                        jquery=[id$="form-cause"]
 ${tender_form_general_cause_description_input_locator} =            jquery=[id$="form-cause_description"]
+${tender_form_cp_edit_btn_locator} =                                jquery=[id="headingContactPoint"] a[data-url="#contactpoint-form-popup"]
+${tender_form_organization_name_en_input_locator} =                 jquery=[id*="organization_name_en"]
+${tender_form_contact_point_name_en_input_locator} =                jquery=[id*="contact_point_name_en"]
 
 #Tests Files.Complaints
 ${tender_form_auction_skip_mode_input_locator} =                    jquery=input[id$="form-auction_skip_mode"]
@@ -141,10 +158,12 @@ ${lot_form_popup_title_input_locator} =                             jquery=.fanc
 ${lot_form_popup_description_input_locator} =                       jquery=.fancybox-is-open [id$="-description"]
 ${lot_form_popup_title_en_input_locator} =                          jquery=.fancybox-is-open [id$="-title_en"]
 ${lot_form_popup_description_en_input_locator} =                    jquery=.fancybox-is-open [id$="-description_en"]
-${lot_form_popup_value_amount_input_locator} =                      jquery=.fancybox-is-open [id$="-value_amount"]
+${lot_form_popup_value_amount_input_locator} =                      jquery=.fancybox-is-open [id$="-value_amount-disp"]
+##${lot_form_popup_value_amount_input_locator} =                      jquery=.fancybox-is-open [id$="-value_amount"]
 ${lot_form_popup_value_currency_input_locator} =                    jquery=.fancybox-is-open [id$="-value_currency"]
 ${lot_form_popup_value_added_tax_input_locator} =                   jquery=.fancybox-is-open [id$="-value_added_tax_included"]
-${lot_form_popup_minimalstep_amount_input_locator} =                jquery=.fancybox-is-open [id$="-min_step_amount"]
+${lot_form_popup_minimalstep_amount_input_locator} =                jquery=.fancybox-is-open [id$="-min_step_amount-disp"]
+##${lot_form_popup_minimalstep_amount_input_locator} =                jquery=.fancybox-is-open [id$="-min_step_amount"]
 ${lot_form_popup_min_step_percentage_amount_input_locator} =        jquery=.fancybox-is-open [id$="-min_step_percentage"]
 
 ${tender_form_lot_panel_add_feature_btn_locator} =                  jquery=#Lots .js-form-popup-panel-list:first > .js-form-popup-panel-item:last .actions-wrapper .btn[data-attribute="features"]
@@ -161,7 +180,7 @@ ${tender_created_checker_element_locator} =                         id=tender-pa
 ${tender_view_checker_element_locator} =                            id=tender-general-info
 ${tender_sync_element_locator} =                                    jquery=#aside-part-pjax .status-label .fa-refresh
 ${tender_uaid_text_locator} =                                       jquery=#tender-general-info .tender-id .value
-${tender_edit_btn_locator} =                                        jquery=#aside-part-pjax a[href*='tender/update']
+${tender_edit_btn_locator} =                                        jquery=#aside-part-pjax a[href*="tender/update"]
 ${tender_status_value_locator} =                                    jquery=#aside-part-pjax .hidden.opstatus
 #елемент проверки загрузки формы в попапе
 ${popup_dynamic_form_loading_element_locator} =                     jquery=.fancybox-is-open .btn-add .fa-spin
@@ -220,7 +239,9 @@ ${tender_qualificationPeriod_endDate_value_locator} =               jquery=#tend
 ${tender_cause_value_locator} =                                     jquery=#tender-general-info .cause-source.hidden
 ${tender_causeDescription_value_locator} =                          jquery=#tender-general-info .cause-description .value
 
-${tender_items_0_description_value_locator} =                       jquery=#tender-part-pjax .tabs__pane--visible .pseudo-table .item-item-wrapper .textvalue.hidden
+${tender_items_0_description_value_locator} =                       jquery=.tabs__content .tabs__pane--visible .pseudo-table__row.item-item-wrapper:nth(0) .item-info-wrapper.hidden.info-wrapper .description
+#${tender_items_0_description_value_locator} =                       jquery=#tender-part-pjax .tabs__pane--visible .pseudo-table .item-item-wrapper .textvalue.hidden
+#${tender_items_0_description_value_locator} =                       jquery=execute javascript  return $('#tender-part-pjax .tabs__pane--visible .pseudo-table .item-item-wrapper').attr("data-title")
 
 #lots
 ${tender_lot_switch_tabs_lot_btn_locator_tpl}                       jquery=#lots .tabs__list .tabs__item span.tabs__tab-big-text:contains("%lot_id%")
@@ -231,11 +252,13 @@ ${tender_lot_description_value_locator} =                           jquery=#lots
 ${tender_lot_value_amount_value_locator} =                          jquery=#lots .tabs__content .tabs__pane--visible .budget-source.hidden
 ${tender_lot_value_amount_value_type} =                             float
 ${tender_lot_value_currency_value_locator} =                        jquery=#tender-general-info .budget-currency.hidden
-${tender_lot_value_value_added_tax_included_value_locator} =        jquery=#lots .tabs__content .tabs__pane--visible .budget-source.hidden
+${tender_lot_value_value_added_tax_included_value_locator} =        jquery=#lots .tabs__content .tabs__pane--visible .budget .value
+${tender_lot_minimal_step_currency_value_locator} =                 jquery=#lots .tabs__content .tabs__pane--visible .minimal-step .value
 ${tender_lot_minimal_step_amount_value_locator} =                   jquery=#lots .tabs__content .tabs__pane--visible .minimal-step-source.hidden
 ${tender_lot_minimal_step_amount_value_type} =                      float
 ${tender_lot_minimal_step_amount_currency_value_locator} =          jquery=#lots .tabs__content .tabs__pane--visible .budget-source.hidden
 ${tender_lot_minimal_step_amount_value_added_tax_included_value_locator} =      jquery=#lots .tabs__content .tabs__pane--visible .budget-source.hidden
+${tender_lot_minimal_step_value_added_tax_included_value_locator} =      jquery=#lots .tabs__content .tabs__pane--visible .minimal-step .value
 
 ##### BOF - TMP #####
 ${tender_lot_0_title_value_locator} =                               jquery=#lots .tabs__content .tabs__pane--visible > span div.textvalue.hidden
@@ -277,8 +300,8 @@ ${tender_feature_form_submit_success_msg} =                         Ви впе�
 ${tender_feature_dell_submit_btn_locator} =                         jquery=.animated-content .js-btn-confirm
 
 ${tender_form_general_tender_plan_id_locator} =                     jquery=[id$="form-plan_id"]
-#${tender_feature_switch_dell_btn_locator_tpl} =                     jquery=.fancybox-is-open .nav.nav-pills.js-nav.allow-empty li[data-title*="%feature_id%"]  a[href*="#features"]
-${tender_feature_switch_dell_btn_locator_tpl} =                     $('.fancybox-is-open .nav.nav-pills.js-nav.allow-empty li[data-title*="%feature_id%"]  a[href*="#features"]').click()
+${tender_feature_switch_dell_btn_locator_tpl} =                     jquery=.fancybox-is-open .nav.nav-pills.js-nav.allow-empty li[data-title*="%feature_id%"] .js-dynamic-form-remove .fa.fa-times
+#${tender_feature_switch_dell_btn_locator_tpl} =                     $('.fancybox-is-open .nav.nav-pills.js-nav.allow-empty li[data-title*="%feature_id%"]  a[href*="#features"]').click()
 
 #award reporting
 ${tender_form_award_organization_name_locator} =                    jquery=[id$="-award_organization_name"]
@@ -307,9 +330,9 @@ ${tender_form_general_panel_edit_btn_locator} =                     jquery=#Gene
 ${tender_form_general_panel_draft_mode_input_locator} =             jquery=[id*="-draft_mode"]
 ${tender_form_general_panel_document_stage2_input_locator} =        jquery=#collapseGeneral .actions-wrapper .js-btn-add-form-popup-panel[data-attribute="documents"]
 ${stage2_form_add_document_type_input_locator} =                    jquery=.js-dynamic-form-content-item:last .document-type select[id*="-document_type"]
-${stage2_form_add_document_description_btn_locator} =        jquery=.js-dynamic-form-content-item:last [href$="#edit"]:last
-${stage2_form_add_document_description_input_locator} =      jquery=.js-dynamic-form-content-item:last .popover.fade.top.in textarea[id*="-description"].form-control
-${stage2_form_add_document_close_description_btn_locator} =  jquery=.js-dynamic-form-content-item:last .popover.fade.top.in [href$="#close"]
+${stage2_form_add_document_description_btn_locator} =               jquery=.js-dynamic-form-content-item:last [href$="#edit"]:last
+${stage2_form_add_document_description_input_locator} =             jquery=.js-dynamic-form-content-item:last .popover.fade.top.in textarea[id*="-description"].form-control
+${stage2_form_add_document_close_description_btn_locator} =         jquery=.js-dynamic-form-content-item:last .popover.fade.top.in [href$="#close"]
 
 
 

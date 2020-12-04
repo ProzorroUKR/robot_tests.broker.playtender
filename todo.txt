@@ -1,0 +1,33 @@
+Нужны поля
+general info
+enquiryPeriod.startDate - видимое или скрытое
+enquiryPeriod.endDate - видимое или скрытое
+tenderPeriod.endDate - видимое или скрытое
+tenderPeriod.startDate - видимое или скрытое
+amount Бюджет - скрытое в хорошем формате
+
+item
+скрытые поля (отдельные) 121.98 штуки
+скрытые поля (отдельные)
+                    Код ДК 021:2015: 33110000-4 Візуалізаційне обладнання для потреб медицини, стоматології та ветеринарної медицини
+
+милестоны (скрытые поля) для безлотовой
+${tender_milestones_0_code_value_locator} =
+${tender_milestones_0_title_value_locator} =
+${tender_milestones_0_percentage_value_locator} =
+${tender_milestones_0_duration_days_value_locator} =
+${tender_milestones_0_duration_type_value_locator} =
+
+${tender_milestones_1_code_value_locator} =
+${tender_milestones_1_title_value_locator} =
+${tender_milestones_1_percentage_value_locator} =
+${tender_milestones_1_duration_days_value_locator} =
+${tender_milestones_1_duration_type_value_locator} =
+
+${tender_milestones_2_code_value_locator} =
+${tender_milestones_2_title_value_locator} =
+${tender_milestones_2_percentage_value_locator} =
+${tender_milestones_2_duration_days_value_locator} =
+${tender_milestones_2_duration_type_value_locator} =
+
+И всё тоже самое для лотов (эти же поля, что вверху)

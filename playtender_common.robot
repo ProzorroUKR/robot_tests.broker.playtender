@@ -70,9 +70,9 @@ fill item form in opened popup
     ${unit} =                                                   get from dictionary by keys  ${data}  unit  name
     run keyword if condition is not none                        ${unit}  select from visible list by label  ${item_form_popup_unit_input_locator}  ${unit}
     ${classification} =                                         get from dictionary by keys  ${data}  classification
-    run keyword if condition is not none                        ${classification}  select classification by code attributes  ${item_form_popup_classification_edit_btn_locator}  ${classification}
+    run keyword if condition is not none                        ${classification}  run keyword if  '${mode}' not in 'framework_selection'  select classification by code attributes  ${item_form_popup_classification_edit_btn_locator}  ${classification}
     ${additional_classifications} =                             get from dictionary by keys  ${data}  additionalClassifications
-    run keyword if condition is not none                        ${additional_classifications}  select classification by array of code attributes  ${item_form_popup_additional_classification_edit_btn_locator}  ${additional_classifications}
+    run keyword if condition is not none                        ${additional_classifications}  run keyword if  '${mode}' not in 'framework_selection'  select classification by array of code attributes  ${item_form_popup_additional_classification_edit_btn_locator}  ${additional_classifications}
 
 get value by locator on opened page
     [Arguments]                                                 ${locator}  ${type}=${None}
@@ -129,6 +129,16 @@ click removing form item and wait success result
     wait until alert is visible
     click visible element                                       ${alert_confirm_btn_locator}
     wait until page does not contain element                    ${alert_confirm_btn_locator}
+
+click removing form feature and wait success result
+    [Arguments]                                                 ${locator}
+    [Documentation]                                             натискає кнопку видалення нецінового критерію, очікує успішне повідомлення і закриває повідомлення, а потім закриває вікно нецінового критерію
+
+    js click element                                            ${locator}
+    wait until alert is visible
+    click visible element                                       ${alert_confirm_btn_locator}
+    wait until page does not contain element                    ${alert_confirm_btn_locator}
+    submit current visible popup
 
 input text to visible input
     [Arguments]                                                 ${locator}  ${text}
@@ -306,16 +316,51 @@ submit current visible popup
     wait until page does not contain element                    ${popup_last_locator}  30s  Current popup was not hidden
 
 submit form and check result
-    [Arguments]                                                 ${submit_btn_locator}  ${wait_msg}=${None}  ${wait_element_locator}=${None}
+    [Arguments]                                                 ${submit_btn_locator}  ${wait_msg}=${None}  ${wait_element_locator}=${None}  ${sign_is}=${None}  ${plan_is}=${None}
     [Documentation]                                             сабмітить форму і чекає повідомлення (якщо задано) + елемент (якщо задано)
 
     click visible element                                       ${submit_btn_locator}
-    run keyword if condition is not none                        ${wait_msg}  Wait Until Page Contains  ${wait_msg}  60
-    run keyword if condition is not none                        ${wait_msg}  wait until alert is visible  ${wait_msg}
-    run keyword and ignore error                                run keyword if condition is not none  ${wait_msg}  close current visible alert
+    run keyword and ignore error   run keyword if condition is not none                        ${wait_msg}  wait until element is visible  ${tender_cpv_form_submit_success_msg}  5
+#    run keyword and ignore error                                Wait Until Page Contains    ${tender_cpv_form_submit_success_msg}   60
+    Capture Page Screenshot
+    run keyword and ignore error                                execute javascript  ${tender_cpv_js_submit_btn_locator}
+    Capture Page Screenshot
+#   Ви не зазначили спосіб підтвердження для деяких вимог
+    run keyword and ignore error   run keyword if condition is not none                        ${wait_msg}  wait until element is visible  Ви не зазначили спосіб підтвердження для деяких вимог  5
+#    run keyword and ignore error                                Wait Until Page Contains    ${tender_cpv_form_submit_success_msg}   60
+    Capture Page Screenshot
+    run keyword and ignore error                                execute javascript  ${tender_cpv_js_submit_btn_locator}
+    Capture Page Screenshot
+
+    run keyword and ignore error                                run keyword if  '${mode}' in 'reporting'  close sync alert  ${tender_form_submit_reporting_success_msg}
+    Capture Page Screenshot
+###    run keyword and ignore error                                run keyword if condition is not none  ${wait_msg}  Wait Until Page Contains  ${wait_msg}  60
+###    Capture Page Screenshot
+###    run keyword and ignore error                                run keyword if condition is not none  ${wait_msg}  wait until alert is visible  ${wait_msg}
+###    run keyword and ignore error                                run keyword if condition is not none  ${wait_msg}  close current visible alert
+###    Capture Page Screenshot
+    run keyword and ignore error                                run keyword if  ${plan_is}  wait until alert is visible  ${wait_msg}
+    run keyword and ignore error                                run keyword if  ${plan_is}  close current visible alert
+    Capture Page Screenshot
+
+###    run keyword and ignore error                                Load Sign
+
 #cat проба
-    run keyword if condition is not none                        ${wait_element_locator}  wait until element is visible  ${wait_element_locator}  60
-    run keyword if condition is not none                        ${wait_element_locator}  wait until page contains element  ${wait_element_locator}  60s  Element was not shown after form submitting
+    run keyword and ignore error                                run keyword if  not ${sign_is}  Load Sign
+    Capture Page Screenshot
+    run keyword and ignore error                                close current visible alert
+###    run keyword and ignore error                                run keyword if condition is not none  ${wait_element_locator}  wait until element is visible  ${wait_element_locator}  60
+###    run keyword and ignore error                                run keyword if condition is not none  ${wait_element_locator}  wait until page contains element  ${wait_element_locator}  60s  Element was not shown after form submitting
+
+close sync alert
+    [Arguments]                                                 ${wait_msg}=${None}
+    [Documentation]                                             чекає поки попап не стане видимим на сторінці
+
+    ${status}=                                                  run keyword if  '${mode}' in 'openeu open_competitive_dialogue openua_defense open_esco open_framework'  Run Keyword And Return Status  Page Should Contain  ${wait_msg}
+    run keyword and ignore error                                run keyword if  ${status} and '${mode}' in 'openeu open_competitive_dialogue openua_defense open_esco open_framework'  Wait Until Page Contains  ${wait_msg}  60
+    run keyword and ignore error                                run keyword if  ${status} and '${mode}' in 'openeu open_competitive_dialogue openua_defense open_esco open_framework'  wait until alert is visible  ${wait_msg}
+    run keyword and ignore error                                run keyword if  ${status} and '${mode}' in 'openeu open_competitive_dialogue openua_defense open_esco open_framework'  close current visible alert
+
 
 wait until popup is visible
     [Arguments]                                                 ${popup_locator}=${None}  ${waiting_timeout}=30s  ${waiting_error}=Opened popup still not visible
@@ -346,11 +391,15 @@ close current visible alert
 
     click visible element                                       ${alert_opened_close_btn_locator}
 
+    # wait for ending animation
+    sleep                                                       500ms
+
 wait until page contains search
     [Arguments]                                                 ${locator}  ${retry}=5m  ${retry_interval}=2s
     [Documentation]                                             чекає поки елемент не з'явиться на сторінці з перезапуском пошуку
 
     ${result} =                                                 get is element exist  ${locator}
+    capture page screenshot
     run keyword if                                              ${result} == ${False}  wait until keyword succeeds  ${retry}  ${retry_interval}  reload page and fail if element does not exist on search  ${locator}
 
 wait until page contains element with reloading
@@ -380,7 +429,9 @@ reload page and fail if element exists
     [Arguments]                                                 ${locator}
     [Documentation]                                             перезавантажує сторінку і фейлить тест якщо елемент присутній
 
+    capture page screenshot
     reload page
+    capture page screenshot
     ${exists} =                                                 get is element exist  ${locator}
     run keyword if                                              ${exists} == ${True}  fail
 
@@ -501,13 +552,14 @@ __private__select_classification_code_in_opened_popup
     input text to visible input and press enter                 ${classification_popup_search_input_locator}  ${code}
     ${code} =                                                   convert to string  ${code}
     ${code_item_locator} =                                      replace string  ${classification_popup_serach_item_locator_tpl}  %code%  ${code}
-    wait until page contains element                            ${code_item_locator}  60s  Specified classification code was not found
+    wait until page contains element                            ${code_item_locator}  90s  Specified classification code was not found
     click visible element                                       ${code_item_locator}
 
 Load Sign
-    ${loadingfakeKey} =                                         Run keyword And Return Status  Wait Until Page Contains   Це фейкове накладання ЕЦП   90
+    run keyword and ignore error                                click visible element                                    ${plan_form_ecp_btn_locator}                                
+    ${loadingfakeKey} =                                         Run keyword And Return Status  Wait Until Page Contains   Це фейкове накладання ЕЦП   30
     run keyword and ignore error                                Run Keyword If  ${loadingfakeKey} == True  submit form and check result  id=SignDataButton  ${qualification_ecp_form_submit_success_msg}
-    ${loadingKey} =                                             Run keyword And Return Status  Wait Until Page Contains   Серійний номер   90
+    ${loadingKey} =                                             Run keyword And Return Status  Wait Until Page Contains   Серійний номер   30
     Run Keyword If                                              ${loadingfakeKey} == True  Fail   Далі не ходити
     Run Keyword If                                              ${loadingKey} == False  Load Sign Data
     Wait Until Page Contains                                    Серійний номер   60
@@ -517,9 +569,9 @@ Load Sign Data
     Wait Until Page Contains Element   id=CAsServersSelect   60
     Select From List By Label   id=CAsServersSelect     Тестовий ЦСК АТ "ІІТ"
     Wait Until Page Contains Element  id=PKeyFileName  60
-    Choose File   id=PKeyFileInput     ${CURDIR}/kai.dat
+    Choose File   id=PKeyFileInput     ${CURDIR}/Key-6.dat
     Wait Until Page Contains Element  id=PKeyPassword  60
-    Input Text    id=PKeyPassword     123qwe
+    Input Text    id=PKeyPassword     12345677
     Wait Until Page Contains Element  id=PKeyReadButton  60
     Click Element   id=PKeyReadButton
 

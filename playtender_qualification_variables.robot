@@ -55,7 +55,8 @@ ${qualification_form_cancel_input_locator} =                        $('#qualific
 ${qualification_form_add_document_type_input_locator} =             jquery=.js-dynamic-form-content-item:last .document-type select[id*="-document_type"]
 ${qualification_form_add_document_description_btn_locator} =        jquery=.js-dynamic-form-content-item:last [href$="#edit"]:last
 ${qualification_form_add_document_description_input_locator} =      jquery=.js-dynamic-form-content-item:last .popover.fade.top.in textarea[id*="-description"].form-control
-${qualification_form_add_document_close_description_btn_locator} =  jquery=.js-dynamic-form-content-item:last .popover.fade.top.in [href$="#close"]
+${qualification_form_add_document_close_description_btn_locator} =  jquery=#qualification-documents .js-actions-wrapper:last .popover.fade.top.in [href$="#close"]
+#${qualification_form_add_document_close_description_btn_locator} =  jquery=.js-dynamic-form-content-item:last .popover.fade.top.in [href$="#close"]
 
 #award reporting and negotiotion
 ${award_form_qualified_input_locator} =                             jquery=#qualificationform-qualified

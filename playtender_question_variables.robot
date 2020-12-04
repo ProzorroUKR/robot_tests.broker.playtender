@@ -3,8 +3,10 @@
 #question
 ${question_form_open_btn_locator} =                                 jquery=#aside-part-pjax a[href*="/tender/questions"]
 ${question_open_form_answer_btn_locator_tpl} =                      jquery=#tender-question-list .js-item div[data-title*="%title%"]
-${question_open_form_answer_js_btn_locator_tpl} =                   $('#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default').click()
-${question_form_open_form_answer_btn_locator_tpl} =                 jquery=#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default
+#${question_open_form_answer_js_btn_locator_tpl} =                   $('#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default').click()
+#${question_form_open_form_answer_btn_locator_tpl} =                 jquery=#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-default
+${question_open_form_answer_js_btn_locator_tpl} =                   $('#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-success.btn-custom').click()
+${question_form_open_form_answer_btn_locator_tpl} =                 jquery=#tender-question-list .js-item div[data-title*="%title%"] .btn.btn-success.btn-custom
 ${question_form_open_form_answer_input_locator} =                   jquery=.fancybox-is-open .fancybox-content #tender-question-answer-form #questionanswerform-answer
 ${question_form_answer_submit_btn_locator} =                        jquery=.fancybox-is-open .fancybox-content button.js-submit-btn
 ${question_form_submit_answer_success_msg} =                        Відповідь на питання успішно надана.
