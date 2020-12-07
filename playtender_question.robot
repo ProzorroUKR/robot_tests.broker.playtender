@@ -26,9 +26,10 @@ add question
     Run Keyword If  '${type}' == 'item'                         run keyword and ignore error  Click Element   ${question_questionform_related_item_input_locator}
     input text to exist visible input                           ${question_form_create_questionform_title_input_locator}  ${question.data.title}
     input text to exist visible input                           ${question_form_create_questionform_description_input_locator}  ${question.data.description}
-    submit form and check result                                ${question_form_answer_submit_btn_locator}  ${question_form_submit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${question_form_answer_submit_btn_locator}  ${question_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${true}
 #    click visible element                                       ${question_form_answer_submit_btn_locator}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
+    sleep  5
 
 answer question
     [Arguments]                                                 ${answer_data}  ${question_id}
@@ -41,13 +42,14 @@ answer question
     wait until page contains element with reloading             ${question_form_open_form_answer_btn_locator}
     open popup by btn locator                                   ${question_form_open_form_answer_btn_locator}
     input text to exist visible input                           ${question_answer_form_answer_input_locator}  ${answer_data.data.answer}
-    submit form and check result                                ${question_answer_form_submit_btn_locator}  ${question_form_submit_answer_success_msg}
+    submit form and check result                                ${question_answer_form_submit_btn_locator}  ${question_form_submit_answer_success_msg}  ${true}
 
 get question information
     [Arguments]                                                 ${question_id}  ${field_name}
     [Documentation]                                             Отримати значення поля field_name із запитання з question_id
     ...                                                         в описі для тендера tender_uaid.
 
+    submit form and check result                                ${bid_form_refresh_btn_locator}  ${bid_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
     click visible element                                       ${question_form_open_btn_locator}
     ${question_open_form_answer_locator} =                      replace string  ${question_open_form_answer_btn_locator_tpl}  %title%  ${question_id}
     wait until page contains element with reloading             ${question_open_form_answer_locator}

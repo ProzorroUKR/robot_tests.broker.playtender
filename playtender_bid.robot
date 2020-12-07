@@ -11,6 +11,7 @@ fill bid form
     [Arguments]                                                 ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
     [Documentation]                                             Подати цінову пропозицію bid для тендера tender_uaid на лоти lots_ids (якщо lots_ids != None) з неціновими показниками features_ids (якщо features_ids != None).
 
+    submit form and check result                                ${bid_form_refresh_btn_locator}  ${bid_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
     open popup by btn locator                                   ${bid_form_open_btn_locator}  ${bid_popup_locator}
     ${value} =                                                  get from dictionary by keys  ${bid.data}  value  amount
 #    ${amount} =                                                 run keyword if condition is not none  ${value}  convert_float_to_string  ${bid.data.value.amount}
@@ -36,10 +37,12 @@ fill bid form lots
     \  Run Keyword And Ignore Error                             run keyword if condition is not none  ${lots}  input number to exist visible input   ${bid_form_value_amount_input_locator}  ${lots[${INDEX}].value.amount}
     \  capture page screenshot
     \  ${self_qualified} =                                      get from dictionary by keys  ${bid.data}  selfQualified
-    \  run keyword if condition is not none                     ${self_qualified}  click visible element  ${bid_form_value_self_qualified_input_locator}
+#    \  run keyword if condition is not none                     ${self_qualified}  click visible element  ${bid_form_value_self_qualified_input_locator}
+    \  run keyword if condition is not none                     ${self_qualified}  execute javascript    $('.fancybox-is-open .fancybox-content input[id*="-self_qualified"]').click()
     \  capture page screenshot
     \  ${self_eligible} =                                       get from dictionary by keys  ${bid.data}  selfEligible
-    \  run keyword if condition is not none                     ${self_eligible}  click visible element  ${bid_form_value_self_eligible_input_locator}
+#    \  run keyword if condition is not none                     ${self_eligible}  click visible element  ${bid_form_value_self_eligible_input_locator}
+    \  run keyword if condition is not none                     ${self_eligible}  execute javascript     $('.fancybox-is-open .fancybox-content input[id*="-self_eligible"]').click()
     \  capture page screenshot
     \  ${feature_id} =                                          get from dictionary by keys  ${bid.data}  parameters
     \  run keyword if condition is not none                     ${feature_id}  fill bid form features  ${feature_id}
@@ -54,17 +57,20 @@ fill bid form features
     ${features_length} =                                        Get Length  ${bid_parameters}
     : FOR  ${INDEX}  IN RANGE  0  ${features_length}
     \  ${bid_form_feature_input_locator}                        replace string  ${bid_form_feature_input_locator_tpl}  %title%  ${bid_parameters[${INDEX}]['code']}
+    \  ${bid_form_get_feature_input_locator}                    replace string  ${bid_form_get_feature_input_locator_tpl}  %title%  ${bid_parameters[${INDEX}]['code']}
+    \  ${bid_form_feature_input_locator_select}                 replace string  ${bid_form_feature_input_locator_select_tpl}  %title%  ${bid_parameters[${INDEX}]['code']}
     \  ${value_enum} =                                          convert float to string  ${bid_parameters[${INDEX}]['value']}
     \  ${bid_form_feature_value_input_locator}                  set variable  ${bid_form_feature_input_locator} ${bid_form_feature_value_input_locator_tpl}
+    \  ${bid_form_get_feature_value_input_locator}              set variable  ${bid_form_get_feature_input_locator} ${bid_form_get_feature_value_input_locator_tpl}
     \  ${bid_form_feature_value_input_locator}                  replace string  ${bid_form_feature_value_input_locator}  _  ' '
-    #\  ${bid_form_feature_value_input_locator}                  replace string  ${bid_form_feature_value_input_locator}  %value%  ${bid_parameters[${INDEX}]['value']}
+    \  ${bid_form_get_feature_value_input_locator}              replace string  ${bid_form_get_feature_value_input_locator}  _  ' '
     \  ${bid_form_feature_value_input_locator}                  replace string  ${bid_form_feature_value_input_locator}  %value%  ${value_enum}
-    \  Run Keyword And Ignore Error                             click visible element  ${bid_form_feature_input_locator}
+    \  ${bid_form_get_feature_value_input_locator}              replace string  ${bid_form_get_feature_value_input_locator}  %value%  ${value_enum}
+    \  ${enum_val}                                              set variable  ${bid_form_get_feature_value_input_locator}
+    \  ${enum_val1}=                                            run keyword if  ${bid_parameters[${INDEX}]['value']} == 0  Execute Javascript   return $('[data-weight-source="0"]').text()
+    \  ...  ELSE                                                Execute Javascript    ${enum_val}
     \  capture page screenshot
-    \  Run Keyword And Ignore Error                             click visible element  ${bid_form_feature_value_input_locator}
-    \  capture page screenshot
-    \  Run Keyword And Ignore Error                             click visible element  jquery=select.select2-hidden-accessible:nth(${INDEX}) [data-weight-source="0"]
-    #\  Run Keyword And Ignore Error                             click visible element  ${select.select2-hidden-accessible:nth(${INDEX}) [data-weight-source="0"]}
+    \  Run Keyword And Ignore Error                             select from list by label  ${bid_form_feature_input_locator_select}  ${enum_val1}
     \  capture page screenshot
 
 fill bid form lots Esco
@@ -195,7 +201,10 @@ fill bid form edit document
     capture page screenshot
     wait until element is visible                               ${bid_form_add_document_description_input_locator}  60
     execute javascript                                          $('#tender-bid-form .documents-dynamic-forms-wrapper:last .popover.fade.top.in [id$="-confidentiality"]').click()
+
 #    click visible element                                       ${bid_form_add_document_confidentiality_input_locator}
+    capture page screenshot
+    input text to exist visible input                           ${bid_form_add_document_confidentialityrationale_input_locator}  ${doc_data.data.confidentialityRationale}
     capture page screenshot
     click visible element                                       ${bid_form_add_document_close_description_btn_locator}
     capture page screenshot
@@ -207,19 +216,26 @@ get bid information
     ...                                                         username для тендера tender_uaid.
 
     capture page screenshot
-    open popup by btn locator                                   ${bid_form_open_btn_locator}  ${bid_popup_locator}
+    Run Keyword If  'status' == '${field}'                      submit form and check result   ${bid_form_refresh_btn_locator}  ${bid_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
+    Run Keyword If  'status' != '${field}'                      open popup by btn locator   ${bid_form_open_btn_locator}  ${bid_popup_locator}
 #    click visible element                                       ${bid_form_open_btn_locator}
     capture page screenshot
-    wait until popup is visible
+    Run Keyword If  'status' != '${field}'                      wait until popup is visible
 #    ${question_open_form_answer_locator} =                      replace string  ${question_open_form_answer_btn_locator_tpl}  %title%  ${question_id}
 #    wait until page contains element with reloading             ${question_open_form_answer_locator}
     capture page screenshot
+    Run Keyword If  'status' == '${field}'                      submit form and check result     ${bid_form_refresh_btn_locator}  ${bid_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
     #${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}'         get value by locator on opened page  ${bid_lotValues_0_value_amount_value_locator}
-    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}'         get value by locator on opened page  ${bid_lotValues_0_value_amount_value_locator}
-    ...  ELSE                                                   Run Keyword If  'status' == '${field}'        get_text  ${question_answer_value_locator}
-    ...  ELSE                                                   Run Keyword If  'value.amount' == '${field}'   get value by locator on opened page  ${bid_form_value_amount_input_locator}
+    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}'         get bid value  ${bid_lotValues_0_value_amount_value_locator}
+    ...  ELSE                                                   Run Keyword If  'status' == '${field}'        get value by locator on opened page  ${bid_form_bid_status_btn_locator}
+    ...  ELSE                                                   Run Keyword If  'value.amount' == '${field}'   get bid value  ${bid_form_value_amount_input_locator}
+##    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}'         get value by locator on opened page  ${bid_lotValues_0_value_amount_value_locator}
+#    ...  ELSE                                                   Run Keyword If  'status' == '${field}'        get_text  ${bid_form_bid_status_btn_locator}
+##    ...  ELSE                                                   Run Keyword If  'status' == '${field}'        get value by locator on opened page  ${bid_form_bid_status_btn_locator}
+##    ...  ELSE                                                   Run Keyword If  'value.amount' == '${field}'   get value by locator on opened page  ${bid_form_value_amount_input_locator}
 #    submit current visible popup
-    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}' or 'value.amount' == '${field}'   Convert To Number  ${return_value}
+##    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}' or 'value.amount' == '${field}'   playtender_service.split_joinvalue  ${return_value}
+##    ${return_value} =                                           Run Keyword If  'lotValues[0].value.amount' == '${field}' or 'value.amount' == '${field}'   Convert To Number  ${return_value}
     [Return]                                                    ${return_value}
 
 fill bid form remove
@@ -227,5 +243,15 @@ fill bid form remove
     ...                                                         користувача username на cancelled.
 
     click visible element                                       ${bid_form_remove_btn_locator}
-    submit form and check result                                ${alert_opened_close_bid_btn_locator}  ${bid_form_submit_remove_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${alert_opened_close_bid_btn_locator}  ${bid_form_submit_remove_success_msg}  ${tender_created_checker_element_locator}  ${true}
+
+get bid value
+    [Arguments]                                                 ${field}
+    [Documentation]                                             Отримати значення поля field пропозиції користувача
+    ...                                                         username для тендера tender_uaid.
+
+    ${return_value} =                                           get value by locator on opened page  ${field}
+    ${return_value} =                                           playtender_service.split_joinvalue  ${return_value}
+    ${return_value} =                                           Convert To Number  ${return_value}
+    [Return]                                                    ${return_value}
 

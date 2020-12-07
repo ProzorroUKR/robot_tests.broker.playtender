@@ -58,7 +58,31 @@ fill tender form
     ${lots} =                                                   get from dictionary by keys  ${data}  lots
     run keyword if condition is not none                        ${lots}  fill tender form lots  ${lots}
     ${supplier_data} =                                          op_robot_tests.tests_files.service_keywords . Test Supplier Data
-    run keyword if                                              '${mode}' in 'negotiation reporting'  fill tender from award reporting  ${supplier_data.data.value.amount}  ${supplier_data.data.suppliers[0]}
+    ##### BOF - TMP for negotiation milestone 1 lot#####
+    run keyword if                                              '${mode}' in 'reporting'  Set Global Variable  ${rep_val}  ${data.value.amount}
+    ##### EOF - TMP #####
+    run keyword if                                              '${mode}' in 'negotiation reporting'  fill tender from award reporting  ${data.value.amount}  ${supplier_data.data.suppliers[0]}
+    Run Keyword And Ignore Error                                fill tender required documents
+    ${procurement_method_type} =                                get from dictionary by keys  ${data}  procurementMethodType
+    Run Keyword And Ignore Error                                run keyword if  '${mode}' in 'openeu open_esco open_framework' or ('${mode}' == 'open_competitive_dialogue' and '${procurement_method_type}' == 'competitiveDialogueEU')  fill tender contact person  ${data}
+#    Run Keyword And Ignore Error                                Execute Javascript  $('a.btn.btn-default.btn-update.js-form-popup-add').click()
+
+fill tender form 2 stage
+    [Arguments]                                                 ${data}
+    [Documentation]                                             заповнення форми з масива даних
+
+    fill tender general info 2 stage                            ${data}
+    ${features} =                                               get from dictionary by keys  ${data}  features
+    run keyword if condition is not none                        ${features}  fill tender form features  ${features}  ${tender_form_general_panel_add_feature_btn_locator}
+    ${items} =                                                  get from dictionary by keys  ${data}  items
+#    run keyword if condition is not none                        ${items}  fill tender form items  ${items}
+    run keyword if condition is not none                        ${items}  fill tender form  ${items}
+    ${milestones} =                                             get from dictionary by keys  ${data}  milestones
+    run keyword and ignore error                                run keyword if condition is not none                        ${milestones}  fill tender form milestones  ${milestones}
+    ${lots} =                                                   get from dictionary by keys  ${data}  lots
+    run keyword if condition is not none                        ${lots}  fill tender form lots 2 stage  ${lots}
+    ${supplier_data} =                                          op_robot_tests.tests_files.service_keywords . Test Supplier Data
+    run keyword if                                              '${mode}' in 'negotiation reporting'  fill tender from award reporting  ${data.value.amount}  ${supplier_data.data.suppliers[0]}
     Run Keyword And Ignore Error                                fill tender required documents
 
 fill tender general info
@@ -76,13 +100,16 @@ fill tender general info
     wait until page does not contain element                    ${tender_load_form_after_mode_locator}
 
     ${lots} =                                                   get from dictionary by keys  ${data}  lots
-    run keyword if condition is not none                        ${lots}  Run Keyword And Ignore Error  Click Element   ${tender_multilot_locator}
-    wait until page does not contain element                    ${tender_load_form_after_mode_locator}
+    run keyword if condition is not none                        ${lots}  Run Keyword And Ignore Error  Execute Javascript  $('[id$="form-is_multilot"]').click()
+    wait until page does not contain element                    ${tender_load_form_after_mode_locator}  20
 
     open popup by btn locator                                   ${plan_form_general_panel_edit_btn_locator}
     ${plan_path} =                                              Get Variable Value  ${ARTIFACT_FILE}  artifact_plan.yaml
+    ${closeFrameworkAgreementSelectionUA_path} =                Get Variable Value  ${ARTIFACT_FILE}  artifact.yaml
     ${ARTIFACT} =                                               load_data_from  ${plan_path}
     run keyword and ignore error                                run keyword if condition is not none  ${ARTIFACT.tender_uaid}  input text to visible input  ${tender_form_general_tender_plan_id_locator}  ${ARTIFACT.tender_uaid}
+    ${ARTIFACT2} =                                              load_data_from  ${closeFrameworkAgreementSelectionUA_path}
+    run keyword and ignore error                                run keyword if condition is not none  ${ARTIFACT.tender_uaid}  input text to visible input  ${tender_form_general_agreementid_input_locator}  ${ARTIFACT2.tender_uaid}
     ${title} =                                                  get from dictionary by keys  ${data}  title
     run keyword if condition is not none                        ${title}  input text to visible input  ${tender_form_general_tender_title_locator}  ${title}
     ${title_en} =                                               get from dictionary by keys  ${data}  title_en
@@ -99,14 +126,18 @@ fill tender general info
     ${currency} =                                               get from dictionary by keys  ${data}  value  currency
     run keyword if condition is not none                        ${currency}  select from visible list by value  ${tender_form_general_value_currency_input_locator}  ${currency}
     ${value_added_tax_included} =                               get from dictionary by keys  ${data}  value  valueAddedTaxIncluded
-    run keyword if condition is not none                        ${value_added_tax_included}  run keyword if  ${value_added_tax_included}  Click Element  ${tender_form_general_value_added_tax_input_locator}
+    run keyword if condition is not none                        ${value_added_tax_included}  run keyword if  ${value_added_tax_included}  Execute Javascript  $('[id$="form-value_added_tax_included"]').click()
+##run keyword and ignore error      
+
+##click element  ${tender_form_general_value_added_tax_input_locator}
+    Execute Javascript  $('[id$="form-test_mode"]').click()
     ${min_step_amount} =                                        get from dictionary by keys  ${data}  minimalStep  amount
     run keyword if condition is not none                        ${min_step_amount}  input number to exist visible input  ${tender_form_general_minimalStep_amount_input_locator}  ${min_step_amount}
     ${main_procurement_category} =                              get from dictionary by keys  ${data}  mainProcurementCategory
     run keyword if condition is not none                        ${main_procurement_category}  select from visible list by value  ${tender_form_general_main_procurement_category_input_locator}  ${main_procurement_category}
     ${tender_enquiry_period_start_date} =                       get from dictionary by keys  ${data}  enquiryPeriod  startDate
 #    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  select from visible list by year of date  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
-    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  input datetime to visible input  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
+    run keyword and ignore error                                run keyword if condition is not none                        ${tender_enquiry_period_start_date}  input datetime to visible input  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
     ${tender_enquiry_period_end_date} =                         get from dictionary by keys  ${data}  enquiryPeriod  endDate
 #    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  select from visible list by year of date  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
     run keyword if condition is not none                        ${tender_enquiry_period_end_date}  input datetime to visible input  ${tender_enquiry_period_end_date_input_locator}  ${tender_enquiry_period_end_date}
@@ -114,7 +145,8 @@ fill tender general info
     run keyword if condition is not none                        ${tender_start_date}  run keyword and ignore error  input datetime to visible input  ${tender_tender_period_start_date_input_locator}  ${tender_start_date}
     ${tender_end_date} =                                        get from dictionary by keys  ${data}  tenderPeriod  endDate
     run keyword if condition is not none                        ${tender_end_date}  input datetime to visible input  ${tender_tender_period_end_date_input_locator}  ${tender_end_date}
-    run keyword and ignore error                                click element  ${tender_tender_quick_mode_locator}
+#    run keyword and ignore error                                click element  ${tender_tender_quick_mode_locator}
+    run keyword and ignore error                                Execute Javascript  $('[id$="form-quick_mode"]').click()
     ${classification} =                                         get from dictionary by keys  ${data}  classification
     run keyword if condition is not none                        ${classification}  select classification by code attributes  ${plan_form_classification_edit_btn_locator}  ${classification}
     ${additional_classifications} =                             get from dictionary by keys  ${data}  additionalClassifications
@@ -139,6 +171,18 @@ fill tender general info
     ${agreement_duration_days} =                                get from dictionary by keys  ${data}  agreementDuration
     ${agreement_duration_days1}=                                Run keyword If  '${agreement_duration_days}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  day
     run keyword if condition is not none                        ${agreement_duration_days}  select from visible list by value  ${tender_form_general_agreement_duration_days_input_locator}  ${agreement_duration_days1}
+#closeFrameworkAgreementSelectionUA
+    ${max_awards_count} =                                       get from dictionary by keys  ${data}  maxAwardsCount
+    run keyword if condition is not none                        ${max_awards_count}  input text to exist visible input  ${tender_form_general_max_awards_count_input_locator}  ${max_awards_count}
+    ${agreement_duration_years} =                               get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_years1}=                               Run keyword If  '${agreement_duration_years}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  year
+    run keyword if condition is not none                        ${agreement_duration_years}  select from visible list by value  ${tender_form_general_agreement_duration_years_input_locator}  ${agreement_duration_years1}
+    ${agreement_duration_months} =                              get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_months1}=                              Run keyword If  '${agreement_duration_months}' != '${None}'  split_agreementDuration  ${agreement_duration_months}  month
+    run keyword if condition is not none                        ${agreement_duration_months}  select from visible list by value  ${tender_form_general_agreement_duration_months_input_locator}  ${agreement_duration_months1}
+    ${agreement_duration_days} =                                get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_days1}=                                Run keyword If  '${agreement_duration_days}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  day
+    run keyword if condition is not none                        ${agreement_duration_days}  select from visible list by value  ${tender_form_general_agreement_duration_days_input_locator}  ${agreement_duration_days1}
 #negotiation
     ${cause} =                                                  get from dictionary by keys  ${data}  cause
     run keyword if condition is not none                        ${cause}  select from visible list by value  ${tender_form_general_cause_input_locator}  ${cause}
@@ -148,21 +192,116 @@ fill tender general info
     Run Keyword If                                              '${SUITE_NAME}' == 'Tests Files.Complaints'  click visible element  ${tender_form_auction_skip_mode_input_locator}
     submit current visible popup
 
+
+fill tender general info 2 stage
+    [Arguments]                                                 ${data}
+    [Documentation]                                             обирає потрібний тип закупівлі, чекає оновлення форми, вказує мультилотовість, заповнює
+    ...                                                         приховані поля + відкриває попап основних даних, заповнює його і закриває
+
+    Execute Javascript  $(window).scrollTop(0)
+    wait until page does not contain element                    ${tender_load_form_after_mode_locator}
+    wait until page contains element                            ${tender_form_procurement_method_type_input_locator}
+    capture page screenshot
+    ${procurement_method_type} =                                get from dictionary by keys  ${data}  procurementMethodType
+    capture page screenshot
+    run keyword if condition is not none                        ${procurement_method_type}  select from list by value  ${tender_form_procurement_method_type_input_locator}  ${procurement_method_type}
+    wait until page does not contain element                    ${tender_load_form_after_mode_locator}
+
+    ${lots} =                                                   get from dictionary by keys  ${data}  lots
+    run keyword if condition is not none                        ${lots}  Run Keyword And Ignore Error  Click Element   ${tender_multilot_locator}
+    wait until page does not contain element                    ${tender_load_form_after_mode_locator}  20
+
+    open popup by btn locator                                   ${plan_form_general_panel_edit_btn_locator}
+    ${closeFrameworkAgreementSelectionUA_path} =                Get Variable Value  ${ARTIFACT_FILE}  artifact.yaml
+    ${ARTIFACT2} =                                              load_data_from  ${closeFrameworkAgreementSelectionUA_path}
+    run keyword and ignore error                                run keyword if condition is not none  ${ARTIFACT.tender_uaid}  input text to visible input  ${tender_form_general_agreementid_input_locator}  ${ARTIFACT2.tender_uaid}
+    ${main_procurement_category} =                              get from dictionary by keys  ${data}  mainProcurementCategory
+    run keyword if condition is not none                        ${main_procurement_category}  Execute Javascript  $('[id$="form-main_procurement_category"]').val('${main_procurement_category}').change()
+    ${title} =                                                  get from dictionary by keys  ${data}  title
+    run keyword if condition is not none                        ${title}  input text to visible input  ${tender_form_general_tender_title_locator}  ${title}
+    ${title_en} =                                               get from dictionary by keys  ${data}  title_en
+    run keyword if condition is not none                        ${title}  input text to exist visible input  ${tender_form_general_tender_title_en_locator}  ${title_en}
+    ${description} =                                            get from dictionary by keys  ${data}  description
+    run keyword if condition is not none                        ${title}  input text to visible input  ${tender_form_general_tender_description_locator}  ${description}
+    ${description_en} =                                         get from dictionary by keys  ${data}  description_en
+    run keyword if condition is not none                        ${title}  input text to exist visible input  ${tender_form_general_tender_description_en_locator}  ${description_en}
+    ${amount} =                                                 get from dictionary by keys  ${data}  value  amount
+    run keyword and ignore error                                run keyword if condition is not none                        ${amount}  run keyword and ignore error  input number to exist visible input  ${tender_form_general_value_amount_input_locator}  ${amount}
+    ${currency} =                                               get from dictionary by keys  ${data}  value  currency
+    run keyword if condition is not none                        ${currency}  select from visible list by value  ${tender_form_general_value_currency_input_locator}  ${currency}
+    ${value_added_tax_included} =                               get from dictionary by keys  ${data}  value  valueAddedTaxIncluded
+    run keyword if condition is not none                        ${value_added_tax_included}  run keyword if  ${value_added_tax_included}  Click Element  ${tender_form_general_value_added_tax_input_locator}
+    ${min_step_amount} =                                        get from dictionary by keys  ${data}  minimalStep  amount
+    run keyword if condition is not none                        ${min_step_amount}  input number to exist visible input  ${tender_form_general_minimalStep_amount_input_locator}  ${min_step_amount}
+    ${tender_enquiry_period_start_date} =                       get from dictionary by keys  ${data}  enquiryPeriod  startDate
+#    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  select from visible list by year of date  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
+    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  input datetime to visible input  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
+    ${tender_enquiry_period_end_date} =                         get from dictionary by keys  ${data}  enquiryPeriod  endDate
+#    run keyword if condition is not none                        ${tender_enquiry_period_start_date}  select from visible list by year of date  ${tender_enquiry_period_start_date_input_locator}  ${tender_enquiry_period_start_date}
+    run keyword if condition is not none                        ${tender_enquiry_period_end_date}  input datetime to visible input  ${tender_enquiry_period_end_date_input_locator}  ${tender_enquiry_period_end_date}
+    ${tender_start_date} =                                      get from dictionary by keys  ${data}  tenderPeriod  startDate
+    run keyword if condition is not none                        ${tender_start_date}  run keyword and ignore error  input datetime to visible input  ${tender_tender_period_start_date_input_locator}  ${tender_start_date}
+    ${tender_end_date} =                                        get from dictionary by keys  ${data}  tenderPeriod  endDate
+    run keyword if condition is not none                        ${tender_end_date}  input datetime to visible input  ${tender_tender_period_end_date_input_locator}  ${tender_end_date}
+    ${date_start} =                                             Get Current Date  increment=03:00:00
+    run keyword if condition is none                            ${tender_end_date}  input datetime to visible input  ${tender_tender_period_end_date_input_locator}  ${date_start}
+    run keyword and ignore error                                click element  ${tender_tender_quick_mode_locator}
+    ${classification} =                                         get from dictionary by keys  ${data}  classification
+    run keyword if condition is not none                        ${classification}  select classification by code attributes  ${plan_form_classification_edit_btn_locator}  ${classification}
+    ${additional_classifications} =                             get from dictionary by keys  ${data}  additionalClassifications
+    run keyword if condition is not none                        ${additional_classifications}  select classification by array of code attributes  ${plan_form_additional_classification_edit_btn_locator}  ${additional_classifications}  ${None}  ${kekv_schemes}
+    run keyword if condition is not none                        ${additional_classifications}  select classification by array of code attributes  ${plan_form_kekv_classification_edit_btn_locator}  ${additional_classifications}  ${kekv_schemes}
+    ${funding_kind} =                                           get from dictionary by keys  ${data}  fundingKind
+    run keyword if condition is not none                        ${funding_kind}  select from visible list by value  ${tender_form_general_funding_kind_input_locator}  ${funding_kind}
+#closeframework
+    ${max_awards_count} =                                       get from dictionary by keys  ${data}  maxAwardsCount
+    run keyword if condition is not none                        ${max_awards_count}  input text to exist visible input  ${tender_form_general_max_awards_count_input_locator}  ${max_awards_count}
+    ${agreement_duration_years} =                               get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_years1}=                               Run keyword If  '${agreement_duration_years}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  year
+    run keyword if condition is not none                        ${agreement_duration_years}  select from visible list by value  ${tender_form_general_agreement_duration_years_input_locator}  ${agreement_duration_years1}
+    ${agreement_duration_months} =                              get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_months1}=                              Run keyword If  '${agreement_duration_months}' != '${None}'  split_agreementDuration  ${agreement_duration_months}  month
+    run keyword if condition is not none                        ${agreement_duration_months}  select from visible list by value  ${tender_form_general_agreement_duration_months_input_locator}  ${agreement_duration_months1}
+    ${agreement_duration_days} =                                get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_days1}=                                Run keyword If  '${agreement_duration_days}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  day
+    run keyword if condition is not none                        ${agreement_duration_days}  select from visible list by value  ${tender_form_general_agreement_duration_days_input_locator}  ${agreement_duration_days1}
+#closeFrameworkAgreementSelectionUA
+    ${max_awards_count} =                                       get from dictionary by keys  ${data}  maxAwardsCount
+    run keyword if condition is not none                        ${max_awards_count}  input text to exist visible input  ${tender_form_general_max_awards_count_input_locator}  ${max_awards_count}
+    ${agreement_duration_years} =                               get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_years1}=                               Run keyword If  '${agreement_duration_years}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  year
+    run keyword if condition is not none                        ${agreement_duration_years}  select from visible list by value  ${tender_form_general_agreement_duration_years_input_locator}  ${agreement_duration_years1}
+    ${agreement_duration_months} =                              get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_months1}=                              Run keyword If  '${agreement_duration_months}' != '${None}'  split_agreementDuration  ${agreement_duration_months}  month
+    run keyword if condition is not none                        ${agreement_duration_months}  select from visible list by value  ${tender_form_general_agreement_duration_months_input_locator}  ${agreement_duration_months1}
+    ${agreement_duration_days} =                                get from dictionary by keys  ${data}  agreementDuration
+    ${agreement_duration_days1}=                                Run keyword If  '${agreement_duration_days}' != '${None}'  split_agreementDuration  ${agreement_duration_years}  day
+    run keyword if condition is not none                        ${agreement_duration_days}  select from visible list by value  ${tender_form_general_agreement_duration_days_input_locator}  ${agreement_duration_days1}
+    submit current visible popup
+
 fill tender form items
     [Arguments]                                                 ${item_attributes_array}
     [Documentation]                                             заповнення номенклатури тендеру
 
-#    ${report} =                                                 set variable if  "${mode}" in "reporting"  1  0
     :FOR  ${item_attributes}  IN  @{item_attributes_array}
-    \  run keyword and ignore error                             click visible element  ${tender_form_item_add_edit_btn_locator}
-#    \  run keyword and ignore error                             run keyword if  "${mode}" not in "reporting" or ${report} == 2  click visible element  ${tender_form_item_add_edit_btn_locator}
-#    \  run keyword and ignore error                             run keyword if  "${mode}" in "reporting" and ${report} == 1  click visible element  ${tender_form_lots_add_item_reporting_btn_locator}
-    \  wait until popup is visible
+    \  run keyword and ignore error                             open popup by btn locator  ${tender_form_item_add_edit_btn_locator}
+#    \  wait until popup is visible
     \  fill tender item form in opened popup                    ${item_attributes}
     \  submit current visible popup
     \  ${features} =                                            get from dictionary by keys  ${item_attributes}  features
     \  run keyword if condition is not none                     ${features}  fill tender form features  ${features}  ${tender_form_item_panel_add_feature_btn_locator}
-#    \  ${report} =                                              set variable if  "${mode}" in "reporting"  2
+
+fill tender form items 2 stage
+    [Arguments]                                                 ${item_attributes_array}
+    [Documentation]                                             заповнення номенклатури тендеру
+
+    :FOR  ${item_attributes}  IN  @{item_attributes_array}
+    \  run keyword and ignore error                             open popup by btn locator  ${tender_form_item_edit_btn_locator}
+#    \  wait until popup is visible
+    \  fill tender item form in opened popup                    ${item_attributes}
+    \  submit current visible popup
+    \  ${features} =                                            get from dictionary by keys  ${item_attributes}  features
+    \  run keyword if condition is not none                     ${features}  fill tender form features  ${features}  ${tender_form_item_panel_add_feature_btn_locator}
 
 fill tender item form in opened popup
     [Arguments]                                                 ${data}
@@ -179,20 +318,38 @@ fill tender item form in opened popup
     ${street_address} =                                         get from dictionary by keys  ${data}  deliveryAddress  streetAddress
     run keyword if condition is not none                        ${street_address}  input text to visible input  ${item_form_popup_delivery_street_address_input_locator}  ${street_address}
     ${delivery_start_date} =                                    get from dictionary by keys  ${data}  deliveryDate  startDate
+    ${delivery_start_date} =                                    Run keyword If  '${delivery_start_date}' != '${None}'  parse_deliveryPeriod_date  ${delivery_start_date}
     run keyword if condition is not none                        ${delivery_start_date}  run keyword and ignore error  input datetime to exist visible input  ${item_form_popup_delivery_start_date_input_locator}  ${delivery_start_date}
     ${delivery_end_date} =                                      get from dictionary by keys  ${data}  deliveryDate  endDate
-    run keyword if condition is not none                        ${delivery_end_date}  run keyword and ignore error  input datetime to exist visible input  ${item_form_popup_delivery_end_date_input_locator}  ${delivery_end_date}
+    ${delivery_end_date} =                                      Run keyword If  '${delivery_end_date}' != '${None}'  parse_deliveryPeriod_date  ${delivery_end_date}
+    run keyword if condition is not none                        ${delivery_end_date}  run keyword and ignore error  input text  ${item_form_popup_delivery_end_date_input_locator}  ${delivery_end_date}
+##    run keyword if condition is not none                        ${delivery_end_date}  run keyword and ignore error  input datetime to exist visible input  ${item_form_popup_delivery_end_date_input_locator}  ${delivery_end_date}
 
 fill tender form milestones
     [Arguments]                                                 ${milestone_attributes_array}
     [Documentation]                                             заповнення умов оплати тендеру
 
-    click visible element                                       ${tender_form_milestones_panel_edit_btn_locator}
-    wait until popup is visible
+    open popup by btn locator                                   ${tender_form_milestones_panel_edit_btn_locator}
+#    click visible element                                       ${tender_form_milestones_panel_edit_btn_locator}
+#    wait until popup is visible
     :FOR  ${milestone_attributes}  IN  @{milestone_attributes_array}
     \  click visible element                                    ${milestone_form_popup_add_btn_locator}
     \  wait until page does not contain element                 ${popup_dynamic_form_loading_element_locator}
     \  fill milestone form in opened popup                      ${milestone_attributes}
+    submit current visible popup
+
+fill tender form milestones fake
+    [Documentation]                                             заповнення умов оплати тендеру
+
+    open popup by btn locator                                   ${tender_form_milestones_panel_edit_btn_locator}
+    click visible element                                       ${milestone_form_popup_add_btn_locator}
+    wait until page does not contain element                    ${popup_dynamic_form_loading_element_locator}
+    select from visible list by value  ${milestone_form_popup_title_input_locator}  submissionDateOfApplications
+    input text to exist visible input  ${milestone_form_popup_description_input_locator}  submissionDateOfApplications
+    input text to exist visible input  ${milestone_form_popup_percentage_input_locator}  100
+    select from visible list by value  ${milestone_form_popup_code_input_locator}  postpayment
+    input text to exist visible input  ${milestone_form_popup_duration_days_input_locator}  145
+    select from visible list by value  ${milestone_form_popup_duration_type_input_locator}  working
     submit current visible popup
 
 fill milestone form in opened popup
@@ -216,8 +373,9 @@ fill tender form features
     [Arguments]                                                 ${feature_attributes_array}  ${add_btn_locator}
     [Documentation]                                             заповнення нецінові крітерії тендеру
 
-    click visible element                                       ${add_btn_locator}
-    wait until popup is visible
+    open popup by btn locator                                   ${add_btn_locator}
+#    click visible element                                       ${add_btn_locator}
+#    wait until popup is visible
     :FOR  ${feature_attributes}  IN  @{feature_attributes_array}
 #    \  click visible element                                    ${tender_form_features_panel_edit_btn_locator}
     \  execute javascript                                    ${tender_form_features_panel_edit_btn_locator}
@@ -229,8 +387,9 @@ fill tender form features2
     [Arguments]                                                 ${feature_attributes_array}  ${add_btn_locator}
     [Documentation]                                             заповнення нецінові крітерії тендеру
 
-    click visible element                                       ${add_btn_locator}
-    wait until popup is visible
+    open popup by btn locator                                   ${add_btn_locator}
+#    click visible element                                       ${add_btn_locator}
+#    wait until popup is visible
     click visible element                                       ${tender_form_features_panel_edit_btn_locator}
     wait until page does not contain element                    ${popup_dynamic_form_loading_element_locator}
     fill feature form in opened popup                           ${feature_attributes_array}
@@ -273,8 +432,11 @@ fill tender form lots
     ${milestones1} =                                            Run Keyword If  "${mode}" in "negotiation"  Get From Dictionary    ${prepared_tender_data}   milestones
     ##### EOF - TMP #####
     :FOR  ${lot_attributes}  IN  @{lot_attributes_array}
-    \  click visible element                                    ${tender_form_lots_panel_edit_btn_locator}
-    \  wait until popup is visible
+    \  run keyword if  '${mode}' not in 'open_framework'        open popup by btn locator   ${tender_form_lots_panel_edit_btn_locator}
+    \  ...  ELSE                                                click visible element    ${tender_form_lots_edit_lot1_btn_locator}
+#    \  open popup by btn locator                                ${tender_form_lots_panel_edit_btn_locator}
+#    \  click visible element                                    ${tender_form_lots_panel_edit_btn_locator}
+#    \  wait until popup is visible
     \  fill lot form in opened popup                            ${lot_attributes}
     \  submit current visible popup
     \  ${features} =                                            get from dictionary by keys  ${lot_attributes}  features
@@ -284,6 +446,28 @@ fill tender form lots
     \  run keyword if condition is none                         ${milestones}  run keyword if  "${mode}" in "negotiation"  fill tender form milestones  ${milestones1}
     \  ${items} =                                               get from dictionary by keys  ${lot_attributes}  items
     \  run keyword if condition is not none                     ${items}  fill tender form items  ${items}
+
+fill tender form lots 2 stage
+    [Arguments]                                                 ${lot_attributes_array}
+    [Documentation]                                             заповнення номенклатури тендеру
+
+    ##### BOF - TMP  for negotiation milestone 1 lot#####
+    ${prepared_tender_data} =                                   Get From Dictionary    ${td_railway_crutch}  data
+    ${milestones1} =                                            Run Keyword If  "${mode}" in "negotiation"  Get From Dictionary    ${prepared_tender_data}   milestones
+    ##### EOF - TMP #####
+    :FOR  ${lot_attributes}  IN  @{lot_attributes_array}
+    \  open popup by btn locator                                ${tender_form_lots_edit_lot1_btn_locator}
+    ##\  open popup by btn locator                                ${tender_form_lots_panel_edit_btn_locator}
+    \  fill lot form in opened popup                            ${lot_attributes}
+    \  submit current visible popup
+    \  ${features} =                                            get from dictionary by keys  ${lot_attributes}  features
+    \  run keyword if condition is not none                     ${features}  fill tender form features  ${features}  ${tender_form_lot_panel_add_feature_btn_locator}
+    \  ${milestones} =                                          get from dictionary by keys  ${lot_attributes}  milestones
+    \  run keyword if condition is not none                     ${milestones}  fill tender form milestones  ${milestones}
+    \  run keyword if condition is none                         ${milestones}  run keyword if  "${mode}" in "negotiation"  fill tender form milestones  ${milestones1}
+    \  run keyword if condition is none                         ${milestones}  run keyword if  "${mode}" in "framework_selection"  fill tender form milestones fake
+    \  ${items} =                                               get from dictionary by keys  ${lot_attributes}  items
+    \  run keyword if condition is not none                     ${items}  fill tender form items 2 stage  ${items}
 
 fill lot form in opened popup
     [Arguments]                                                 ${data}
@@ -340,11 +524,17 @@ fill tender from award reporting
     [Arguments]                                                 ${budget}  ${award_attributes_array}
     [Documentation]                                             заповнення переможця reporting тендеру
 
+    capture page screenshot
     run keyword and ignore error                                click visible element  ${tender_form_general_panel_update_award_negotiation_btn_locator}
-    run keyword and ignore error                                Run Keyword If  "${TEST_NAME}" == "Можливість створити переговорну процедуру"  click visible element  ${tender_form_general_panel_add_award_negotiation_btn_locator}
-    run keyword and ignore error                                wait until popup is visible
-    run keyword and ignore error                                click visible element  ${tender_form_general_panel_update_award_reporting_btn_locator}
-    wait until popup is visible
+    capture page screenshot
+#    Run Keyword If                                              "${TEST_NAME}" == "Можливість створити переговорну процедуру"  open popup by btn locator  ${tender_form_general_panel_add_award_negotiation_btn_locator}
+    run keyword and ignore error  Run Keyword If                                              "${TEST_NAME}" == "Можливість створити переговорну процедуру"  open popup by btn locator  ${tender_form_general_panel_add_award_negotiation_btn_locator}
+    ...                                                         ELSE IF  "${TEST_NAME}" == "Можливість створити звіт про укладений договір"  open popup by btn locator  ${tender_form_general_panel_update_award_reporting_btn_locator}
+    capture page screenshot
+    Run Keyword If                                              "${TEST_NAME}" == "Можливість зареєструвати і підтвердити постачальника до звіту про укладений договір"  open popup by btn locator  ${tender_form_general_panel_update_award_reporting_btn_locator}
+    capture page screenshot
+#    Run Keyword If                                              "${TEST_NAME}" == "Можливість зареєструвати і підтвердити постачальника до переговорної процедури"  open popup by btn locator  ${tender_form_general_panel_update_award_negotiation_btn_locator}
+    capture page screenshot
     fill award reporting form in opened popup                   ${budget}  ${award_attributes_array}
     submit current visible popup
 
@@ -384,7 +574,8 @@ open tender search form
 save tender form and wait synchronization
     [Documentation]                                             натискає кнопку "Зберегти" і чекає синхронізації тендеру
 
-    submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}
+###    submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${true}
+    submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${false}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 add document in tender
@@ -424,7 +615,7 @@ activate stage 2
     [Documentation]                                             Перевести тендер tender_uaid в статус active.tendering.
 
     open popup by btn locator                                   ${tender_form_general_panel_edit_btn_locator}
-    ${tender_end_date} =                                        Get Current Date  increment=00:30:00
+    ${tender_end_date} =                                        Get Current Date  increment=00:35:00
     input datetime to visible input                             ${tender_tender_period_end_date_input_locator}  ${tender_end_date}
     capture page screenshot
     click visible element                                       ${tender_form_general_panel_draft_mode_input_locator}
@@ -442,6 +633,7 @@ activate stage 2
     click visible element                                       ${stage2_form_add_document_close_description_btn_locator}
     capture page screenshot
     submit current visible popup
+    capture page screenshot
 
 fix awards data in global Users variable
     [Arguments]                                                 ${username}
@@ -449,6 +641,8 @@ fix awards data in global Users variable
 
     :FOR    ${user}    IN    @{USERS}
     \  continue for loop if                                     '${user}' == '${username}'
+    \  ${is_user_has_data} =                                    run keyword and return status  dictionary should contain key  ${USERS.users}  ${user}
+    \  continue for loop if                                     ${is_user_has_data} == ${False}
     \  ${user_data} = 						                    set variable  ${USERS.users['${user}']}
     \  ${is_user_has_tender_data} =                             run keyword and return status  dictionary should contain key  ${user_data}  tender_data
     \  continue for loop if                                     ${is_user_has_tender_data} == ${False}
@@ -456,3 +650,13 @@ fix awards data in global Users variable
     \  continue for loop if                                     '${status}' != 'PASS'
     \  set to object                                            ${USERS.users['${username}'].tender_data.data}  awards  ${award_data}
     \  exit for loop
+
+fill tender contact person
+    [Arguments]                                                 ${data}
+    [Documentation]                                             заповнює відкриту форму згідно вказаних даних
+    run keyword and ignore error                                open popup by btn locator  ${tender_form_cp_edit_btn_locator}
+    ${organization_name_en} =                                   get from dictionary by keys  ${data}  procuringEntity  name_en
+    run keyword if condition is not none                        ${organization_name_en}  input text to visible input  ${tender_form_organization_name_en_input_locator}  ${organization_name_en}
+    ${contact_point_name_en} =                                  get from dictionary by keys  ${data}  procuringEntity  contactPoint  name_en
+    run keyword if condition is not none                        ${contact_point_name_en}  input text to visible input  ${tender_form_contact_point_name_en_input_locator}  ${contact_point_name_en}
+    submit current visible popup

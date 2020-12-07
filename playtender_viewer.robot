@@ -282,7 +282,8 @@ get value from lot
 
 #    ${tender_lot_value_value_added_tax_included_value_locator} =        replace string  ${tender_lot_value_value_added_tax_included_value_locator_tpl}  %lot_id%  ${lot_id}
     ${return_value} =                                           get value by locator on opened page  ${tender_lot_value_value_added_tax_included_value_locator}
-    ${return_value} =                                           set variable if  ${return_value} == 1  True
+    ${return_value} =                                           set variable if  'з ПДВ' in '${return_value}'  ${True}  ${False}
+#    ${return_value} =                                           set variable if  ${return_value} == 1  True
     [return]                                                    ${return_value}
 
 Отримати інформацію із лоту minimalStep.currency
@@ -291,6 +292,7 @@ get value from lot
 
 #    ${tender_lot_minimal_step_currency_value_locator} =                replace string  ${tender_lot_minimal_step_currency_value_locator_tpl}  %lot_id%  ${lot_id}
     ${return_value} =                                           get value by locator on opened page  ${tender_lot_minimal_step_currency_value_locator}
+    ${return_value} =                                           set variable if  'UAH' in '${return_value}'  UAH
     [return]                                                    ${return_value}
 
 Отримати інформацію із лоту minimalStep.valueAddedTaxIncluded
@@ -298,7 +300,9 @@ get value from lot
     [Documentation]                                             Отримати значення поля description з лоту з lot_id в описі для тендера tender_uaid.
 
 #    ${tender_lot_value_minimal_step_added_tax_included_value_locator} =        replace string  ${tender_lot_minimal_step_value_added_tax_included_value_locator_tpl}  %lot_id%  ${lot_id}
-    ${return_value} =                                           get value by locator on opened page  ${tender_lot_minimal_step_value_added_tax_included_value_locator}
+#    ${return_value} =                                           get value by locator on opened page  ${tender_lot_minimal_step_value_added_tax_included_value_locator}
+    ${return_value} =                                           get value by locator on opened page  ${tender_lot_value_value_added_tax_included_value_locator}
+    ${return_value} =                                           set variable if  'з ПДВ' in '${return_value}'  ${True}  ${False}
     [return]                                                    ${return_value}
 
 Отримати інформацію із лоту auctionPeriod.startDate
@@ -523,7 +527,8 @@ Wait For complaintPeriodendDate
     [Documentation]                                             Отримати значення поля minimalStep.amount для тендера tender_uaid.
 
 #    ${tender_lot_minimal_step_amount_value_locator} =           replace string  ${tender_lot_minimal_step_amount_value_locator_tpl}  %lot_id%  ${lot_id}
-    click visible element                                       ${tender_awards_negotiation_documents_btn_locator}
+#    click visible element                                       ${tender_awards_negotiation_documents_btn_locator}
+    open popup by btn locator                                   ${tender_awards_negotiation_documents_btn_locator}
     ${return_value} =                                           get value by locator on opened page  ${tender_awards_0_documents_0_title_value_locator}
     click visible element                                       ${tender_awards_negotiation_documents_close_btn_locator}
     [return]                                                    ${return_value}

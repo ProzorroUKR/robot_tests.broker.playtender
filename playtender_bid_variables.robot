@@ -7,9 +7,11 @@ ${bid_form_submit_success_msg} =                                    Пропоз
 ${bid_form_submit_edit_success_msg} =                               Пропозиція відредагована
 ${bid_form_submit_remove_success_msg} =                             Ви впевнені що бажаєте видали свою пропозицію?
 ${alert_opened_close_bid_btn_locator} =                             jquery=.animated-content .js-btn-confirm
-${bid_form_feature_input_locator_tpl} =                             jquery=.fancybox-is-open .fancybox-content select[id*="%title%-enum"]
+${bid_form_feature_input_locator_select_tpl} =                      jquery=[data-opid*="%title%"]
+${bid_form_get_feature_input_locator_tpl} =                         return $('.fancybox-is-open .fancybox-content [data-opid*="%title%"]
+${bid_form_get_feature_value_input_locator_tpl} =                   option[data-weight-source*="%value%"]').text()
+${bid_form_feature_input_locator_tpl} =                             jquery=.fancybox-is-open .fancybox-content [data-opid*="%title%"]
 ${bid_form_feature_value_input_locator_tpl} =                       option[data-weight-source*="%value%"]
-#${bid_form_feature_value_input_locator_tpl} =                       jquery=.fancybox-is-open .fancybox-content select[id*="%title%-enum"] option[data-weight-source*="%value%"]
 ${bid_form_value_amount_input_locator} =                            jquery=.fancybox-is-open .fancybox-content input[id*="-value_amount"]
 ${bid_form_value_subcontracting_details_input_locator} =            jquery=.fancybox-is-open .fancybox-content textarea[id*="-subcontracting_details"]
 ${bid_form_value_self_eligible_input_locator} =                     jquery=.fancybox-is-open .fancybox-content input[id*="-self_eligible"]
@@ -27,6 +29,7 @@ ${bid_form_add_document_description_btn_locator} =                  jquery=#tend
 ${bid_form_add_document_description_input_locator} =                jquery=#tender-bid-form .documents-dynamic-forms-wrapper:last .popover.fade.top.in textarea[id*="-description"].form-control
 ${bid_form_add_document_close_description_btn_locator} =            jquery=#tender-bid-form .documents-dynamic-forms-wrapper:last .popover.fade.top.in [href$="#close"]
 ${bid_form_add_document_confidentiality_input_locator} =            jquery=#tender-bid-form .documents-dynamic-forms-wrapper:last .popover.fade.top.in [id$="-confidentiality"]
+${bid_form_add_document_confidentialityrationale_input_locator} =   jquery=#tender-bid-form .documents-dynamic-forms-wrapper:last .popover.fade.top.in textarea[id*="-confidentiality_rationale"].form-control
 ${bid_form_submit_btn_locator} =                                    jquery=.fancybox-is-open .fancybox-content button.btn.btn-success
 ${bid_form_edit_document_all_btn_locator} =                         jquery=.form-documents-group .tab-content .item-wrapper.js-item:last a[href*="#reupload"]
 
@@ -34,3 +37,7 @@ ${bid_lotValues_0_value_amount_value_locator} =                     jquery=.fanc
 ${bid_lotValues_0_value_amount_value_locator_type} =                float
 
 ${bid_popup_locator} =                                              jquery=.fancybox-slide .modal.fancybox-content
+
+${bid_form_refresh_success_msg} =                                   Закупівля оновлена.
+${bid_form_refresh_btn_locator} =                                   jquery=#tender-general-info a[href*="/utils/tender-sync"]
+${bid_form_bid_status_btn_locator} =                                jquery=.bid-info-wrapper.hidden.info-wrapper .info-row.status-source

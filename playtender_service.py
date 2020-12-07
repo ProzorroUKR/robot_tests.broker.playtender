@@ -3,6 +3,7 @@ import re
 import copy
 import urllib
 import urllib3
+import string
 
 import dateutil.parser
 from iso8601 import parse_date
@@ -158,8 +159,14 @@ def convert_float_to_string_3f(number):
 def convert_to_specified_type(value, type):
     value = "%s" % (value)
     if type == 'integer':
+        value = value.split()
+        value = ''.join(value)
+        print(value)
         value = int(value)
     if type == 'float':
+        value = value.split()
+        value = ''.join(value)
+        print(value)
         value = float(value)
     return value
 
@@ -169,6 +176,29 @@ def isodate_format(isodate, format):
     iso_dt = parse_date(isodate)
     return iso_dt.strftime(format)
 
+
+def procuring_entity_name(tender_data):
+    tender_data.data.procuringEntity['name'] = u"ТОВ \"ПлейТендер\""
+    tender_data.data.procuringEntity['name_en'] = u"TOV \"playtender\""
+    tender_data.data.procuringEntity.identifier['id'] = u"1234567890-playtender"
+    tender_data.data.procuringEntity.identifier['legalName'] = u"ТОВ \"ПлейТендер\""
+    tender_data.data.procuringEntity.identifier['legalName_en'] = u"TOV \"playtender\""
+    if 'address' in tender_data.data.procuringEntity:
+         tender_data.data.procuringEntity.address['region'] = u"м. Київ"
+         tender_data.data.procuringEntity.address['postalCode'] = u"123123"
+         tender_data.data.procuringEntity.address['locality'] = u"Київ"
+         tender_data.data.procuringEntity.address['streetAddress'] = u"address"
+    if 'contactPoint' in tender_data.data.procuringEntity:
+         tender_data.data.procuringEntity.contactPoint['name'] = u"Test ЗамовникОборони"
+         tender_data.data.procuringEntity.contactPoint['name_en'] = u"Test"
+         tender_data.data.procuringEntity.contactPoint['email'] = u"chuzhin@mail.ua"
+         tender_data.data.procuringEntity.contactPoint['telephone'] = u"+3801111111111"
+         tender_data.data.procuringEntity.contactPoint['url'] = u"http://playtender.com.ua"
+    if 'buyers' in tender_data.data:
+        tender_data.data.buyers[0]['name'] = u"ТОВ \"ПлейТендер\""
+        tender_data.data.buyers[0].identifier['id'] = u"1234567890-playtender"
+        tender_data.data.buyers[0].identifier['legalName'] = u"ТОВ \"ПлейТендер\""
+    return tender_data
 
 # prepare data
 def prepare_procuring_entity_data(data):
@@ -357,3 +387,25 @@ def parse_complaintPeriod_date(date_string):
                     date_str.microsecond)
     date = TZ.localize(date).isoformat()
     return date
+
+def parse_deliveryPeriod_date1(date):
+    date = dateutil.parser.parse(date)
+    date = date.strftime("%d.%m.%Y")
+    return date
+
+def parse_deliveryPeriod_date(date_string):
+#    date_str = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S+03:00")
+    if '+03' in date_string:
+        date_str = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S+03:00")
+    else:
+        date_str = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S+02:00")
+    date = datetime(date_str.year, date_str.month, date_str.day)
+    date = date.strftime("%d.%m.%Y")
+    return date
+
+def split_joinvalue(str_value):
+    str_value = str_value.split()
+    str_value = ''.join(str_value)
+    print(str_value)
+    str_value.replace(" ", "")
+    return str_value

@@ -15,16 +15,17 @@ edit contract
     Run Keyword If                                              '${TEST_NAME}' == 'Неможливість вказати ціну договору з ПДВ більше ніж результат проведення аукціону' and '${mode}' not in 'open_esco'  Fail   Amount should be less or equal to awarded amount
     Run Keyword If                                              '${TEST_NAME}' == 'Неможливість вказати ціну договору з ПДВ більше ніж результат проведення аукціону' and '${mode}' in 'open_esco'  Fail   Can't update amount for contract value
     Run Keyword If                                              '${TEST_NAME}' == 'Неможливість зменшити ціну договору без ПДВ на суму більшу за 20% від ціни договору з ПДВ (закупівля з ПДВ)'  Fail   Amount should be greater than amountNet and differ by no more than 20.0%
-    ${complaint_period_end_date} =                              get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
-    Wait date                                                   ${complaint_period_end_date}
+    ${complaint_period_end_date} =                              run keyword if  '${mode}' not in 'reporting'  get value by locator on opened page  ${tender_awards_complaintPeriod_endDate_value_locator}
+    run keyword if  '${mode}' not in 'reporting'                Wait date                                                   ${complaint_period_end_date}
     click visible element                                       ${contract_form_0_open_btn_locator}
     Run Keyword And Ignore Error                                Wait Until Page Contains                                    ${contract_contractform_contract_number_input_locator}  10
     run keyword and ignore error                                wait until element is visible  ${tender_status_active_qualification_value_locator}  5
     wait until element is visible                               ${contract_contractform_contract_number_input_locator}  10
     capture page screenshot
     ${file_path}  ${file_name}  ${file_content} =               create_fake_doc
-    ${value_added_tax_included} =                               Run Keyword If  '${mode}' == 'negotiation'  run keyword and return status  Checkbox Should Not Be Selected  ${contract_contractform_value_added_tax_included_locator}
-    run keyword if                                              '${mode}' == 'negotiation' and ${value_added_tax_included}  click visible element  ${contract_contractform_value_added_tax_included_locator}
+    ${value_added_tax_included} =                               Run Keyword If  '${mode}' in 'negotiation reporting'  run keyword and return status  Checkbox Should Not Be Selected  ${contract_contractform_value_added_tax_included_locator}
+    run keyword if                                              '${mode}' in 'negotiation reporting' and ${value_added_tax_included}  Execute Javascript  $('[id$="contractform-value_added_tax_included"]').click()
+#    run keyword if                                              '${mode}' == 'negotiation' and ${value_added_tax_included}  click visible element  ${contract_contractform_value_added_tax_included_locator}
     ${contract_number} =                                        get value by locator on opened page  ${contract_contractform_contract_number_input_locator}
     Run Keyword If                                              '${contract_number}' == ''  input text to exist visible input  ${contract_contractform_contract_number_input_locator}  1234567890
     capture page screenshot

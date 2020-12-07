@@ -5,6 +5,7 @@ Resource                                                        playtender_plan.
 Resource                                                        playtender_tender.robot
 Resource                                                        playtender_qualification.robot
 Resource                                                        playtender_contract.robot
+Resource                                                        playtender_agreement.robot
 
 *** Variables ***
 
@@ -46,8 +47,11 @@ Resource                                                        playtender_contr
     [Documentation]                                             Створити план з початковими даними plan_data. Повернути uaid створеного плану.
 
     # check buyers
+    ${plan_data} =                                              procuring_entity_name  ${plan_data}
+    log many  ${plan_data}
     ${buyers_count} =                                           get length  ${plan_data['data']['buyers']}
     run keyword if                                              ${buyers_count} != 1  fail  Buyer must be one
+    log many  ${plan_data['data']}
 
     open new plan form
     fill plan form                                              ${plan_data['data']}
@@ -66,6 +70,7 @@ Resource                                                        playtender_contr
     [Documentation]                                             Знайти план за зазначеним plan_uaid.
 
     open plan search form
+    Execute Javascript  $('#plan-filter-form .dynamic-search-query input').click()
     input to search form and wait results                       ${plan_search_form_query_input_locator}  ${plan_uaid}  ${plan_search_form_result_locator_tpl}
 
 Внести зміни в план
@@ -104,26 +109,62 @@ Resource                                                        playtender_contr
     ${value} =                                                  get field_value by field_name on opened page  ${field_name}
     [Return]                                                    ${value}
 
+Скасувати план
+    [Arguments]                                                 ${username}  ${plan_uaid}  ${data}
+    [Documentation]                                             Скасувати план plan_uaid.
+
+    open plan page by uaid                                      ${plan_uaid}
+    delete plan                                                 ${data}
+
 ########################################################################################################################
 ################################################### TENDER KEYWORDS ####################################################
 ########################################################################################################################
 
-Створити тендер
-    [Arguments]                                                 ${user}  ${tender_data}
+Створити тендер з критеріями
+    [Arguments]                                                 ${user}  ${tender_data}  ${tender_aid}  ${critery_data}
     [Documentation]                                             Створити тендер з початковими даними tender_data. Повернути
     ...                                                         uaid створеного тендера.
 
+    playtender.Створити тендер                                  ${user}  ${tender_data}  ${tender_aid}
+    ${tender_uaid} =                                            get text  ${tender_uaid_text_locator}
+    [Return]                                                    ${tender_uaid}
+
+Створити тендер
+    [Arguments]                                                 ${user}  ${tender_data}  ${tender_aid}
+    [Documentation]                                             Створити тендер з початковими даними tender_data. Повернути
+    ...                                                         uaid створеного тендера.
+
+    ${tender_data} =                                            procuring_entity_name  ${tender_data}
+    log many  ${tender_data}
     ${tender_prepared_data} =                                   prepare tender data  ${tender_data['data']}
+    log many  ${tender_prepared_data}
     ##### BOF - TMP for negotiation milestone 1 lot#####
     Set Global Variable    ${td_railway_crutch}  ${tender_data}
     ##### EOF - TMP #####
 
     ${tender_data_keys}=  Get Dictionary Keys  ${tender_data.data}
+    log many  ${SUITE_NAME}
     ${procurementMethodType} =  Set Variable If  'procurementMethodType' in ${tender_data_keys}  ${tender_data.data.procurementMethodType}  belowThreshold
     Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints' and '${procurementMethodType}' == 'aboveThresholdUA'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=1000
     Run Keyword If  '${SUITE_NAME}' == 'Tests Files.Complaints' and '${procurementMethodType}' == 'belowThreshold'  Go To  ${BROKERS['playtender'].basepage}/utils/config?tacceleration=720
     open new tender form
     fill tender form                                            ${tender_prepared_data}
+####    submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${true}
+    submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${false}
+    wait until page does not contain element with reloading     ${tender_sync_element_locator}
+    wait until page contains element with reloading             ${tender_uaid_text_locator}
+    ${tender_uaid} =                                            get text  ${tender_uaid_text_locator}
+    [Return]                                                    ${tender_uaid}
+
+Створити тендер другого етапу
+    [Arguments]                                                 ${user}  ${tender_data}
+    [Documentation]                                             Створити тендер другого етапу з початковими даними tender_data.
+    ...                                                         Повернути uaid створеного тендера.
+
+    ${tender_prepared_data} =                                   prepare tender data  ${tender_data['data']}
+    Set Global Variable    ${td_railway_crutch}  ${tender_data}
+    open new tender form
+    fill tender form 2 stage                                    ${tender_prepared_data}
     submit form and check result                                ${tender_form_submit_btn_locator}  ${tender_form_submit_success_msg}  ${tender_created_checker_element_locator}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
     wait until page contains element with reloading             ${tender_uaid_text_locator}
@@ -149,9 +190,12 @@ Resource                                                        playtender_contr
     [Documentation]                                             Отримати значення поля field_name для тендера tender_uaid.
 
     # fix for preventing error "Resolving variable '${award.value.amount}' failed: AttributeError: value" in next keywords for owner role
-    #run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
+##    run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
 
     open tender page by uaid                                    ${tender_uaid}
+    Run Keyword And Return If                                   '${field_name}' == 'lots[0].minimalStep.currency'   Отримати інформацію із лоту minimalStep.currency  ${field_name}
+    Run Keyword And Return If                                   '${field_name}' == 'lots[0].minimalStep.valueAddedTaxIncluded'   Отримати інформацію із лоту minimalStep.valueAddedTaxIncluded  ${field_name}
+    Run Keyword And Return If                                   '${field_name}' == 'lots[0].value.valueAddedTaxIncluded'   Отримати інформацію із лоту value.valueAddedTaxIncluded  ${field_name}
     Run Keyword And Return If                                   '${field_name}' == 'complaintPeriod.endDate'   Отримати інформацію із complaintPeriod.endDate
     Run Keyword And Return If                                   '${field_name}' == 'items[0].deliveryLocation.latitude'   Fail   Поле не відображаем
     run keyword if                                              '${field_name}' == 'status'  wait for tender status
@@ -171,9 +215,13 @@ Resource                                                        playtender_contr
     [Documentation]                                             Змінити значення поля fieldname на fieldvalue для плана із зазначеним plan_uaid.
 
     ${tender_data} =                                            generate dictionary from field path and value  ${fieldname}  ${fieldvalue}
+#    Log Dictionary    ${USERS.users['${tender_owner}'].tender_data.data}
     open tender form by uaid                                    ${tender_uaid}
     fill tender form                                            ${tender_data}
+    capture page screenshot
     save tender form and wait synchronization
+    capture page screenshot
+ #   Log Dictionary    ${USERS.users['${tender_owner}'].tender_data.data}
 
 Завантажити документ
     [Arguments]                                                 ${username}  ${filepath}  ${tender_uaid}
@@ -216,14 +264,7 @@ Resource                                                        playtender_contr
     open tender form by uaid                                    ${tender_uaid}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
     ${tender_form_lots_remove_item_btn_locator} =               replace string  ${tender_form_lots_remove_item_btn_locator_tpl}  %item_id%  ${item_id}
-    wait until page contains element with reloading             ${tender_form_lots_remove_item_btn_locator}
-    click visible element                                       ${tender_form_lots_remove_item_btn_locator}
-    Wait Until Page Contains                                    ${tender_lots_remove_item_form_submit_success_msg}  60
-    execute javascript                                          ${not_alert_opened_close_btn_locator}
-    #run keyword and ignore error  click visible element                                       ${not_alert_opened_close_btn_locator}
-    capture page screenshot
-    Wait Until Page Does Not Contain                            ${tender_lots_remove_item_form_submit_success_msg}  10
-    capture page screenshot
+    click removing form item and wait success result            ${tender_form_lots_remove_item_btn_locator}
 
     save tender form and wait synchronization
 
@@ -281,12 +322,8 @@ Resource                                                        playtender_contr
     [Documentation]                                             Додати предмет item в лот з lot_id в описі для тендера tender_uaid.
 
     open tender form by uaid                                    ${tender_uaid}
-#    click visible element                                       ${tender_form_lots_add_item_btn_locator}
     ${items} =                                                  create list  ${item}
     fill tender form items                                      ${items}
-#    wait until popup is visible
-#    fill tender item form in opened popup                                      ${item}
-#    submit current visible popup
     save tender form and wait synchronization
 
 
@@ -342,20 +379,11 @@ Resource                                                        playtender_contr
     [Documentation]                                             Видалити неціновий показник з feature_id в описі для тендера tender_uaid.
 
     open tender form by uaid                                    ${tender_uaid}
-    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на предмет'    click visible element   ${tender_update_feature_item_btn_locator}
-    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на лот'    click visible element   ${tender_update_feature_lot_btn_locator}
-    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на тендер'    click visible element   ${tender_update_feature_tender_btn_locator}
-    wait until popup is visible
-    ${tender_feature_switch_dell_btn_locator} =                 replace string  ${tender_feature_switch_dell_btn_locator_tpl}  %feature_id%  ${feature_id}
-    execute javascript                                          ${tender_feature_switch_dell_btn_locator}
-#    click visible element                                       ${tender_feature_switch_dell_btn_locator}
-    Wait Until Element Is Visible                               ${tender_feature_dell_btn_locator}  20
-    click visible element                                       ${tender_feature_dell_btn_locator}
-    Wait Until Page Contains                                    ${tender_feature_form_submit_success_msg}  60
-    execute javascript                                          ${not_alert_opened_close_btn_locator}
-    #click visible element                                       ${not_alert_opened_close_btn_locator}
-    Wait Until Page Does Not Contain                            ${tender_feature_form_submit_success_msg}  10
-    submit current visible popup
+    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на предмет'    open popup by btn locator   ${tender_update_feature_item_btn_locator}
+    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на лот'    open popup by btn locator   ${tender_update_feature_lot_btn_locator}
+    Run Keyword If                                              '${TEST_NAME}' == 'Можливість видалити неціновий показник на тендер'    open popup by btn locator   ${tender_update_feature_tender_btn_locator}
+    ${delete_feature_btn_locator} =                             replace string  ${tender_feature_switch_dell_btn_locator_tpl}  %feature_id%  ${feature_id}
+    click removing form feature and wait success result         ${delete_feature_btn_locator}
     save tender form and wait synchronization
 
 
@@ -534,7 +562,7 @@ Resource                                                        playtender_contr
     Підтвердити вирішення вимоги                                ${username}  ${tender_uaid}  award  null  ${complaintID}  ${escalating_data}  ${award_index}
 
 Отримати інформацію із скарги
-    [Arguments]                                                 ${username}  ${tender_uaid}  ${complaintID}  ${field_name}  ${award_index}=${None}
+    [Arguments]                                                 ${username}  ${tender_uaid}  ${complaintID}  ${field_name}  ${object_index}=${None}  ${object}=${None}
     [Documentation]                                             Отримати значення поля field_name скарги/вимоги complaintID про
     ...                                                         виправлення умов закупівлі/лоту для тендера tender_uaid (скарги/вимоги про
     ...                                                         виправлення визначення переможця під номером award_index, якщо award_index != None).
@@ -581,6 +609,15 @@ Resource                                                        playtender_contr
 
     Відповісти на вимогу                                        ${username}  ${tender_uaid}  ${complaintID}  ${answer_data}  ${award_index}
 
+Створити чернетку скарги про виправлення умов закупівлі
+    [Arguments]                                                 ${username}  ${tender_uaid}  ${claim}
+    [Documentation]                                             Створює скаргу claim про виправлення умов закупівлі
+    ...                                                         у статусі claim для тендера tender_uaid. Можна створити
+    ...                                                         вимогу як з документом, який знаходиться за шляхом document,
+    ...                                                         так і без нього.
+
+    Run Keyword And Return                                      Створити вимогу  ${username}  ${tender_uaid}  tender  null  ${claim}  null
+
 
 ########################################################################################################################
 ################################################### END CLAIM KEYWORDS #############################################
@@ -597,7 +634,7 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     fill bid form                                               ${tender_uaid}  ${bid}  ${lots_ids}  ${features_ids}
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Змінити цінову пропозицію
@@ -608,7 +645,7 @@ Resource                                                        playtender_contr
     open tender page by uaid                                    ${tender_uaid}
     fill bid form edit                                          ${fieldname}  ${fieldvalue}
     capture page screenshot
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Скасувати цінову пропозицію
@@ -618,7 +655,7 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     fill bid form remove
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Завантажити документ в ставку
@@ -629,7 +666,7 @@ Resource                                                        playtender_contr
     open tender page by uaid                                    ${tender_uaid}
     add document to bid                                         ${path}  ${doc_type}  ${doc_name}
     capture page screenshot
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Змінити документ в ставці
@@ -640,7 +677,7 @@ Resource                                                        playtender_contr
     open tender page by uaid                                    ${tender_uaid}
     document to bid edit                                        ${path}  ${doc_id}
     capture page screenshot
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Змінити документацію в ставці
@@ -651,7 +688,7 @@ Resource                                                        playtender_contr
     open tender page by uaid                                    ${tender_uaid}
     fill bid form edit document                                 ${doc_data}  ${doc_id}
     capture page screenshot
-    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}
+    submit form and check result                                ${bid_form_submit_btn_locator}  ${bid_form_submit_edit_success_msg}  ${tender_created_checker_element_locator}  ${true}
     wait until page does not contain element with reloading     ${tender_sync_element_locator}
 
 Отримати інформацію із пропозиції
@@ -704,7 +741,6 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     open tender form qualification                              ${award_num}
-#    wait until popup is visible
     cancel award qualification
 
 Затвердити постачальників
@@ -728,7 +764,8 @@ Resource                                                        playtender_contr
     ...                                                         нього документ, який знаходиться по шляху document та перевести в статус active.
 
     open tender form by uaid                                    ${tender_uaid}
-    fill tender from award reporting                            ${supplier_data.data.value.amount}  ${supplier_data.data.suppliers[0]}
+#    fill tender from award reporting                            ${supplier_data.data.value.amount}  ${supplier_data.data.suppliers[0]}
+    fill tender from award reporting                            ${rep_val}  ${supplier_data.data.suppliers[0]}
     run keyword and ignore error                                save tender form and wait synchronization
     confirm award                                               ${document}
 ########################################################################################################################
@@ -775,7 +812,6 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     open tender form prequalification                           ${qualification_num}
-#    wait until popup is visible
     cancel qualifications
 
 Затвердити остаточне рішення кваліфікації
@@ -843,7 +879,7 @@ Resource                                                        playtender_contr
     ${tender_new_doc_locator} =                                 replace string  ${tender_new_doc_locator_tpl}  %doc_id%  ${doc_id}
     wait until page contains element with reloading             ${tender_new_doc_locator}
 
-    ${file_link} =                                              Execute Javascript  return $('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-sandbox.prozorro.gov.ua"]').val('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-sandbox.prozorro.gov.ua"]').attr("href")
+    ${file_link} =                                              Execute Javascript  return $('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-staging.prozorro.gov.ua"]').val('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-staging.prozorro.gov.ua"]').attr("href")
     ${file_name} =                                              get text  ${tender_new_doc_locator}
     download_file  ${file_link}  ${file_name}  ${OUTPUT_DIR}
     [return]                                                    ${file_name}
@@ -857,7 +893,7 @@ Resource                                                        playtender_contr
     open tender page by uaid                                    ${tender_uaid}
     ${tender_new_doc_locator} =                                 replace string  ${tender_new_doc_locator_tpl}  %doc_id%  ${doc_id}
     wait until page contains element with reloading             ${tender_new_doc_locator}
-    ${file_link} =                                              Execute Javascript  return $('.docs__list .docs__item.js-item:last a.doc__link[href*="https://public-docs-sandbox.prozorro.gov.ua"]').val('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-sandbox.prozorro.gov.ua"]').attr("href")
+    ${file_link} =                                              Execute Javascript  return $('.docs__list .docs__item.js-item:last a.doc__link[href*="https://public-docs-staging.prozorro.gov.ua"]').val('.docs__list .docs__item.js-item:first a.doc__link[href*="https://public-docs-staging.prozorro.gov.ua"]').attr("href")
     ${file_name} =                                              get text  ${tender_new_doc_locator}
     download_file  ${file_link}  ${file_name}  ${OUTPUT_DIR}
     [return]                                                    ${file_name}
@@ -869,11 +905,12 @@ Resource                                                        playtender_contr
 
     open tender page by uaid                                    ${tender_uaid}
     log many  ${mode}
+    run keyword if                                              "${mode}" in "open_framework"  submit form and check result     ${bid_form_refresh_btn_locator}  ${bid_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
     run keyword if                                              "${mode}" not in "belowThreshold"  wait until page contains element with reloading             ${tender_auction_locator}  10
     run keyword if                                              "${mode}" in "belowThreshold"  wait until page contains element with reloading             ${tender_auction_belowThreshold_input_locator}
-    ${return_value} =                                           run keyword if  "${mode}" not in "belowThreshold below_funders"  Execute Javascript  return $('#auction-info a[href*="https://auction-sandbox"]').attr("href")
-#    ${return_value} =                                           run keyword if  "${mode}" in "belowThreshold"  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-sandbox"]').attr("href")
-    ...                                                         ELSE IF  '${mode}' in 'belowThreshold below_funders'  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-sandbox"]').attr("href")
+    ${return_value} =                                           run keyword if  "${mode}" not in "belowThreshold below_funders"  Execute Javascript  return $('#auction-info a[href*="https://auction-staging"]').attr("href")
+#    ${return_value} =                                           run keyword if  "${mode}" in "belowThreshold"  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-staging"]').attr("href")
+    ...                                                         ELSE IF  '${mode}' in 'belowThreshold below_funders'  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-staging"]').attr("href")
     [return]                                                    ${return_value}
 
 Отримати посилання на аукціон для учасника
@@ -885,9 +922,9 @@ Resource                                                        playtender_contr
     log many  ${mode}
     run keyword if                                              "${mode}" not in "belowThreshold"  wait until page contains element with reloading             ${tender_auction_locator}  10
     run keyword if                                              "${mode}" in "belowThreshold"  wait until page contains element with reloading             ${tender_auction_belowThreshold_input_locator}
-    ${return_value} =                                           run keyword if  "${mode}" not in "belowThreshold"  Execute Javascript  return $('#auction-info a[href*="https://auction-sandbox"]').attr("href")
-#    ${return_value} =                                           run keyword if  "${mode}" in "belowThreshold"  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-sandbox"]').attr("href")
-    ...                                                         ELSE IF  '${mode}' in 'belowThreshold'  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-sandbox"]').attr("href")
+    ${return_value} =                                           run keyword if  "${mode}" not in "belowThreshold"  Execute Javascript  return $('#auction-info a[href*="https://auction-staging"]').attr("href")
+#    ${return_value} =                                           run keyword if  "${mode}" in "belowThreshold"  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-staging"]').attr("href")
+    ...                                                         ELSE IF  '${mode}' in 'belowThreshold'  Execute Javascript  return $('#aside-part-pjax a[href*="https://auction-staging"]').attr("href")
     [return]                                                    ${return_value}
 ########################################################################################################################
 ################################################### END DOCUMENT KEYWORDS ###############################
@@ -1040,4 +1077,70 @@ Resource                                                        playtender_contr
 
 ########################################################################################################################
 ################################################### END CONTRACTS KEYWORDS ####################################
+########################################################################################################################
+
+########################################################################################################################
+################################################### AGREEMENT KEYWORDS #################################################
+########################################################################################################################
+
+Пошук угоди по ідентифікатору
+    [Arguments]                                                 ${username}  ${agreement_uaid}  ${save_key}=${Empty}
+    [Documentation]                                             Знайти угоду з uaid рівним tender_uaid.
+
+    open agreement search form
+    input to search form and wait results                       ${agreement_search_form_query_input_locator}  ${agreement_uaid}  ${agreement_search_form_result_locator_tpl}
+
+Отримати доступ до угоди
+    [Arguments]                                                 ${username}  ${agreement_uaid}
+    [Documentation]                                             Отримати доступ до угоди по agreement id.
+
+    open agreement page by uaid                                    ${agreement_uaid}
+    Log to Console  ${agreement_uaid}
+
+Завантажити документ в рамкову угоду
+    [Arguments]                                                 ${username}  ${filepath}  ${tender_uaid}
+    [Documentation]                                             Завантажити документ, який знаходиться по шляху filepath,
+    ...                                                         до тендера tender_uaid.
+
+    open agreement form by uaid                                 ${tender_uaid}
+    add document in agreement                                   ${filepath}
+    save agreement form and wait synchronization
+
+Отримати інформацію із угоди
+    [Arguments]                                                 ${username}  ${agreement_uaid}  ${field_name}
+    [Documentation]                                             Отримати значення поля field_name для тендера tender_uaid.
+
+    # fix for preventing error "Resolving variable '${award.value.amount}' failed: AttributeError: value" in next keywords for owner role
+##    run keyword if                                              ${is_test_role_owner} and '${field_name}' in 'awards[0].complaintPeriod.endDate awards[1].complaintPeriod.endDate awards[2].complaintPeriod.endDate awards[3].complaintPeriod.endDate'  fix awards data in global Users variable  ${username}
+
+    open agreement page by uaid                                 ${agreement_uaid}
+    update agreement queue
+    submit form and check result                                ${agreement_form_refresh_btn_locator}  ${agreement_form_refresh_success_msg}  ${tender_created_checker_element_locator}  ${true}
+    Execute JavaScript    window.scrollTo(0, document.body.scrollHeight);
+    sleep  10
+    ${return_value} =                                           Run Keyword If  '${field_name}' == 'changes[0].status'      get value by locator on opened page  ${agreement_changes_0_status_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[0].rationaleType'   get value by locator on opened page  ${agreement_changes_0_rationaleType_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[0].rationale'  get value by locator on opened page  ${agreement_changes_0_rationale_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[0].modifications[0].itemId'  get value by locator on opened page  ${agreement_changes_0_modifications_0_itemId_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[0].modifications[0].factor'  get value by locator on opened page  ${agreement_changes_0_modifications_0_factor_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[1].rationaleType'   get value by locator on opened page  ${agreement_changes_1_rationaleType_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[1].rationale'  get value by locator on opened page  ${agreement_changes_1_rationale_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[1].modifications[0].itemId'  get value by locator on opened page  ${agreement_changes_1_modifications_0_itemId_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[1].modifications[0].factor'  get value by locator on opened page  ${agreement_changes_1_modifications_0_factor_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[1].status'   get value by locator on opened page  ${agreement_changes_1_status_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[2].rationaleType'   get value by locator on opened page  ${agreement_changes_2_rationaleType_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[2].rationale'   get value by locator on opened page  ${agreement_changes_2_rationale_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[2].modifications[0].itemId'   get value by locator on opened page  ${agreement_changes_2_modifications_0_itemId_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[2].modifications[0].factor'   get value by locator on opened page  ${agreement_changes_2_modifications_0_factor_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[2].status'   get value by locator on opened page  ${agreement_changes_2_status_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].rationaleType'   get value by locator on opened page  ${agreement_changes_3_rationaleType_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].rationale'   get value by locator on opened page  ${agreement_changes_3_rationale_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].modifications[0].itemId'   get value by locator on opened page  ${agreement_changes_3_modifications_0_itemId_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].modifications[0].factor'   get value by locator on opened page  ${agreement_changes_2_modifications_0_factor_value_locator}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].modifications[0].contractId'   get value by locator on opened page  ${}
+    ...  ELSE                                                   Run Keyword If  '${field_name}' == 'changes[3].status'   get value by locator on opened page  ${agreement_changes_3_status_value_locator}
+    [Return]                                                    ${return_value}
+
+########################################################################################################################
+################################################### AGREEMENT KEYWORDS #################################################
 ########################################################################################################################

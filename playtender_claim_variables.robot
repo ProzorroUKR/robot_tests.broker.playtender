@@ -1,8 +1,9 @@
 *** Variables ***
 
 #claim
-${claim_page_open_btn_locator} =                                    jquery=#aside-part-pjax a[href*="/tender/complaints"]
-${claim_form_open_btn_locator} =                                    jquery=#tender-part-pjax a[href*="/tender/complaint-create"]:first
+${claim_page_open_btn_locator} =                                    jquery=#aside-part-pjax a[href*="/tender-complaint"]
+#${claim_form_open_btn_locator} =                                    jquery=#tender-part-pjax a[href*="/tender/complaint-create"]:first
+${claim_form_open_btn_locator} =                                    jquery=#tender-part-pjax a[href*="tender-complaint/create"]:first
 ${claim_form_complaintform_title_input_locator} =                   jquery=.fancybox-is-open .fancybox-content input[id*="complaintform-title"]
 ${claim_form_complaintform_description_input_locator} =             jquery=.fancybox-is-open .fancybox-content textarea[id*="complaintform-description"]
 ${claim_form_complaintform_related_of_input_locator} =              jquery=.fancybox-is-open .fancybox-content select[id*="complaintform-related_of"]
@@ -22,8 +23,8 @@ ${claim_cancel_submit_success_msg} =                                Вимога
 ${claim_form_cancellation_reason_input_locator} =                   jquery=#complaintcancelform-cancellation_reason
 ${claim_form_cancel_open_btn_locator_tpl} =                         jquery=#tender-part-pjax #tender-complaint-list .complaint__item[data-complaint-id*="%complaint_id%"] a[href*="/tender/complaint-cancel"]
 
-${claim_file_link_input_locator_tpl} =                              return $('#tender-complaint-list .js-item div[data-complaint-id*="%complain_id%"] .complaint-info-wrapper .info-row.documents .value a[href*="https://public-docs-sandbox.prozorro.gov.ua"]').attr("href")
-${claim_file_name_input_locator_tpl} =                              jquery=#tender-complaint-list .js-item div[data-complaint-id*="%complain_id%"] .complaint-info-wrapper .info-row.documents .value a[href*="https://public-docs-sandbox.prozorro.gov.ua"]
+${claim_file_link_input_locator_tpl} =                              return $('#tender-complaint-list .js-item div[data-complaint-id*="%complain_id%"] .complaint-info-wrapper .info-row.documents .value a[href*="https://public-docs-staging.prozorro.gov.ua"]').attr("href")
+${claim_file_name_input_locator_tpl} =                              jquery=#tender-complaint-list .js-item div[data-complaint-id*="%complain_id%"] .complaint-info-wrapper .info-row.documents .value a[href*="https://public-docs-staging.prozorro.gov.ua"]
 
 ${claim_wrapper_complain_id_value_locator_tpl} =                    jquery=#tender-complaint-pjax .complaint__item:first
 #${claim_wrapper_complain_id_value_locator_tpl} =                    jquery=#tender-complaint-pjax .complaint__item[data-title*="%complain_id%"]
